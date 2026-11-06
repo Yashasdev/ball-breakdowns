@@ -13,6 +13,7 @@ script; a line that doesn't match is spoken again with another seed, up to four 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -56,6 +57,17 @@ def released() -> set[str]:
     return set(r.stdout.split())
 
 
+def story_hash(item: dict) -> str:
+    """Changes whenever a story's script, captions or scenes change, so a fixed story is built again."""
+    return hashlib.sha1(json.dumps(item, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
+def published_index() -> dict[str, dict]:
+    r = subprocess.run(["gh", "release", "download", RELEASE, "-R", REPO, "-p", "index.json", "-O", "-"],
+                       capture_output=True, text=True)
+    return {v["id"]: v for v in json.loads(r.stdout)} if r.returncode == 0 and r.stdout.strip() else {}
+
+
 def voice(model, whisper, item: dict, out: Path) -> bool:
     import torch
     import torchaudio
@@ -89,7 +101,7 @@ def post_info(item: dict, result: dict) -> dict:
     """What the poster needs: the caption's hook line and comment question, the length and the music."""
     return {"id": item["id"], "title": item["title"], "kicker": item["kicker"], "sport": item["sport"],
             "hook": item["beats"][0]["cap"].replace("*", ""), "ask": item["ask"],
-            "seconds": result["seconds"], "music": result["music"], "sources": item["sources"]}
+            "seconds": result["seconds"], "music": result["music"], "sources": item["sources"], "hash": story_hash(item)}
 
 
 def main() -> None:
@@ -99,8 +111,10 @@ def main() -> None:
     a = ap.parse_args()
     items = json.loads(ITEMS.read_text())
     done = set() if a.dry else released()
-    todo = [i for i in items if f"{i['id']}.mp4" not in done][: a.max]
-    print(f"{len(items)} stories, {sum(n.endswith('.mp4') for n in done)} published, building {len(todo)}: {[i['id'] for i in todo]}")
+    index = {} if a.dry else published_index()
+    # new stories, and published ones whose script was fixed since (their hash changed)
+    todo = [i for i in items if f"{i['id']}.mp4" not in done or index.get(i["id"], {}).get("hash") != story_hash(i)][: a.max]
+    print(f"{len(items)} stories, {len(index)} published, building {len(todo)}: {[i['id'] for i in todo]}")
     if not todo:
         return
     from chatterbox.tts import ChatterboxTTS
@@ -117,27 +131,27 @@ def main() -> None:
         if not voice(model, whisper, it, vdir):
             continue
         result = make.render(it["id"], vdir, OUT / f"{it['id']}.mp4")
-        (OUT / f"{it['id']}.json").write_text(json.dumps(post_info(it, result), indent=1))
+        (OUT / f"{it['id']}.json").write_text(json.dumps(post_info(it, result), indent=1, ensure_ascii=False))
+        if result["seconds"] > 59:
+            print(f"::error::{it['id']} is {result['seconds']} s; Shorts must be under 60. Shorten its script.")
+            continue
         print(f"   rendered {result['seconds']} s with {result['music']}", flush=True)
         built.append(it["id"])
         if not a.dry:
             subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber",
                             *(str(OUT / f"{it['id']}{ext}") for ext in (".mp4", ".jpg", ".json"))], check=True)
-    if a.dry or not built:
-        return
-    # index.json: everything published, in items.json order (the order Ball Knowledge posts them)
-    have = released()
-    index = []
-    for it in items:
-        if f"{it['id']}.mp4" in have:
-            local = OUT / f"{it['id']}.json"
-            if not local.exists():
-                subprocess.run(["gh", "release", "download", RELEASE, "-R", REPO, "-p", f"{it['id']}.json", "-D", str(OUT),
-                                "--clobber"], check=True)
-            index.append(json.loads(local.read_text()))
-    (OUT / "index.json").write_text(json.dumps(index, indent=1))
+            index[it["id"]] = post_info(it, result)
+            publish_index(items, index)  # after every video, so a run cut short keeps what it finished
+    print(f"built {built}" + ("" if a.dry else f"; the index lists {len(index)} videos"))
+    if not built:  # every story failed: something is broken, so fail the run (one bad story only warns)
+        raise SystemExit("no story could be built")
+
+
+def publish_index(items: list[dict], index: dict[str, dict]) -> None:
+    """index.json: every published video, in items.json order (the order Ball Knowledge posts them)."""
+    listing = [index[i["id"]] for i in items if i["id"] in index]
+    (OUT / "index.json").write_text(json.dumps(listing, indent=1, ensure_ascii=False))
     subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber", str(OUT / "index.json")], check=True)
-    print(f"published {built}; index lists {len(index)} videos")
 
 
 if __name__ == "__main__":

@@ -664,7 +664,7 @@
   },
   "away": {
    "abbr": "HOU",
-   "color": "#4ca3dd"
+   "color": "#c8102e"
   },
   "ask": "Bigger comeback: 35–3 or 28–3? Comment 👇",
   "sources": [
@@ -901,7 +901,7 @@
     }
    },
    {
-    "say": "Reggie's eight in nine, or T-Mac's thirteen in thirty-three?",
+    "say": "Reggie's eight in eight point nine, or T-Mac's thirteen in thirty-three?",
     "cap": "Reggie's *8 in 8.9* or T-Mac's *13 in 33?*",
     "scene": {
      "type": "debate",
@@ -944,8 +944,8 @@
     }
    },
    {
-    "say": "Teams from their level hadn't beaten a ranked team in almost twenty years.",
-    "cap": "Their level hadn't beaten a ranked team *in almost 20 years.*",
+    "say": "No team from their level had ever been known to beat a ranked team.",
+    "cap": "None had *ever* been known to beat a ranked team.",
     "scene": {
      "type": "stat",
      "big": "0",
