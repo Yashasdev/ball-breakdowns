@@ -1,0 +1,53 @@
+name: Build breakdown videos
+
+# Voices, checks and renders every story in items.json that isn't on the "videos" release yet, then publishes it there.
+# Ball Knowledge (Yashasdev/act-reels) downloads finished videos from that release and posts them.
+on:
+  schedule:
+    - cron: "41 6 * * *"     # daily safety net; usually there's nothing new to build
+  push:
+    branches: [main]
+    paths: [items.json, breakdowns/**, bk/**, assets/**]
+  workflow_dispatch:
+    inputs:
+      max:
+        description: Build at most this many stories
+        default: "12"
+
+concurrency:
+  group: build-breakdowns
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install (CPU torch, then the rest)
+        run: |
+          pip install -q torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt
+      - run: python -m pytest -q tests
+      - name: Voice and caption models (cached)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-chatterbox-0.1.7-whisper-small
+      - name: Chromium (cached)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('requirements.txt') }}
+      - run: python -m playwright install --with-deps chromium
+      - name: Build and publish
+        run: python -m breakdowns.build --max "${{ inputs.max || '12' }}"

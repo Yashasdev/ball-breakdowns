@@ -1,0 +1,8 @@
+# The narrator: Chatterbox (Resemble AI, MIT). It needs numpy<2 and torch (CPU wheels: see the workflow).
+chatterbox-tts==0.1.7
+numpy<2
+faster-whisper
+playwright
+soundfile
+imageio-ffmpeg==0.6.0
+pytest

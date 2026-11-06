@@ -1,0 +1,1123 @@
+[
+ {
+  "id": "crazy-01",
+  "title": "28–3",
+  "kicker": "SUPER BOWL LI · FEB 5, 2017",
+  "sport": "nfl",
+  "home": {
+   "abbr": "NE",
+   "color": "#1d4fa0"
+  },
+  "away": {
+   "abbr": "ATL",
+   "color": "#c8102e"
+  },
+  "sources": [
+   "https://www.espn.com/nfl/playbyplay/_/gameId/400927752",
+   "https://en.wikipedia.org/wiki/Super_Bowl_LI"
+  ],
+  "beats": [
+   {
+    "say": "Twenty-eight to three. Third quarter. In the Super Bowl.",
+    "cap": "*28–3.* Third quarter. Super Bowl.",
+    "score": [
+     3,
+     28
+    ],
+    "clock": "3RD 8:31",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "No team had ever come back from more than ten points in a Super Bowl. Ever.",
+    "cap": "No team had EVER come back from more than *10.*",
+    "scene": {
+     "type": "stat",
+     "big": "10",
+     "label": "BIGGEST SUPER BOWL COMEBACK BEFORE THIS"
+    }
+   },
+   {
+    "say": "To win, New England needed twenty-five straight points. Including two two-point conversions. They got all of it.",
+    "cap": "They needed *25 straight points.* Two *2-point conversions.* They got *all of it.*",
+    "steps": [
+     [
+      9,
+      28
+     ],
+     [
+      12,
+      28
+     ],
+     [
+      20,
+      28
+     ]
+    ],
+    "clock": "4TH 5:56",
+    "scene": {
+     "type": "need",
+     "title": "TO WIN, NEW ENGLAND NEEDS",
+     "items": [
+      "25 straight points",
+      "2-point conversion #1",
+      "2-point conversion #2"
+     ],
+     "checks": [
+      0.92,
+      0.6,
+      0.8
+     ]
+    }
+   },
+   {
+    "say": "The pass gets tipped... and Edelman catches it off a defender's leg. Inches from the grass.",
+    "cap": "The pass gets *tipped...* caught *inches from the grass.*",
+    "clock": "4TH 2:28",
+    "scene": {
+     "type": "catch"
+    }
+   },
+   {
+    "say": "Fifty-seven seconds left. Tied. Twenty-eight. Twenty-eight.",
+    "cap": "57 seconds left. *TIED 28–28.*",
+    "score": [
+     28,
+     28
+    ],
+    "clock": "4TH 0:57",
+    "flash": true,
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "First overtime in Super Bowl history. Atlanta never touched the ball.",
+    "cap": "First OT in Super Bowl history. Atlanta *never touched the ball.*",
+    "score": [
+     34,
+     28
+    ],
+    "clock": "FINAL/OT",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Greatest comeback ever? Or does three-one beat it?",
+    "cap": "Greatest comeback ever? Or does *3–1* beat it?",
+    "scene": {
+     "type": "debate",
+     "a": "28–3",
+     "b": "CAVS 3–1"
+    }
+   }
+  ],
+  "ask": "Greatest comeback ever: 28–3 or Cavs 3–1? Comment 👇"
+ },
+ {
+  "id": "crazy-02",
+  "title": "T-Mac's 13 in 33",
+  "kicker": "ROCKETS VS SPURS · DEC 9, 2004",
+  "sport": "nba",
+  "home": {
+   "abbr": "HOU",
+   "color": "#ce1141"
+  },
+  "away": {
+   "abbr": "SA",
+   "color": "#8a8d8f"
+  },
+  "sources": [
+   "https://www.basketball-reference.com/boxscores/pbp/200412090HOU.html"
+  ],
+  "beats": [
+   {
+    "say": "Down eight. Forty-four seconds left. The Spurs had it won.",
+    "cap": "*Down 8.* 44 seconds left.",
+    "score": [
+     68,
+     76
+    ],
+    "clock": "4TH 0:44",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Houston needs nine points just to win. In forty-four seconds.",
+    "cap": "Houston needs *9 points.* In *44 seconds.*",
+    "scene": {
+     "type": "stat",
+     "big": "9 IN 44",
+     "label": "POINTS NEEDED · SECONDS LEFT"
+    }
+   },
+   {
+    "say": "Tracy McGrady. Three.",
+    "cap": "Tracy McGrady. *THREE.*",
+    "score": [
+     71,
+     76
+    ],
+    "clock": "4TH 0:35",
+    "scene": {
+     "type": "shots",
+     "show": 1
+    }
+   },
+   {
+    "say": "Three again. And the foul. Four-point play.",
+    "cap": "Three again, *and the foul.* 4-point play.",
+    "score": [
+     75,
+     78
+    ],
+    "clock": "4TH 0:24",
+    "scene": {
+     "type": "shots",
+     "show": 2
+    }
+   },
+   {
+    "say": "Three. Down two, eleven seconds left.",
+    "cap": "*THREE.* Down 2. 11 seconds left.",
+    "score": [
+     78,
+     80
+    ],
+    "clock": "4TH 0:11",
+    "scene": {
+     "type": "shots",
+     "show": 3
+    }
+   },
+   {
+    "say": "Then he steals it. From twenty-six feet...",
+    "cap": "He *steals it.* From 26 feet...",
+    "clock": "4TH 0:07",
+    "scene": {
+     "type": "shots",
+     "show": 3,
+     "steal": true
+    }
+   },
+   {
+    "say": "Bang. Rockets eighty-one, Spurs eighty.",
+    "cap": "*BANG.* Rockets 81, Spurs 80.",
+    "score": [
+     81,
+     80
+    ],
+    "clock": "4TH 0:01.7",
+    "flash": true,
+    "scene": {
+     "type": "shots",
+     "show": 4,
+     "steal": true
+    }
+   },
+   {
+    "say": "Thirteen points in thirty-three seconds. Is anything more clutch?",
+    "cap": "*13 points in 33 seconds.* More clutch than this?",
+    "scene": {
+     "type": "debate",
+     "a": "13 IN 33",
+     "b": "MORE CLUTCH?"
+    }
+   }
+  ],
+  "ask": "More clutch than 13 in 33? Name it 👇"
+ },
+ {
+  "id": "crazy-03",
+  "title": "The Kick Six",
+  "kicker": "IRON BOWL · NOV 30, 2013",
+  "sport": "cfb",
+  "home": {
+   "abbr": "AUB",
+   "color": "#e87722"
+  },
+  "away": {
+   "abbr": "ALA",
+   "color": "#9e1b32"
+  },
+  "sources": [
+   "https://www.espn.com/college-football/playbyplay/_/gameId/333340002",
+   "https://en.wikipedia.org/wiki/Kick_Six"
+  ],
+  "beats": [
+   {
+    "say": "Number one Alabama. Number four Auburn. Tied at twenty-eight. One second left.",
+    "cap": "#1 Alabama. #4 Auburn. *Tied 28–28.* 1 second left.",
+    "score": [
+     28,
+     28
+    ],
+    "clock": "4TH 0:01",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Alabama tries a fifty-seven yard field goal to win it.",
+    "cap": "Alabama tries a *57-yard* field goal to win.",
+    "scene": {
+     "type": "kick",
+     "phase": "kick"
+    }
+   },
+   {
+    "say": "It's short. Chris Davis is waiting, nine yards deep in the end zone.",
+    "cap": "It's *short.* Chris Davis waits *9 yards deep.*",
+    "scene": {
+     "type": "kick",
+     "phase": "catch"
+    }
+   },
+   {
+    "say": "And he just... keeps... running.",
+    "cap": "And he just keeps *running...*",
+    "clock": "4TH 0:00",
+    "scene": {
+     "type": "kick",
+     "phase": "run"
+    }
+   },
+   {
+    "say": "Touchdown. No time left. Auburn wins.",
+    "cap": "*TOUCHDOWN.* Auburn wins *34–28.*",
+    "score": [
+     34,
+     28
+    ],
+    "clock": "FINAL",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "About a hundred and nine yards. End zone to end zone. The Kick Six.",
+    "cap": "About *109 yards.* The *Kick Six.*",
+    "scene": {
+     "type": "stat",
+     "big": "≈109",
+     "label": "YARDS · END ZONE TO END ZONE"
+    }
+   },
+   {
+    "say": "Craziest ending in college football? Prove me wrong in the comments.",
+    "cap": "Craziest ending ever? *Prove me wrong.*",
+    "scene": {
+     "type": "debate",
+     "a": "KICK SIX",
+     "b": "YOUR PICK"
+    }
+   }
+  ],
+  "ask": "Craziest ending in college football? Prove us wrong 👇"
+ },
+ {
+  "id": "crazy-04",
+  "title": "The Minneapolis Miracle",
+  "kicker": "NFC DIVISIONAL · JAN 14, 2018",
+  "sport": "nfl",
+  "home": {
+   "abbr": "MIN",
+   "color": "#6a3fb5"
+  },
+  "away": {
+   "abbr": "NO",
+   "color": "#b39b5e"
+  },
+  "ask": "Craziest last play ever? Comment yours 👇",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Minneapolis_Miracle",
+   "https://africa.espn.com/nfl/story/_/id/22102295/inside-play-saved-minnesota-vikings-season-crushed-new-orleans-saints"
+  ],
+  "beats": [
+   {
+    "say": "Saints up one. Ten seconds left. Playoffs. No timeouts.",
+    "cap": "*Saints up 1.* 10 seconds left. *No timeouts.*",
+    "score": [
+     23,
+     24
+    ],
+    "clock": "4TH 0:10",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "ESPN gave Minnesota about a three percent chance.",
+    "cap": "ESPN gave Minnesota about *a 3% chance.*",
+    "scene": {
+     "type": "stat",
+     "big": "2.6%",
+     "label": "VIKINGS' CHANCE TO WIN (ESPN)"
+    }
+   },
+   {
+    "say": "Third and ten. The plan: a catch, get out of bounds, kick a field goal.",
+    "cap": "The plan: *catch it,* get out of bounds, kick it.",
+    "scene": {
+     "type": "need",
+     "title": "THE PLAN",
+     "items": [
+      "Make a catch",
+      "Get out of bounds",
+      "Kick a field goal"
+     ],
+     "checks": [
+      0.6,
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "say": "Diggs catches it at the thirty-four... and the tackle misses.",
+    "cap": "Diggs catches it... *the tackle misses.*",
+    "scene": {
+     "type": "stat",
+     "big": "MISSED",
+     "label": "THE LAST TACKLE"
+    }
+   },
+   {
+    "say": "He's gone. Touchdown. No time left. Vikings win.",
+    "cap": "*TOUCHDOWN.* No time left. *Vikings win.*",
+    "score": [
+     29,
+     24
+    ],
+    "clock": "FINAL",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "The first playoff game ever won on a touchdown as time ran out.",
+    "cap": "First playoff game won on a TD *as time ran out.*",
+    "scene": {
+     "type": "stat",
+     "big": "1ST",
+     "label": "PLAYOFF WIN ON A TD AS TIME EXPIRED"
+    }
+   },
+   {
+    "say": "Craziest last play ever? This, or the Kick Six?",
+    "cap": "Craziest last play ever? This or the *Kick Six?*",
+    "scene": {
+     "type": "debate",
+     "a": "MPLS MIRACLE",
+     "b": "KICK SIX"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-05",
+  "title": "Ray Allen's corner three",
+  "kicker": "NBA FINALS GAME 6 · JUNE 18, 2013",
+  "sport": "nba",
+  "home": {
+   "abbr": "MIA",
+   "color": "#c8102e"
+  },
+  "away": {
+   "abbr": "SA",
+   "color": "#8a8d8f"
+  },
+  "ask": "Bigger shot than Ray Allen's corner three? Name it 👇",
+  "sources": [
+   "https://www.basketball-reference.com/boxscores/pbp/201306180MIA.html",
+   "https://www.nba.com/news/history-finals-moments-ray-allen-3-pointer-game-6",
+   "https://www.si.com/nba/2013/06/19/heat-fans-leave-early-miss-game-6-2013-nba-finals-san-antonio-spurs-miami-american-airlines-arena"
+  ],
+  "beats": [
+   {
+    "say": "Spurs up five. Twenty-eight seconds left. One win from the title.",
+    "cap": "*Spurs up 5.* 28 seconds left. *One win* from the title.",
+    "score": [
+     89,
+     94
+    ],
+    "clock": "4TH 0:28",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Security is already putting the yellow rope around the court. For the Spurs' trophy.",
+    "cap": "The *yellow rope* is out. For the *Spurs' trophy.*",
+    "scene": {
+     "type": "stat",
+     "big": "ROPE",
+     "label": "OUT ON THE COURT FOR THE TROPHY"
+    }
+   },
+   {
+    "say": "LeBron hits a three. Leonard makes one free throw. Still down three.",
+    "cap": "LeBron *three.* Leonard *1 of 2.* Still *down 3.*",
+    "steps": [
+     [
+      92,
+      94
+     ],
+     [
+      92,
+      95
+     ]
+    ],
+    "clock": "4TH 0:19",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "LeBron misses. Bosh grabs the rebound. Ray Allen backs into the corner.",
+    "cap": "LeBron misses. *Bosh rebounds.* Allen backs into the corner...",
+    "clock": "4TH 0:06",
+    "scene": {
+     "type": "need",
+     "title": "TO SURVIVE, MIAMI NEEDS",
+     "items": [
+      "An offensive rebound",
+      "A three",
+      "Before time runs out"
+     ],
+     "checks": [
+      0.45,
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "say": "Corner three. Tied with five seconds left.",
+    "cap": "*CORNER THREE.* Tied with *5 seconds* left.",
+    "score": [
+     95,
+     95
+    ],
+    "clock": "4TH 0:05",
+    "flash": true,
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Miami wins in overtime. Then wins game seven. Champions.",
+    "cap": "Heat win in OT. Then *Game 7.* Champions.",
+    "score": [
+     103,
+     100
+    ],
+    "clock": "FINAL/OT",
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Biggest shot in NBA Finals history? Name a bigger one.",
+    "cap": "Biggest shot in Finals history? *Name a bigger one.*",
+    "scene": {
+     "type": "debate",
+     "a": "RAY ALLEN",
+     "b": "YOUR PICK"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-06",
+  "title": "Boise State's Fiesta Bowl",
+  "kicker": "FIESTA BOWL · JAN 1, 2007",
+  "sport": "cfb",
+  "home": {
+   "abbr": "BSU",
+   "color": "#2f6fd6"
+  },
+  "away": {
+   "abbr": "OU",
+   "color": "#b3202a"
+  },
+  "ask": "Greatest college football game ever? Comment yours 👇",
+  "sources": [
+   "https://en.wikipedia.org/wiki/2007_Fiesta_Bowl",
+   "https://www.espn.com/espn/page2/story/_/page/games%2Fdecade%2F2007fiestabowl",
+   "https://www.si.com/college/2016/12/21/2007-fiesta-bowl-oral-history-boise-state-oklahoma"
+  ],
+  "beats": [
+   {
+    "say": "Pick six. Oklahoma up seven. About a minute left.",
+    "cap": "*Pick six.* Oklahoma up 7. About a minute left.",
+    "score": [
+     28,
+     35
+    ],
+    "clock": "4TH 1:02",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Fourth and eighteen. Eighteen seconds left.",
+    "cap": "*4th and 18.* 18 seconds left.",
+    "clock": "4TH 0:18",
+    "scene": {
+     "type": "stat",
+     "big": "4TH & 18",
+     "label": "BOISE STATE · AT MIDFIELD"
+    }
+   },
+   {
+    "say": "Hook and lateral. Touchdown. Tied with seven seconds left.",
+    "cap": "*Hook and lateral.* Touchdown. *Tied.*",
+    "score": [
+     35,
+     35
+    ],
+    "clock": "4TH 0:07",
+    "flash": true,
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Overtime. Oklahoma scores on the very first play.",
+    "cap": "Overtime. Oklahoma scores *on the first play.*",
+    "score": [
+     35,
+     42
+    ],
+    "clock": "OT",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Fourth and two. A wide receiver takes the snap and throws a touchdown.",
+    "cap": "*4th and 2.* A receiver throws *a touchdown.*",
+    "score": [
+     41,
+     42
+    ],
+    "clock": "OT",
+    "scene": {
+     "type": "stat",
+     "big": "4TH & 2",
+     "label": "BOISE STATE · OVERTIME"
+    }
+   },
+   {
+    "say": "They go for two. To win. With the Statue of Liberty.",
+    "cap": "Going for *two.* To win. The *Statue of Liberty.*",
+    "score": [
+     43,
+     42
+    ],
+    "clock": "FINAL/OT",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Then Ian Johnson proposes to the head cheerleader. On live TV. She said yes.",
+    "cap": "Then he *proposes on live TV.* She said *yes.*",
+    "scene": {
+     "type": "stat",
+     "big": "YES",
+     "label": "SHE SAID"
+    }
+   },
+   {
+    "say": "Greatest college football game ever? Or is it the Kick Six?",
+    "cap": "Greatest college game ever? Or the *Kick Six?*",
+    "scene": {
+     "type": "debate",
+     "a": "BOISE ST.",
+     "b": "KICK SIX"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-07",
+  "title": "The Comeback",
+  "kicker": "AFC WILD CARD · JAN 3, 1993",
+  "sport": "nfl",
+  "home": {
+   "abbr": "BUF",
+   "color": "#2f6fd6"
+  },
+  "away": {
+   "abbr": "HOU",
+   "color": "#4ca3dd"
+  },
+  "ask": "Bigger comeback: 35–3 or 28–3? Comment 👇",
+  "sources": [
+   "https://en.wikipedia.org/wiki/The_Comeback_(American_football)",
+   "https://www.history.com/this-day-in-history/january-3/buffalo-bills-pull-off-greatest-comeback-in-nfl-history"
+  ],
+  "beats": [
+   {
+    "say": "Thirty-five to three. In the playoffs. Early in the third quarter.",
+    "cap": "*35–3.* Playoffs. Early third quarter.",
+    "score": [
+     3,
+     35
+    ],
+    "clock": "3RD 13:19",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Down thirty-two. Their star quarterback is hurt. Backup Frank Reich is in.",
+    "cap": "Down *32.* Star QB hurt. *Backup Frank Reich.*",
+    "scene": {
+     "type": "stat",
+     "big": "32",
+     "label": "POINTS DOWN"
+    }
+   },
+   {
+    "say": "Then Buffalo scores. And scores. And scores. And scores again.",
+    "cap": "Buffalo *scores. And scores. And scores.* And again.",
+    "steps": [
+     [
+      10,
+      35
+     ],
+     [
+      17,
+      35
+     ],
+     [
+      24,
+      35
+     ],
+     [
+      31,
+      35
+     ]
+    ],
+    "clock": "END 3RD",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Andre Reed touchdown. Buffalo takes the lead.",
+    "cap": "Andre Reed TD. *Buffalo leads.*",
+    "score": [
+     38,
+     35
+    ],
+    "clock": "4TH 3:08",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Houston kicks a field goal. Tied. Overtime.",
+    "cap": "Houston field goal. *Tied. Overtime.*",
+    "score": [
+     38,
+     38
+    ],
+    "clock": "OT",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Interception. Then a field goal. Bills win.",
+    "cap": "*Interception.* Field goal. *Bills win.*",
+    "score": [
+     41,
+     38
+    ],
+    "clock": "FINAL/OT",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Thirty-two points. Still the biggest comeback in NFL playoff history.",
+    "cap": "*32 points.* Still the biggest *playoff comeback ever.*",
+    "scene": {
+     "type": "stat",
+     "big": "32",
+     "label": "BIGGEST NFL PLAYOFF COMEBACK"
+    }
+   },
+   {
+    "say": "Bigger comeback: this, or twenty-eight to three?",
+    "cap": "Bigger comeback: *this* or *28–3?*",
+    "scene": {
+     "type": "debate",
+     "a": "35–3",
+     "b": "28–3"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-08",
+  "title": "Reggie's 8 in 8.9",
+  "kicker": "PACERS AT KNICKS · MAY 7, 1995",
+  "sport": "nba",
+  "home": {
+   "abbr": "IND",
+   "color": "#2a5bb5"
+  },
+  "away": {
+   "abbr": "NYK",
+   "color": "#f58426"
+  },
+  "ask": "Reggie's 8 in 8.9 or T-Mac's 13 in 33? Comment 👇",
+  "sources": [
+   "https://www.nba.com/pacers/8-9-seconds-created-legend-and-changed-lives",
+   "https://www.si.com/nba/pacers/history/on-this-day-1995-reggie-miller-scores-eight-points-in-8-9-seconds-guide-indiana-pacers-new-york-knicks",
+   "https://en.wikipedia.org/wiki/Reggie_Miller"
+  ],
+  "beats": [
+   {
+    "say": "Knicks up six. Eighteen seconds left. In Madison Square Garden.",
+    "cap": "*Knicks up 6.* 18 seconds left. *The Garden.*",
+    "score": [
+     99,
+     105
+    ],
+    "clock": "4TH 0:18",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Reggie Miller. Three.",
+    "cap": "Reggie Miller. *THREE.*",
+    "score": [
+     102,
+     105
+    ],
+    "clock": "4TH 0:16",
+    "scene": {
+     "type": "need",
+     "title": "TO TIE, INDIANA NEEDS",
+     "items": [
+      "A three",
+      "A steal",
+      "Another three"
+     ],
+     "checks": [
+      0.5,
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "say": "He steals the inbound pass. Steps back. Three again. Tied.",
+    "cap": "*Steals the inbound.* Three again. *TIED.*",
+    "score": [
+     105,
+     105
+    ],
+    "clock": "4TH 0:13",
+    "flash": true,
+    "scene": {
+     "type": "need",
+     "title": "TO TIE, INDIANA NEEDS",
+     "items": [
+      "A three",
+      "A steal",
+      "Another three"
+     ],
+     "checks": [
+      0,
+      0.3,
+      0.75
+     ]
+    }
+   },
+   {
+    "say": "John Starks goes to the line. Misses both.",
+    "cap": "Starks at the line. *Misses both.*",
+    "scene": {
+     "type": "stat",
+     "big": "0 FOR 2",
+     "label": "STARKS AT THE LINE"
+    }
+   },
+   {
+    "say": "Ewing misses. Miller grabs it, gets fouled... makes both.",
+    "cap": "Miller gets fouled... *makes both.*",
+    "score": [
+     107,
+     105
+    ],
+    "clock": "4TH 0:07",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "The Knicks never get a shot off. Pacers win.",
+    "cap": "Knicks never get a shot off. *Pacers win.*",
+    "score": [
+     107,
+     105
+    ],
+    "clock": "FINAL",
+    "flash": true,
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Eight points in eight point nine seconds.",
+    "cap": "*8 points* in *8.9 seconds.*",
+    "scene": {
+     "type": "stat",
+     "big": "8 IN 8.9",
+     "label": "POINTS · SECONDS"
+    }
+   },
+   {
+    "say": "Reggie's eight in nine, or T-Mac's thirteen in thirty-three?",
+    "cap": "Reggie's *8 in 8.9* or T-Mac's *13 in 33?*",
+    "scene": {
+     "type": "debate",
+     "a": "REGGIE",
+     "b": "T-MAC"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-09",
+  "title": "App State over Michigan",
+  "kicker": "APP STATE AT MICHIGAN · SEP 1, 2007",
+  "sport": "cfb",
+  "home": {
+   "abbr": "APP",
+   "color": "#c99700"
+  },
+  "away": {
+   "abbr": "MICH",
+   "color": "#2456a6"
+  },
+  "ask": "Biggest upset ever? Name a bigger one 👇",
+  "sources": [
+   "https://www2.kusports.com/news/2007/sep/02/appy_state_stuns_michigan/",
+   "https://appstatesports.com/news/2007/9/1/1544638.aspx",
+   "https://en.wikipedia.org/wiki/2007_Appalachian_State_vs._Michigan_football_game"
+  ],
+  "beats": [
+   {
+    "say": "Number five Michigan. Twenty-six seconds left. Losing to a team from a lower division.",
+    "cap": "*#5 Michigan* is losing. To a *lower division* team.",
+    "score": [
+     34,
+     32
+    ],
+    "clock": "4TH 0:26",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Teams from their level hadn't beaten a ranked team in almost twenty years.",
+    "cap": "Their level hadn't beaten a ranked team *in almost 20 years.*",
+    "scene": {
+     "type": "stat",
+     "big": "0",
+     "label": "I-AA WINS OVER AP-RANKED TEAMS, 1989–2006"
+    }
+   },
+   {
+    "say": "Michigan completes a forty-six yard pass. Six seconds left. A short kick to win.",
+    "cap": "*46-yard pass.* 6 seconds left. A short kick *to win.*",
+    "clock": "4TH 0:06",
+    "scene": {
+     "type": "need",
+     "title": "TO WIN, MICHIGAN NEEDS",
+     "items": [
+      "A big pass",
+      "A short field goal"
+     ],
+     "checks": [
+      0.5,
+      null
+     ]
+    }
+   },
+   {
+    "say": "Blocked. Corey Lynch gets a hand on it.",
+    "cap": "*BLOCKED.* Corey Lynch gets a hand on it.",
+    "flash": true,
+    "scene": {
+     "type": "stat",
+     "big": "BLOCKED",
+     "label": "37-YARD TRY · LAST PLAY"
+    }
+   },
+   {
+    "say": "Appalachian State wins. Thirty-four, thirty-two.",
+    "cap": "*App State wins.* 34–32.",
+    "score": [
+     34,
+     32
+    ],
+    "clock": "FINAL",
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Biggest upset in college football history? Name a bigger one.",
+    "cap": "Biggest upset ever? *Name a bigger one.*",
+    "scene": {
+     "type": "debate",
+     "a": "APP STATE",
+     "b": "YOUR PICK"
+    }
+   }
+  ]
+ },
+ {
+  "id": "crazy-10",
+  "title": "Cavs come back from 3–1",
+  "kicker": "NBA FINALS · JUNE 2016",
+  "sport": "nba",
+  "home": {
+   "abbr": "CLE",
+   "color": "#a01848"
+  },
+  "away": {
+   "abbr": "GSW",
+   "color": "#2f6fd6"
+  },
+  "ask": "Better comeback: Cavs 3–1 or 28–3? Comment 👇",
+  "sources": [
+   "https://www.basketball-reference.com/boxscores/pbp/201606190GSW.html",
+   "https://en.wikipedia.org/wiki/2016_NBA_Finals",
+   "https://www.espn.com/nba/playoffs/2016/story/_/id/16544563/nba-finals-2016-oral-history-lebron-chasedown-block"
+  ],
+  "beats": [
+   {
+    "say": "Cleveland. Down three games to one in the Finals.",
+    "cap": "Cleveland. *Down 3–1* in the Finals.",
+    "score": [
+     1,
+     3
+    ],
+    "clock": "SERIES",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Against the Warriors. Seventy-three and nine. The best record ever.",
+    "cap": "Against a *73–9* team. *Best record ever.*",
+    "scene": {
+     "type": "stat",
+     "big": "73–9",
+     "label": "BEST RECORD IN NBA HISTORY"
+    }
+   },
+   {
+    "say": "Cleveland wins game five. Then game six. Game seven, in Oakland.",
+    "cap": "Cavs win *Game 5.* Then *Game 6.* Game 7 in *Oakland.*",
+    "steps": [
+     [
+      2,
+      3
+     ],
+     [
+      3,
+      3
+     ]
+    ],
+    "clock": "SERIES",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Tied at eighty-nine. Under two minutes left. Iguodala on the break...",
+    "cap": "*Tied 89–89.* Under 2 minutes. Iguodala on the break...",
+    "score": [
+     89,
+     89
+    ],
+    "clock": "4TH 1:50",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "LeBron chases him down. Blocked.",
+    "cap": "LeBron chases him down. *BLOCKED.*",
+    "flash": true,
+    "scene": {
+     "type": "stat",
+     "big": "BLOCKED",
+     "label": "LEBRON · 1:50 LEFT · TIED"
+    }
+   },
+   {
+    "say": "Then Kyrie Irving. A three, right over Curry.",
+    "cap": "Kyrie Irving. *Three, over Curry.*",
+    "score": [
+     92,
+     89
+    ],
+    "clock": "4TH 0:53",
+    "scene": {
+     "type": "score"
+    }
+   },
+   {
+    "say": "Cavs win. The first team ever to come back from three-one down in the Finals.",
+    "cap": "First team to come back from *3–1* in the *Finals.*",
+    "score": [
+     93,
+     89
+    ],
+    "clock": "FINAL",
+    "scene": {
+     "type": "score",
+     "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Better comeback: the Cavs, or twenty-eight to three?",
+    "cap": "Better comeback: *Cavs 3–1* or *28–3?*",
+    "scene": {
+     "type": "debate",
+     "a": "CAVS 3–1",
+     "b": "28–3"
+    }
+   }
+  ]
+ }
+]

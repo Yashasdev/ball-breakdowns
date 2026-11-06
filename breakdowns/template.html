@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Anton; src: url("../assets/fonts/breakdown/Anton-Regular.ttf"); }
+  @font-face { font-family: Mono; src: url("../assets/fonts/breakdown/JetBrainsMono[wght].ttf"); }
+  @font-face { font-family: Inter; src: url("../assets/fonts/Inter-ExtraBold.otf"); font-weight: 800; }
+  html, body { margin: 0; background: #07090d; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+           background: radial-gradient(110% 70% at 50% 42%, #18202e 0%, #0b0f16 60%, #050608 100%); }
+  #grain { position: absolute; inset: -40px; opacity: .16; mix-blend-mode: overlay; }
+  #world { position: absolute; inset: 0; transform-origin: 50% 45%; }
+  .mono { font-family: Mono; letter-spacing: 3px; }
+  /* header */
+  #title { position: absolute; left: 0; right: 0; top: 70px; text-align: center; font-family: Anton; font-size: 58px;
+           color: #f4f1ea; letter-spacing: 3px; }
+  #title b { color: #ffd60a; font-weight: normal; }
+  #kicker { position: absolute; left: 0; right: 0; top: 150px; text-align: center; color: #8a96ab; font-size: 26px; }
+  /* TV-style score bug */
+  #bug { position: absolute; left: 50%; top: 210px; transform: translateX(-50%); display: flex; align-items: stretch;
+         height: 88px; border-radius: 14px; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,.6); opacity: 0; }
+  #bug .t { display: flex; align-items: center; gap: 18px; padding: 0 26px; font-family: Anton; font-size: 52px; color: #fff; }
+  #bug .t .n { min-width: 64px; text-align: center; display: inline-block; }
+  #bug .c { display: flex; align-items: center; padding: 0 24px; white-space: nowrap; background: #11161f; color: #ffd60a; font-family: Mono;
+            font-size: 30px; letter-spacing: 2px; }
+  /* scenes: one focal thing at a time, centered between the bug and the captions */
+  .scene { position: absolute; left: 0; top: 340px; width: 1080px; height: 1000px; opacity: 0; transform-origin: 50% 50%; }
+  /* big score */
+  #s-score .row { position: absolute; top: 170px; left: 0; right: 0; display: flex; justify-content: center; gap: 40px; }
+  #s-score .col { width: 420px; text-align: center; }
+  #s-score .abbr { font-family: Anton; font-size: 90px; letter-spacing: 4px; }
+  #s-score .pts { font-family: Anton; font-size: 330px; line-height: .95; color: #fff; }
+  #s-score .dash { font-family: Anton; font-size: 200px; color: #2b3445; margin-top: 150px; }
+  #s-score .clock { position: absolute; top: 720px; left: 0; right: 0; text-align: center; color: #ffd60a; font-size: 44px; }
+  #s-score .stamp { position: absolute; left: 50%; top: 330px; font-family: Anton; font-size: 170px; color: #ff3b3b;
+                    border: 14px solid #ff3b3b; padding: 0 40px; border-radius: 18px; letter-spacing: 8px; opacity: 0; }
+  /* stat */
+  #s-stat .big { position: absolute; left: 0; right: 0; top: 160px; text-align: center; font-family: Anton; font-size: 380px;
+                 line-height: 1; color: #ffd60a; text-shadow: 0 0 80px rgba(255,214,10,.25); white-space: nowrap; }
+  #s-stat .lbl { position: absolute; left: 90px; right: 90px; top: 620px; text-align: center; color: #c9d1de; font-size: 40px; line-height: 1.4; }
+  #s-stat .burst { position: absolute; left: 50%; top: 360px; width: 900px; height: 900px; margin: -450px 0 0 -450px;
+                   background: repeating-conic-gradient(from 0deg, rgba(255,214,10,.07) 0 6deg, transparent 6deg 18deg); border-radius: 50%; }
+  /* checklist */
+  #s-need .ttl { position: absolute; left: 0; right: 0; top: 120px; text-align: center; color: #8a96ab; font-size: 38px; }
+  #s-need .item { position: absolute; left: 110px; right: 110px; height: 190px; display: flex; align-items: center; gap: 44px;
+                  background: #121824; border-radius: 26px; box-shadow: inset 0 0 0 4px #222c3d; padding: 0 44px; box-sizing: border-box; }
+  #s-need .box { width: 96px; height: 96px; border-radius: 18px; border: 8px solid #3a4558; flex: none; position: relative; }
+  #s-need .box.on { border-color: #3ddc84; background: #3ddc84; }
+  #s-need .box.on::after { content: ""; position: absolute; left: 22px; top: 4px; width: 26px; height: 52px; border: solid #07090d;
+                           border-width: 0 12px 12px 0; transform: rotate(45deg); }
+  #s-need .txt { font-family: Anton; font-size: 66px; color: #f4f1ea; letter-spacing: 1px; }
+  /* fields and courts */
+  .pitch { position: absolute; left: 140px; top: 20px; width: 800px; height: 960px; border-radius: 22px; overflow: hidden;
+           background: repeating-linear-gradient(0deg, #1d6b37 0 48px, #217540 48px 96px); box-shadow: inset 0 0 0 5px #ffffff55; }
+  .pitch .ez { position: absolute; left: 0; right: 0; height: 96px; }
+  .pitch .yl { position: absolute; left: 0; right: 0; height: 4px; background: #ffffff55; }
+  .dot { position: absolute; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; border: 8px solid #fff; box-sizing: border-box; }
+  .xmark { position: absolute; font-family: Anton; font-size: 120px; color: #ff3b3b; margin: -76px 0 0 -34px; text-shadow: 0 4px 12px #000; }
+  .ball { position: absolute; width: 54px; height: 34px; margin: -17px 0 0 -27px; border-radius: 50%; background: #8b4a1c;
+          box-shadow: 0 0 0 4px #fff3, 0 0 30px #ffd60a; }
+  .tag { position: absolute; font-family: Anton; font-size: 76px; color: #ffd60a; letter-spacing: 3px; text-shadow: 0 6px 20px #000;
+         white-space: nowrap; opacity: 0; }
+  .name { position: absolute; font-family: Mono; font-size: 34px; color: #fff; background: #07090dcc; padding: 4px 14px;
+          border-radius: 10px; white-space: nowrap; opacity: 0; letter-spacing: 2px; }
+  .court { position: absolute; left: 90px; top: 40px; width: 900px; height: 900px; border-radius: 22px; background: #b5763e;
+           box-shadow: inset 0 0 0 6px #f4e3c8; overflow: hidden; }
+  .court svg { position: absolute; inset: 0; }
+  .shot { position: absolute; width: 104px; height: 104px; margin: -52px 0 0 -52px; border-radius: 50%; background: #ffd60a;
+          border: 7px solid #07090d; box-sizing: border-box; opacity: 0; }
+  .shot span { position: absolute; top: 104px; left: 50%; transform: translateX(-50%); font-family: Mono; font-size: 36px;
+               color: #07090d; background: #ffd60a; padding: 2px 10px; border-radius: 8px; white-space: nowrap; }
+  /* debate */
+  #s-debate .card { position: absolute; left: 110px; right: 110px; height: 330px; border-radius: 30px; display: flex;
+                    align-items: center; justify-content: center; font-family: Anton; font-size: 150px; color: #fff; letter-spacing: 4px; }
+  #s-debate .vs { position: absolute; left: 0; right: 0; top: 400px; text-align: center; font-family: Anton; font-size: 110px; color: #ffd60a; }
+  #s-debate .cta { position: absolute; left: 50%; top: 870px; transform: translateX(-50%); background: #ff3b3b; color: #fff;
+                   font-family: Anton; font-size: 60px; padding: 14px 54px; border-radius: 80px; letter-spacing: 4px; white-space: nowrap; }
+  /* captions */
+  #cap { position: absolute; left: 60px; right: 60px; top: 1420px; text-align: center; font-family: Inter; font-weight: 800;
+         font-size: 86px; line-height: 1.12; color: #fff; text-shadow: 0 0 2px #000, 0 6px 0 #000, 0 10px 30px rgba(0,0,0,.8); }
+  #cap span { display: inline-block; margin: 0 12px; }
+  #cap span.acc { color: #ffd60a; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  #progress { position: absolute; left: 0; bottom: 0; height: 14px; background: #ffd60a; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div id="title">HOW CRAZY <b>WAS IT?</b></div>
+    <div id="kicker" class="mono"></div>
+    <div id="bug"><div class="t" id="bugH"><span class="a"></span><span class="n"></span></div><div class="c" id="bugC"></div>
+                  <div class="t" id="bugA"><span class="n"></span><span class="a"></span></div></div>
+
+    <div class="scene" id="s-score"><div class="row"><div class="col"><div class="abbr" id="scHa"></div><div class="pts" id="scH"></div></div>
+      <div class="dash">–</div><div class="col"><div class="abbr" id="scAa"></div><div class="pts" id="scA"></div></div></div>
+      <div class="clock mono" id="scC"></div><div class="stamp" id="scS"></div></div>
+
+    <div class="scene" id="s-stat"><div class="burst"></div><div class="big" id="stB"></div><div class="lbl mono" id="stL"></div></div>
+
+    <div class="scene" id="s-need"><div class="ttl mono" id="ndT"></div><div id="ndI"></div></div>
+
+    <div class="scene" id="s-catch"><div class="pitch" id="cPitch"></div></div>
+    <div class="scene" id="s-kick"><div class="pitch" id="kPitch"></div></div>
+    <div class="scene" id="s-shots"><div class="court"><svg viewBox="0 0 900 900">
+      <rect x="330" y="0" width="240" height="330" fill="#9c5f2c" stroke="#f4e3c8" stroke-width="6"/>
+      <circle cx="450" cy="330" r="110" fill="none" stroke="#f4e3c8" stroke-width="6"/>
+      <path d="M 60 0 L 60 200 A 400 400 0 0 0 840 200 L 840 0" fill="none" stroke="#f4e3c8" stroke-width="6"/>
+      <line x1="390" y1="70" x2="510" y2="70" stroke="#f4e3c8" stroke-width="8"/><circle cx="450" cy="100" r="24" fill="none" stroke="#ff7a1a" stroke-width="7"/>
+      <line x1="0" y1="900" x2="900" y2="900" stroke="#f4e3c8" stroke-width="10"/><circle cx="450" cy="900" r="120" fill="none" stroke="#f4e3c8" stroke-width="6"/>
+    </svg><div id="shotLayer"></div></div></div>
+
+    <div class="scene" id="s-debate"><div class="card" id="dbA" style="top:60px;background:#c8102e"></div><div class="vs">VS</div>
+      <div class="card" id="dbB" style="top:530px;background:#1d4fa0"></div><div class="cta">COMMENT YOUR PICK ↓</div></div>
+
+    <div id="cap"></div>
+  </div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const spring = (x, k = 7, w = 11) => x <= 0 ? 0 : 1 - Math.exp(-k * x) * Math.cos(w * x);
+const ease = (x) => x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1 - x, 3);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+let TL;
+
+function setup(tl) {
+  TL = tl;
+  $("kicker").textContent = tl.kicker;
+  const H = tl.home, A = tl.away;
+  $("bugH").style.background = H.color; $("bugA").style.background = A.color;
+  $("bugH").querySelector(".a").textContent = H.abbr; $("bugA").querySelector(".a").textContent = A.abbr;
+  $("scHa").textContent = H.abbr; $("scHa").style.color = H.color === "#8a8d8f" ? "#c4ced4" : H.color;
+  $("scAa").textContent = A.abbr; $("scAa").style.color = A.color === "#8a8d8f" ? "#c4ced4" : A.color;
+  // football pitches: end zones in team colors, a yard line every 10 yards (field is 120 yards tall)
+  for (const id of ["cPitch", "kPitch"]) {
+    const p = $(id); const u = 960 / 120;
+    p.innerHTML = `<div class="ez" style="top:0;background:${A.color}"></div><div class="ez" style="bottom:0;background:${H.color}"></div>` +
+      Array.from({length: 11}, (_, i) => `<div class="yl" style="top:${(10 + i * 10) * u - 2}px"></div>`).join("") +
+      `<svg id="trail${id}" class="trail" width="800" height="960" style="position:absolute;inset:0"></svg>` +
+      `<div class="dot" id="${id}r" style="background:${H.color};opacity:0"></div><div class="ball" id="${id}b" style="opacity:0"></div>` +
+      `<div class="xmark" id="${id}x" style="opacity:0">✕</div><div class="tag" id="${id}t"></div><div class="tag" id="${id}t2"></div>` +
+      `<div class="name" id="${id}n1"></div><div class="name" id="${id}n2"></div>`;
+  }
+  // T-Mac's shots: four threes from 26 feet, each labeled with the clock
+  const spots = [[150, 380, "0:35"], [760, 360, "0:24"], [270, 560, "0:11"], [640, 590, "0:01.7"]];
+  $("shotLayer").innerHTML = spots.map((s, i) => `<div class="shot" id="shot${i}" style="left:${s[0]}px;top:${s[1]}px"><span>${s[2]}</span></div>`).join("") +
+    `<div class="tag" id="stealTag" style="left:330px;top:760px">STEAL</div>`;
+}
+
+function scoreAt(t) {
+  let s = null, at = -9, clock = "";
+  for (const b of TL.beats) {
+    if (b.start > t) break;
+    if (b.clock) clock = b.clock;
+    const steps = b.steps || (b.score ? [b.score] : []);
+    steps.forEach((sc, k) => {
+      const when = b.start + (k * (b.end - b.start)) / steps.length + 0.15;
+      if (when <= t) { if (!s || s[0] !== sc[0] || s[1] !== sc[1]) at = when; s = sc; }
+    });
+  }
+  return { s, at, clock };
+}
+
+function show(id, x) {  // scene entrance: a punch-in zoom, quick fade
+  const el = $(id), p = spring(x, 8, 12);
+  el.style.opacity = clamp(x / 0.12);
+  el.style.transform = `scale(${1.18 - 0.18 * p})`;
+}
+
+function render(t) {
+  const B = TL.beats; let i = 0;
+  while (i + 1 < B.length && B[i + 1].start <= t) i++;
+  const b = B[i], x = t - b.start, d = Math.max(0.5, b.end - b.start);
+  // camera: slow push-in on every beat, restarting each beat (constant motion)
+  $("world").style.transform = `scale(${1 + 0.035 * ease(x / (d + 0.6))}) translateY(${Math.sin(t * 0.8) * 4}px)`;
+  $("grain").style.transform = `translate(${(t * 41) % 40 - 20}px, ${(t * 29) % 40 - 20}px)`;
+  for (const s of document.querySelectorAll(".scene")) s.style.opacity = 0;
+  const sc = scoreAt(t);
+  // the score bug is up whenever the big scoreboard isn't
+  const bug = $("bug");
+  if (sc.s && b.scene.type !== "score") {
+    bug.style.opacity = 1;
+    bug.querySelector("#bugH .n").textContent = sc.s[0]; bug.querySelector("#bugA .n").textContent = sc.s[1];
+    $("bugC").textContent = sc.clock;
+    const pop = t - sc.at;
+    bug.style.transform = `translateX(-50%) scale(${pop < 0.9 ? 1 + 0.12 * Math.exp(-6 * pop) * Math.cos(15 * pop) : 1})`;
+  } else bug.style.opacity = 0;
+
+  const sp = b.scene;
+  if (sp.type === "score") {
+    show("s-score", x);
+    $("scH").textContent = sc.s ? sc.s[0] : ""; $("scA").textContent = sc.s ? sc.s[1] : ""; $("scC").textContent = sc.clock;
+    const pop = t - sc.at;
+    const k = pop < 1 ? 1 + 0.16 * Math.exp(-5 * pop) * Math.cos(14 * pop) : 1;
+    $("scH").style.transform = $("scA").style.transform = `scale(${k})`;
+    const st = $("scS");
+    if (sp.stamp) {
+      const y = x - 0.6, p = spring(y, 9, 15);
+      st.textContent = sp.stamp; st.style.opacity = y < 0 ? 0 : 0.95;
+      st.style.transform = `translate(-50%, 0) rotate(-10deg) scale(${2.3 - 1.3 * p})`;
+    } else st.style.opacity = 0;
+  } else if (sp.type === "stat") {
+    show("s-stat", x);
+    $("stB").textContent = sp.big; $("stL").textContent = sp.label;
+    $("stB").style.fontSize = Math.min(380, 1000 / (0.52 * [...sp.big].length)) + "px";
+    $("stB").style.transform = `scale(${0.6 + 0.4 * spring(x - 0.05, 7, 10)})`;
+    document.querySelector("#s-stat .burst").style.transform = `rotate(${t * 12}deg)`;
+  } else if (sp.type === "need") {
+    show("s-need", x);
+    $("ndT").textContent = sp.title;
+    const box = $("ndI");
+    if (box.dataset.beat !== String(i)) {
+      box.dataset.beat = i;
+      box.innerHTML = sp.items.map((it, k) => `<div class="item" style="top:${260 + k * 250}px"><div class="box"></div><div class="txt">${it}</div></div>`).join("");
+    }
+    [...box.children].forEach((el, k) => {
+      const y = x - 0.25 - k * 0.35, p = spring(y, 7, 11);
+      el.style.opacity = clamp(y / 0.15); el.style.transform = `translateX(${(1 - p) * 300}px)`;
+      const c = sp.checks[k], on = c !== null && x >= c * d;
+      const bx = el.querySelector(".box"); bx.classList.toggle("on", on);
+      const since = x - (c || 0) * d;
+      bx.style.transform = on && since < 0.6 ? `scale(${1 + 0.35 * Math.exp(-6 * since) * Math.cos(16 * since)})` : "scale(1)";
+    });
+  } else if (sp.type === "catch") {
+    show("s-catch", x);
+    const f = clamp(x / d);
+    // schematic: the throw, tipped by the defender, caught just off the turf (the pitch is zoomed in on the play)
+    $("cPitch").style.transform = "translateY(40px) scale(1.12)"; $("cPitch").style.transformOrigin = "50% 50%";
+    const qb = [420, 760], rx = [240 + 60 * ease(f / 0.7), 520 - 200 * ease(f / 0.7)];
+    const dx = [330, 330], tip = 0.45, catchAt = 0.72;
+    const n1 = $("cPitchn1"), n2 = $("cPitchn2");
+    n1.textContent = "EDELMAN"; n1.style.opacity = 1; n1.style.left = (rx[0] - 120) + "px"; n1.style.top = (rx[1] + 52) + "px";
+    n2.textContent = "ALFORD"; n2.style.opacity = 1; n2.style.left = (dx[0] + 50) + "px"; n2.style.top = (dx[1] - 20) + "px";
+    const pts = Array.from({length: 30}, (_, k) => { const s2 = Math.min(f, tip) / tip * k / 29;
+      return `${qb[0] + (dx[0] - qb[0]) * s2},${qb[1] + (dx[1] - qb[1]) * s2 - Math.sin(s2 * Math.PI) * 120}`; }).join(" ");
+    $("trailcPitch").innerHTML = `<polyline points="${pts}" fill="none" stroke="#ffd60a" stroke-width="8" stroke-dasharray="18 14" opacity=".8"/>`;
+    const r = $("cPitchr"), ba = $("cPitchb"), xm = $("cPitchx"), tg = $("cPitcht"), tg2 = $("cPitcht2");
+    r.style.opacity = 1; r.style.left = rx[0] + "px"; r.style.top = rx[1] + "px";
+    xm.style.opacity = 1; xm.style.left = dx[0] + "px"; xm.style.top = dx[1] + "px";
+    let bxy;
+    if (f < tip) { const s = f / tip; bxy = [qb[0] + (dx[0] - qb[0]) * s, qb[1] + (dx[1] - qb[1]) * s - Math.sin(s * Math.PI) * 120]; }
+    else if (f < catchAt) { const s = (f - tip) / (catchAt - tip); bxy = [dx[0] - 70 * s + Math.sin(s * 20) * 10 * (1 - s), dx[1] + 60 * s]; }
+    else bxy = [rx[0] - 6, rx[1] - 8];
+    ba.style.opacity = 1; ba.style.left = bxy[0] + "px"; ba.style.top = bxy[1] + "px";
+    tg.textContent = "TIPPED!"; tg.style.left = "420px"; tg.style.top = (dx[1] - 170) + "px";
+    tg.style.opacity = f > tip ? clamp((f - tip) * 8) : 0; tg.style.transform = `scale(${0.6 + 0.4 * spring((f - tip) * d, 9, 14)})`;
+    tg2.textContent = "CAUGHT."; tg2.style.left = "60px"; tg2.style.top = (rx[1] - 190) + "px";
+    tg2.style.opacity = f > catchAt ? clamp((f - catchAt) * 8) : 0; tg2.style.transform = `scale(${0.6 + 0.4 * spring((f - catchAt) * d, 9, 14)})`;
+  } else if (sp.type === "kick") {
+    show("s-kick", x);
+    const u = 960 / 120, f = clamp(x / d);
+    const r = $("kPitchr"), ba = $("kPitchb"), tg = $("kPitcht"), tg2 = $("kPitcht2");
+    const yardY = (yd) => (110 - yd) * u;   // Auburn's goal line is at y=110 yards (bottom)
+    tg2.style.opacity = 0;
+    if (sp.phase === "kick") {   // the ball from Alabama's 39 falls short toward Auburn's end zone
+      const s = ease(f), from = [400, (110 - 63) * u], to = [430, 116 * u];
+      ba.style.opacity = 1; ba.style.left = (from[0] + (to[0] - from[0]) * s) + "px";
+      ba.style.top = (from[1] + (to[1] - from[1]) * s - Math.sin(s * Math.PI) * 220) + "px";
+      r.style.opacity = 0; tg.textContent = "57 YARDS"; tg.style.left = "250px"; tg.style.top = "300px";
+      tg.style.opacity = clamp(f * 4); tg.style.transform = "scale(1)";
+    } else if (sp.phase === "catch") {
+      ba.style.opacity = 0; r.style.opacity = 1; r.style.left = "430px"; r.style.top = (119 * u) + "px";
+      tg.textContent = "–9 YDS"; tg.style.left = "520px"; tg.style.top = (119 * u - 120) + "px";
+      tg.style.opacity = clamp(x * 6); tg.style.transform = `scale(${0.6 + 0.4 * spring(x, 9, 14)})`;
+    } else {  // the run: up the field, end zone to end zone
+      ba.style.opacity = 0; r.style.opacity = 1;
+      const s = ease(f * 1.05), yd = 119 - 119 * s;
+      const xx = 430 - 300 * Math.sin(Math.min(1, s * 1.2) * Math.PI * 0.5) + 60 * s;
+      r.style.left = xx + "px"; r.style.top = (yd * u) + "px";
+      const tr = $("trailkPitch");
+      if (!tr.dataset.path || f < 0.02) tr.dataset.path = "";
+      tr.innerHTML = `<polyline points="${Array.from({length: 40}, (_, k) => { const q = ease(f * 1.05 * k / 39), y2 = 119 - 119 * q;
+        return `${430 - 300 * Math.sin(Math.min(1, q * 1.2) * Math.PI * 0.5) + 60 * q},${y2 * u}`; }).join(" ")}" fill="none" stroke="#ffd60a" stroke-width="10" stroke-linecap="round" opacity=".7"/>`;
+      tg.textContent = Math.round(Math.min(109, s * 109)) + " YDS"; tg.style.left = "300px"; tg.style.top = "430px";
+      tg.style.opacity = 1; tg.style.transform = "scale(1.6)";
+    }
+  } else if (sp.type === "shots") {
+    show("s-shots", x);
+    for (let k = 0; k < 4; k++) {
+      const el = $("shot" + k), newest = k === sp.show - 1;
+      if (k < sp.show) {
+        const y = newest ? x - 0.15 : 9, p = spring(y, 8, 13);
+        el.style.opacity = clamp(y / 0.08); el.style.transform = `scale(${0.3 + 0.7 * p})`;
+      } else el.style.opacity = 0;
+    }
+    const stl = $("stealTag");
+    stl.style.opacity = sp.steal ? 1 : 0;
+    stl.style.transform = sp.steal && sp.show === 3 ? `scale(${0.6 + 0.4 * spring(x - 0.1, 9, 14)})` : "scale(1)";
+  } else if (sp.type === "debate") {
+    show("s-debate", x);
+    $("dbA").textContent = sp.a; $("dbB").textContent = sp.b;
+    for (const [id, txt] of [["dbA", sp.a], ["dbB", sp.b]]) $(id).style.fontSize = Math.min(150, 780 / (0.56 * [...txt].length)) + "px";
+    const pa = spring(x - 0.05, 7, 11), pb = spring(x - 0.35, 7, 11);
+    $("dbA").style.transform = `translateX(${(1 - pa) * -900}px) rotate(-2deg)`;
+    $("dbB").style.transform = `translateX(${(1 - pb) * 900}px) rotate(2deg)`;
+    document.querySelector("#s-debate .cta").style.transform = `translateX(-50%) scale(${1 + 0.06 * Math.sin(t * 7)})`;
+  }
+
+  // captions: 2-4 words at a time, in sync with the voice
+  const W = b.words, cap = $("cap");
+  let g = W.findIndex((w) => w.t > t); g = g < 0 ? W.length : g;
+  const cur = Math.max(0, g - 1), start = Math.floor(cur / 4) * 4;
+  const chunk = W.slice(start, start + 4);
+  const key = i + ":" + start;
+  if (cap.dataset.key !== key) { cap.dataset.key = key; cap.innerHTML = chunk.map((w) => `<span class="${w.acc ? "acc" : ""}">${w.w}</span>`).join(""); }
+  [...cap.children].forEach((el, k) => {
+    const y = t - chunk[k].t, p = spring(y, 10, 14);
+    el.style.opacity = y < 0 ? 0.0 : 1;
+    el.style.transform = `scale(${y < 0 ? 0.8 : 0.8 + 0.2 * p})`;
+  });
+  // flash on the big moments
+  $("flash").style.opacity = b.flash ? Math.max(0, 0.75 - x * 3) : 0;
+  $("progress").style.width = (1080 * clamp(t / TL.total)) + "px";
+}
+</script>
+</body>
+</html>
