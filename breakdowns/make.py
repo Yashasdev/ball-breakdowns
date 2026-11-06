@@ -30,7 +30,14 @@ ITEMS = ROOT / "items.json"
 TEMPLATE = Path(__file__).resolve().parent / "template.html"
 FPS, W, H, SR = 30, 1080, 1920, sound.SR
 LEAD_IN, GAP, TAIL, COVER_TAIL = 0.25, 0.08, 1.2, 0.5
-STYLE_BY_SPORT = {"nfl": "stadium", "cfb": "drumline", "nba": "phonk"}
+STYLES_BY_SPORT = {"nfl": ["stadium", "drumline"], "cfb": ["drumline", "stadium"], "nba": ["phonk", "drill", "trap"]}
+
+
+def track_for(it: dict) -> str:
+    """A different original track for each story, cycling through its sport's styles (bk/music.py, 5 tracks each)."""
+    styles = STYLES_BY_SPORT.get(it["sport"], ["stadium"])
+    options = [f"{s}-{k}" for k in range(1, 6) for s in styles]
+    return options[int(it["id"].split("-")[-1]) % len(options)]
 
 
 def item(item_id: str) -> dict:
@@ -140,7 +147,7 @@ def frames(tl: dict, out_dir: Path, cover_at: float) -> None:
 
 def render(item_id: str, voice_dir: Path, out: Path, track: str | None = None) -> dict:
     it = item(item_id)
-    track = track or f"{STYLE_BY_SPORT.get(it['sport'], 'stadium')}-2"
+    track = track or track_for(it)
     meta = json.loads((voice_dir / "meta.json").read_text())
     voices = [load(voice_dir / m["file"]) for m in meta]
     tl = timeline(it, voices, track)

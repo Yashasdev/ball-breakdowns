@@ -63,9 +63,12 @@ def released() -> set[str]:
     return set(r.stdout.split())
 
 
+BUILD = 2  # raise to rebuild every published video (2: a different music track per story)
+
+
 def story_hash(item: dict) -> str:
-    """Changes whenever a story's script, captions or scenes change, so a fixed story is built again."""
-    return hashlib.sha1(json.dumps(item, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+    """Changes whenever a story's script, captions or scenes change (or BUILD), so a fixed story is built again."""
+    return hashlib.sha1(json.dumps([BUILD, item], sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
 
 
 def published_index() -> dict[str, dict]:
