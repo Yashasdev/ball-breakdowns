@@ -26,25 +26,31 @@ OUT = ROOT / "out"
 RELEASE = "videos"
 REPO = "Yashasdev/ball-breakdowns"
 NUMBER_WORDS = set("""zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen
-sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty seventy eighty ninety hundred thousand and a""".split())
+sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty seventy eighty ninety hundred thousand point first
+second third fourth fifth sixth seventh eighth ninth tenth""".split())
 
 
 def words(text: str) -> list[str]:
-    return re.sub(r"[^a-z0-9 ]", " ", text.lower().replace("-", " ").replace("'", "")).split()
+    """Words to compare: lowercase, no punctuation, and no numbers (the transcriber writes 28 or 3rd for the words)."""
+    out = re.sub(r"[^a-z0-9 ]", " ", text.lower().replace("-", " ").replace("'", "")).split()
+    return [w for w in out if w not in NUMBER_WORDS and not re.fullmatch(r"\d+(st|nd|rd|th|s)?", w)]
 
 
 def heard_ok(say: str, heard: str) -> tuple[bool, str]:
-    """Does the transcript match the script? Numbers are skipped (the transcriber writes 28 for twenty-eight)."""
-    want = [w for w in words(say) if w not in NUMBER_WORDS and not w.isdigit()]
-    got = [w for w in words(heard) if w not in NUMBER_WORDS and not w.isdigit()]
+    """Does the transcript match the script? Compared as letters, not words, so the transcriber's spelling choices
+    ("back up" for backup, "28-3" for twenty-eight to three) don't count, while a dropped phrase, a stray sound before
+    the line or a cut-off ending does."""
+    from difflib import SequenceMatcher
+    want, got = "".join(words(say)), "".join(words(heard))
     if not want:
         return True, ""
-    missing = [w for w in want if w not in got]
-    extra = [w for w in got if w not in want]
-    first_ok = bool(got) and got[0][:3] == want[0][:3]      # no stray sound before the line ("one ka, Houston...")
-    last_ok = bool(got) and got[-1][:3] == want[-1][:3]      # nothing cut off at the end
-    ok = len(missing) <= 1 and len(extra) <= 1 and first_ok and last_ok
-    return ok, f"missing {missing}, extra {extra}" if not ok else ""
+    ratio = lambda x, y: SequenceMatcher(None, x, y).ratio()  # noqa: E731
+    whole, end = ratio(want, got), ratio(want[-8:], got[-8:])
+    # where the line's opening letters turn up in the transcript: later than 1 letter in means a stray sound before it
+    m = SequenceMatcher(None, want[:8], got[:24]).find_longest_match(0, 8, 0, 24)
+    lead = m.b - m.a if m.size >= 3 else 99
+    ok = whole >= 0.8 and lead <= 1 and end >= 0.6
+    return ok, "" if ok else f"match {whole:.2f}, stray start {lead}, end {end:.2f}"
 
 
 def released() -> set[str]:

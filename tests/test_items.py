@@ -39,7 +39,16 @@ def test_story(it):
 
 
 def test_the_voice_check_catches_slurs_and_stray_sounds():
-    assert heard_ok("Atlanta never touched the ball.", "Atlanta never touched the ball.")[0]
-    assert heard_ok("Fifty-seven seconds left. Tied.", "57 seconds left. Tied.")[0]
+    # real transcripts from the first build: the transcriber's spellings pass...
+    assert heard_ok("Twenty-eight to three. Third quarter. In the Super Bowl.", "28-3, third quarter in the Super Bowl.")[0]
+    assert heard_ok("Down thirty-two. Their star quarterback is hurt. Backup Frank Reich is in.",
+                    "Down 32.  Their star quarterback is hurt.  Back up.  Frank Reich is in.")[0]
+    assert heard_ok("Then Kyrie Irving. A three, right over Curry.", "than Kyrie Irving, a three right over Curry.")[0]
+    assert heard_ok("LeBron hits a three. Leonard makes one free throw. Still down three.",
+                    "The Bron hits a three, Leonard makes one free throw, still down three.")[0]
+    # ...while stray sounds, repeats and cut-off lines don't
     assert not heard_ok("Houston needs nine points just to win.", "One Ka, Houston needs nine points just to win.")[0]
-    assert not heard_ok("It's short. Chris Davis is waiting.", "Chris Davis is")[0]
+    assert not heard_ok("Miami wins in overtime. Then wins game seven. Champions.",
+                        "Tax Axe of, Miami wins in overtime, then wins game 7, champions!")[0]
+    assert not heard_ok("Third and ten. The plan: a catch.", "3rd and 10. The plan. A catch. 3rd and 10. The plan. A catch.")[0]
+    assert not heard_ok("It's short. Chris Davis is waiting, nine yards deep in the end zone.", "Chris Davis is")[0]
