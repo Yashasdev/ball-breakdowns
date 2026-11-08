@@ -16,7 +16,7 @@ import zlib
 import numpy as np
 
 SR = 44100
-STYLES = ("lofi", "house", "ambient", "trap", "pop", "stadium", "drumline", "phonk", "drill", "rapquick")
+STYLES = ("lofi", "house", "ambient", "trap", "pop", "stadium", "drumline", "phonk", "drill", "rapquick", "atltrap", "melodic")
 TRACKS = [f"{s}-{i}" for s in STYLES for i in range(1, 6)]  # 45 tracks
 # sports styles: stadium (big drums and brass, a broadcast feel), drumline (marching snare and bass drums),
 # phonk (cowbell lead over 808s, the sound of sports edits), drill (sliding 808s, triplet hats)
@@ -37,6 +37,11 @@ SETTINGS = {  # tempo range, mode, swing, which parts play
     "drill": dict(bpm=(138, 146), minor=1.0, swing=0.0, drums="drill", keys="pad", lead="pluck", bass="808"),
     # a quick rap beat (Nov 2026, for Ball Knowledge's cards): full-time drums at 150-160 BPM (snare on 2 and 4, not
     # half time), rolling 16th hats, a bouncing 808 under the kick and short minor piano stabs; meant to sit up front
+    # Nov 2026, more rap variety for Ball: Atlanta trap (bouncy bell/piano hook, rolling hats, sliding 808s, the
+    # "Lil Baby type beat" sound) and a melodic, moody beat (airy pads, soft piano, long 808s, the "Drake type beat"
+    # sound). Original compositions in those styles; nothing is copied from anyone's songs.
+    "atltrap": dict(bpm=(140, 150), minor=0.9, swing=0.0, drums="atltrap", keys=None, lead="bell", bass="808slide"),
+    "melodic": dict(bpm=(132, 144), minor=1.0, swing=0.0, drums="melodic", keys="pad", lead="epiano", bass="808long"),
     "rapquick": dict(bpm=(150, 160), minor=1.0, swing=0.0, drums="rapquick", keys="stab", lead="bell", bass="808q"),
 }
 
@@ -271,6 +276,12 @@ def render(name: str, seconds: float) -> np.ndarray:
             if cfg["bass"] == "808" and style == "drill":  # sliding 808s: a long note that glides into the next
                 mix.add(bass(bf, beat * 1.4, "808"), at, 0.30)
                 mix.add(bass(bf * 2 ** (rng.choice([-2, 3, 5]) / 12), beat * 1.6, "808"), at + 2.5 * beat, 0.28)
+            elif cfg["bass"] == "808slide":  # an 808 on 1 that slides up into a second hit
+                mix.add(bass(bf, beat * 1.2, "808"), at, 0.30)
+                mix.add(bass(bf * 2 ** (rng.choice([3, 5, 7]) / 12), beat * 0.9, "808"), at + 1.5 * beat, 0.26)
+                mix.add(bass(bf, beat * 0.6, "808"), at + 3 * beat, 0.24)
+            elif cfg["bass"] == "808long":  # one long, soft 808 per bar under the pads
+                mix.add(bass(bf, bar * 0.95, "808"), at, 0.26)
             elif cfg["bass"] == "808q":  # the 808 bounces with the kick
                 for hit in (0, 0.75, 2.5):
                     mix.add(bass(bf, beat * 0.7, "808"), at + hit * beat, 0.30)
@@ -302,6 +313,32 @@ def render(name: str, seconds: float) -> np.ndarray:
         kind = cfg["drums"]
         if kind in ("stadium", "drumline") and b % 4 == 1:
             mix.add(crash(rng), at, 0.10)
+        if kind == "atltrap":  # Atlanta trap: hats in 8ths with 16th and triplet rolls, clap on 3 (half time)
+            for j in range(8):
+                mix.add(hat(rng), at + j * beat / 2, 0.055)
+            roll = (2.5, 3.5) if b % 2 else (3.5,)
+            for start in roll:
+                n = 3 if start == 2.5 else 6
+                for r in range(n):
+                    mix.add(hat(rng), at + start * beat + r * beat / (2 * n / 2 if n == 3 else 6), 0.04)
+            for hit in (0, 1.75, 2.75) if b % 2 else (0, 2.75):
+                mix.add(kick(False), at + hit * beat, 0.40)
+                mix.kicks.append(int((at + hit * beat) * SR))
+            mix.add(clap(rng), at + 2 * beat, 0.16)
+            mix.add(snare(rng, False), at + 2 * beat, 0.10)
+            continue
+        if kind == "melodic":  # sparse and moody: soft kick, snap on 3, hats in 8ths with a triplet flutter
+            for j in range(8):
+                mix.add(hat(rng), at + j * beat / 2, 0.035)
+            if b % 2:
+                for r in range(3):
+                    mix.add(hat(rng), at + 3 * beat + r * beat / 3, 0.03)
+            mix.add(kick(True), at, 0.34)
+            mix.kicks.append(int(at * SR))
+            if b % 2 == 0:
+                mix.add(kick(True), at + 2.5 * beat, 0.26)
+            mix.add(clap(rng), at + 2 * beat, 0.10)
+            continue
         if kind == "rapquick":  # 16th hats with rolls, kick on 1, the "a" of 1 and the "and" of 3, snare on 2 and 4
             for j in range(16):
                 mix.add(hat(rng), at + j * beat / 4, 0.05 if j % 2 else 0.065)

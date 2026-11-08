@@ -45,9 +45,10 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
-CARD_BUILD = 2  # raise to rebuild every published card (2: the quick rap beat, mixed up front)
+CARD_BUILD = 3  # raise to rebuild every published card (3: four rap beat styles, mixed up front)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
-CARD_STYLES = ["rapquick"]
+# then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat
+CARD_STYLES = ["rapquick", "atltrap", "melodic", "drill"]
 
 
 def load(path: Path = CARDS) -> list[dict]:
