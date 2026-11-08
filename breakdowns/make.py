@@ -128,13 +128,14 @@ def soundtrack(tl: dict, voices: list[np.ndarray], track: str, path: Path) -> No
     sf.write(path, buf / (np.abs(buf).max() or 1) * 0.9, SR)
 
 
-def frames(tl: dict, out_dir: Path, cover_at: float) -> None:
+def frames(tl: dict, out_dir: Path, cover_at: float, template: Path = TEMPLATE) -> None:
+    """One screenshot per frame of `template` (setup(tl), then render(t)), plus cover.jpg held for COVER_TAIL."""
     from playwright.sync_api import sync_playwright
     n = int(tl["total"] * FPS)
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": W, "height": H})
-        page.goto(TEMPLATE.as_uri())
+        page.goto(template.as_uri())
         page.evaluate("document.fonts.ready")
         page.evaluate("tl => setup(tl)", tl)
         for i in range(n):
@@ -147,6 +148,17 @@ def frames(tl: dict, out_dir: Path, cover_at: float) -> None:
         shutil.copy(out_dir / "cover.jpg", out_dir / f"{n + j:05d}.jpg")
 
 
+def encode(work: Path, out: Path) -> None:
+    """Join work/frames/*.jpg and work/sound.wav into out (.mp4), copy the cover to out (.jpg), clean up."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([ffmpeg(), "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", str(work / "frames" / "%05d.jpg"),
+                    "-i", str(work / "sound.wav"), "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "libx264", "-crf", "19",
+                    "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-shortest",
+                    "-movflags", "+faststart", str(out)], check=True)
+    shutil.copy(work / "frames" / "cover.jpg", out.with_suffix(".jpg"))
+    shutil.rmtree(work, ignore_errors=True)
+
+
 def render(item_id: str, voice_dir: Path, out: Path, track: str | None = None) -> dict:
     it = item(item_id)
     track = track or track_for(it)
@@ -157,13 +169,7 @@ def render(item_id: str, voice_dir: Path, out: Path, track: str | None = None) -
     (work / "frames").mkdir()
     frames(tl, work / "frames", cover_at=tl["beats"][0]["end"] - 0.05)  # the cover: the hook's big scoreboard
     soundtrack(tl, voices, track, work / "sound.wav")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run([ffmpeg(), "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", str(work / "frames" / "%05d.jpg"),
-                    "-i", str(work / "sound.wav"), "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "libx264", "-crf", "19",
-                    "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-shortest",
-                    "-movflags", "+faststart", str(out)], check=True)
-    shutil.copy(work / "frames" / "cover.jpg", out.with_suffix(".jpg"))
-    shutil.rmtree(work, ignore_errors=True)
+    encode(work, out)
     return {"video": str(out), "seconds": round(tl["total"] + COVER_TAIL, 2), "music": track}
 
 

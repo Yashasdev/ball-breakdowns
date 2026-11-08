@@ -1,10 +1,15 @@
-"""Build every story in items.json that isn't published yet: voice it, check the voice, render it, publish it.
+"""Build every story in items.json and every card in cards.json that isn't published yet, and publish it.
 
     python -m breakdowns.build [--max 12] [--dry]
 
+Stories ("How Crazy Was It?", format "crazy") are voiced, checked and rendered; cards (formats "guess", "hilo" and
+"rank", breakdowns/cards.py) have no voice, so they skip Chatterbox and whisper and only render. Cards marked
+"placeholder": true are never built or published.
+
 Published videos live on this repo's GitHub release "videos" (public URLs, no keys): <id>.mp4, <id>.jpg (cover)
-and <id>.json (what the poster needs), plus index.json listing everything published, in items.json order. The Ball
-Knowledge poster in Yashasdev/act-reels reads index.json and posts the next video it hasn't posted.
+and <id>.json (what the poster needs), plus index.json listing everything published (stories in items.json order,
+then cards in cards.json order). The Ball Knowledge poster in Yashasdev/act-reels reads index.json and posts the next
+video it hasn't posted; each entry's "format" says which kind it is ("crazy", "guess", "hilo", "rank").
 
 The narrator sometimes slurs or drops a word, so every line is transcribed (faster-whisper) and compared with the
 script; a line that doesn't match is spoken again with another seed, up to four times, or the story is skipped.
@@ -108,9 +113,22 @@ def voice(model, whisper, item: dict, out: Path) -> bool:
 
 def post_info(item: dict, result: dict) -> dict:
     """What the poster needs: the caption's hook line and comment question, the length and the music."""
-    return {"id": item["id"], "title": item["title"], "kicker": item["kicker"], "sport": item["sport"],
+    return {"id": item["id"], "format": "crazy", "title": item["title"], "kicker": item["kicker"], "sport": item["sport"],
             "hook": item["beats"][0]["cap"].replace("*", ""), "ask": item["ask"],
             "seconds": result["seconds"], "music": result["music"], "sources": item["sources"], "hash": story_hash(item)}
+
+
+def wanted(stories: list[dict], card_items: list[dict]) -> list[tuple[dict, str]]:
+    """Everything that should be published, with its hash: every story, then every real card that passes its checks
+    (placeholders never; a card with a problem is skipped with an error in the log)."""
+    from breakdowns import cards
+    out = [(i, story_hash(i)) for i in stories]
+    for c in cards.publishable(card_items):
+        if cards.problems(c):
+            print(f"::error::{c['id']} isn't ready, skipping it: {'; '.join(cards.problems(c))}")
+        else:
+            out.append((c, cards.card_hash(c)))
+    return out
 
 
 def main() -> None:
@@ -118,29 +136,42 @@ def main() -> None:
     ap.add_argument("--max", type=int, default=12)
     ap.add_argument("--dry", action="store_true", help="render only; publish nothing")
     a = ap.parse_args()
-    items = json.loads(ITEMS.read_text())
+    from breakdowns import cards
+    want = wanted(json.loads(ITEMS.read_text()), cards.load())
+    items = [i for i, _ in want]
+    card_items = [i for i in items if "beats" not in i]
     done = set() if a.dry else released()
     index = {} if a.dry else published_index()
-    # new stories, and published ones whose script was fixed since (their hash changed)
-    todo = [i for i in items if f"{i['id']}.mp4" not in done or index.get(i["id"], {}).get("hash") != story_hash(i)][: a.max]
-    print(f"{len(items)} stories, {len(index)} published, building {len(todo)}: {[i['id'] for i in todo]}")
+    fixed = [] if a.dry else backfill_format(index)
+    # new videos, and published ones whose script or card was fixed since (their hash changed)
+    todo = [(i, h) for i, h in want if f"{i['id']}.mp4" not in done or index.get(i["id"], {}).get("hash") != h][: a.max]
+    print(f"{len(items) - len(card_items)} stories, {len(card_items)} cards, {len(index)} published, "
+          f"building {len(todo)}: {[i['id'] for i, _ in todo]}")
     if not todo:
+        if fixed:
+            publish_index(items, index)
         return
-    from chatterbox.tts import ChatterboxTTS
-    from faster_whisper import WhisperModel
-
     from breakdowns import make
-    model = ChatterboxTTS.from_pretrained(device="cpu")
-    whisper = WhisperModel("small", device="cpu", compute_type="int8")
+    if any("beats" in i for i, _ in todo):  # the narrator and the voice check load only when a story needs voicing
+        from chatterbox.tts import ChatterboxTTS
+        from faster_whisper import WhisperModel
+        model = ChatterboxTTS.from_pretrained(device="cpu")
+        whisper = WhisperModel("small", device="cpu", compute_type="int8")
     OUT.mkdir(exist_ok=True)
     built = []
-    for it in todo:
-        print(f"== {it['id']} {it['title']}", flush=True)
-        vdir = Path(tempfile.mkdtemp()) / it["id"]
-        if not voice(model, whisper, it, vdir):
-            continue
-        result = make.render(it["id"], vdir, OUT / f"{it['id']}.mp4")
-        (OUT / f"{it['id']}.json").write_text(json.dumps(post_info(it, result), indent=1, ensure_ascii=False))
+    for it, h in todo:
+        card = "beats" not in it
+        print(f"== {it['id']} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
+        if card:
+            result = cards.render(it, OUT / f"{it['id']}.mp4")
+            info = cards.post_info(it, result, h)
+        else:
+            vdir = Path(tempfile.mkdtemp()) / it["id"]
+            if not voice(model, whisper, it, vdir):
+                continue
+            result = make.render(it["id"], vdir, OUT / f"{it['id']}.mp4")
+            info = post_info(it, result)
+        (OUT / f"{it['id']}.json").write_text(json.dumps(info, indent=1, ensure_ascii=False))
         if result["seconds"] > 59:
             print(f"::error::{it['id']} is {result['seconds']} s; Shorts must be under 60. Shorten its script.")
             continue
@@ -149,15 +180,31 @@ def main() -> None:
         if not a.dry:
             subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber",
                             *(str(OUT / f"{it['id']}{ext}") for ext in (".mp4", ".jpg", ".json"))], check=True)
-            index[it["id"]] = post_info(it, result)
+            index[it["id"]] = info
             publish_index(items, index)  # after every video, so a run cut short keeps what it finished
     print(f"built {built}" + ("" if a.dry else f"; the index lists {len(index)} videos"))
-    if not built:  # every story failed: something is broken, so fail the run (one bad story only warns)
-        raise SystemExit("no story could be built")
+    if not built:  # every video failed: something is broken, so fail the run (one bad video only warns)
+        raise SystemExit("no video could be built")
+
+
+def backfill_format(index: dict[str, dict]) -> list[str]:
+    """Stories published before cards existed have no "format": mark them "crazy" in the index and in their <id>.json
+    (re-uploaded from the index entry; the video isn't rebuilt)."""
+    fixed = [k for k, v in index.items() if "format" not in v and k.startswith("crazy-")]
+    if not fixed:
+        return []
+    OUT.mkdir(exist_ok=True)
+    for k in fixed:
+        index[k] = {"id": k, "format": "crazy", **{f: v for f, v in index[k].items() if f != "id"}}
+        (OUT / f"{k}.json").write_text(json.dumps(index[k], indent=1, ensure_ascii=False))
+    subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber", *(str(OUT / f"{k}.json") for k in fixed)],
+                   check=True)
+    print(f"marked {len(fixed)} published stories as format crazy")
+    return fixed
 
 
 def publish_index(items: list[dict], index: dict[str, dict]) -> None:
-    """index.json: every published video, in items.json order (the order Ball Knowledge posts them)."""
+    """index.json: every published video, stories in items.json order, then cards in cards.json order."""
     listing = [index[i["id"]] for i in items if i["id"] in index]
     (OUT / "index.json").write_text(json.dumps(listing, indent=1, ensure_ascii=False))
     subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber", str(OUT / "index.json")], check=True)

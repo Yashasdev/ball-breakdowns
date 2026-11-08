@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  /* HIGHER OR LOWER: a split-screen duel. Left value shown, right hidden; a 3-2-1 ring; the number spins up. */
+  #left-bg { position: absolute; left: 0; top: 0; width: 540px; height: 1920px;
+             background: linear-gradient(180deg, #0c1a33 0%, #0a1426 55%, #06090f 100%); }
+  #right-bg { position: absolute; right: 0; top: 0; width: 540px; height: 1920px;
+              background: linear-gradient(180deg, #2b0c16 0%, #1d0a10 55%, #08070a 100%); }
+  .stripes { position: absolute; inset: -200px; opacity: .5;
+             background: repeating-linear-gradient(-45deg, rgba(255,255,255,.025) 0 26px, transparent 26px 60px); }
+  #seam { position: absolute; left: 490px; top: 0; width: 100px; height: 1920px; }
+  #title { position: absolute; left: 0; right: 0; top: 86px; text-align: center; font-size: 118px; line-height: 1; letter-spacing: 2px; white-space: nowrap; }
+  #title .hi { color: #3ddc84; } #title .lo { color: #ff4d5e; } #title small { font-size: 70px; color: #f4f1ea; margin: 0 14px; }
+  #stat { position: absolute; left: 80px; right: 80px; top: 236px; height: 92px; background: #ffd60a; color: #07090d; border-radius: 16px;
+          padding: 0 26px; line-height: 1; letter-spacing: 1px; }
+  #asof { position: absolute; left: 0; right: 0; top: 342px; text-align: center; font-size: 36px; color: #e6eaf0; }
+  .side { position: absolute; top: 420px; width: 470px; height: 560px; }
+  #L { left: 35px; } #R { left: 575px; }
+  .side .nm { position: absolute; left: 0; right: 0; top: 0; height: 190px; color: #fff; line-height: 1.02; letter-spacing: 1px; align-items: flex-end; }
+  .side .val { position: absolute; left: 10px; right: 10px; top: 215px; height: 230px; line-height: 1; color: #fff; }
+  #R .val { color: #ffd60a; }
+  .side .bar { position: absolute; left: 35px; right: 35px; top: 470px; height: 26px; border-radius: 13px; background: #ffffff14; overflow: hidden; }
+  .side .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 13px; background: #f4f1ea; }
+  #R .bar i { background: #ffd60a; }
+  #qbox { position: absolute; left: 50px; right: 50px; top: 210px; height: 250px; border: 8px dashed #ffd60a; border-radius: 30px;
+          display: flex; align-items: center; justify-content: center; font-size: 230px; color: #ffd60a; box-sizing: border-box;
+          background: rgba(255,214,10,.06); }
+  #vs { position: absolute; left: 485px; top: 848px; width: 110px; height: 110px; border-radius: 50%; background: #ffd60a; color: #07090d;
+        display: flex; align-items: center; justify-content: center; font-size: 52px; box-shadow: 0 0 0 10px #07090d, 0 0 60px rgba(255,214,10,.5); }
+  #stamp { position: absolute; left: 575px; width: 470px; top: 893px; text-align: center; font-size: 92px; letter-spacing: 6px; opacity: 0; }
+  #stamp span { display: inline-block; padding: 0 26px; border: 10px solid currentColor; border-radius: 20px; background: #07090dee; }
+  /* the question */
+  #btns { position: absolute; left: 90px; right: 90px; top: 1060px; height: 150px; display: flex; gap: 40px; }
+  .btn { flex: 1; border-radius: 26px; display: flex; align-items: center; justify-content: center; gap: 16px; font-size: 84px;
+         letter-spacing: 3px; color: #07090d; }
+  #bHi { background: #3ddc84; } #bLo { background: #ff4d5e; }
+  .btn svg { flex: none; }
+  #cta { position: absolute; left: 0; right: 0; top: 1240px; text-align: center; font-size: 66px; letter-spacing: 3px; }
+  #ring { position: absolute; left: 430px; top: 1332px; width: 220px; height: 220px; }
+  #ring .d { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 140px; color: #fff; }
+  #payoff { position: absolute; left: 90px; right: 90px; top: 1250px; height: 230px; padding: 0 30px; color: #fff; line-height: 1.15; opacity: 0;
+            border-radius: 26px; background: #07090de8; box-shadow: 0 0 0 4px #ffd60a; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="left-bg"><div class="stripes" id="stL"></div></div><div id="right-bg"><div class="stripes" id="stR"></div></div>
+  <svg id="seam" viewBox="0 0 100 1920" preserveAspectRatio="none"><polyline id="bolt" fill="none" stroke="#ffd60a" stroke-width="8" stroke-linejoin="round"/></svg>
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div id="title" class="anton"><span class="hi">HIGHER</span><small>OR</small><span class="lo">LOWER</span></div>
+    <div id="stat" class="fit anton"></div>
+    <div id="asof" class="mono"></div>
+    <div class="side" id="L"><div class="nm fit anton" id="Ln"></div><div class="val fit anton" id="Lv"></div><div class="bar"><i id="Lb"></i></div></div>
+    <div class="side" id="R"><div class="nm fit anton" id="Rn"></div><div class="val fit anton" id="Rv"></div><div id="qbox" class="anton">?</div>
+      <div class="bar"><i id="Rb"></i></div></div>
+    <div id="vs" class="anton">VS</div>
+    <div id="stamp" class="anton"><span id="stampT"></span></div>
+    <div id="btns"><div class="btn anton" id="bHi"><svg width="64" height="56" viewBox="0 0 64 56"><path d="M32 2 L62 54 L2 54 Z" fill="#07090d"/></svg>HIGHER</div>
+      <div class="btn anton" id="bLo"><svg width="64" height="56" viewBox="0 0 64 56"><path d="M32 54 L62 2 L2 2 Z" fill="#07090d"/></svg>LOWER</div></div>
+    <div id="cta" class="anton">COMMENT IT</div>
+    <div id="ring"><svg width="220" height="220" viewBox="0 0 220 220"><circle cx="110" cy="110" r="96" fill="#07090dcc" stroke="#ffffff22" stroke-width="16"/>
+      <circle id="arc" cx="110" cy="110" r="96" fill="none" stroke="#ffd60a" stroke-width="16" stroke-linecap="round"
+              transform="rotate(-90 110 110)" stroke-dasharray="603.2" stroke-dashoffset="0"/></svg><div class="d anton" id="digit"></div></div>
+    <div id="payoff" class="fit inter"></div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="common.js"></script>
+<script>
+let TL, MAX, NSIZE;
+async function setup(tl) {
+  await FONTS;
+  TL = tl;
+  fit($("stat"), tl.stat.toUpperCase(), 64, 34);
+  $("asof").textContent = tl.as_of.toUpperCase();
+  // both names at one size, so neither side looks more important
+  NSIZE = Math.min(fit($("Ln"), tl.left.name.toUpperCase(), 96, 44), fit($("Rn"), tl.right.name.toUpperCase(), 96, 44));
+  fit($("Ln"), tl.left.name.toUpperCase(), NSIZE, NSIZE); fit($("Rn"), tl.right.name.toUpperCase(), NSIZE, NSIZE);
+  const vs = Math.min(fit($("Lv"), tl.left.value, 210, 90), fit($("Rv"), tl.right.value, 210, 90));
+  fit($("Lv"), tl.left.value, vs, vs); fit($("Rv"), tl.right.value, vs, vs);
+  MAX = Math.max(tl.left.n, tl.right.n);
+  fit($("payoff"), tl.payoff, 62, 32);
+  const up = tl.answer === "higher";
+  $("stampT").textContent = up ? "HIGHER" : "LOWER";
+  $("stamp").style.color = up ? "#3ddc84" : "#ff4d5e";
+}
+
+function render(t) {
+  const T = TL.t, x = t - T.reveal, s = t - T.stamp, up = TL.answer === "higher";
+  grain(t);
+  $("stL").style.transform = `translateY(${(t * 40) % 86}px)`; $("stR").style.transform = `translateY(${-(t * 40) % 86}px)`;
+  // the seam: a lightning bolt that flickers
+  const pts = []; for (let k = 5; k <= 24; k++) pts.push(`${50 + (k % 2 ? 1 : -1) * (18 + 10 * Math.sin(t * 9 + k * 2.1))},${k * 80}`);  // below the stat line
+  $("bolt").setAttribute("points", pts.join(" "));
+  $("seam").style.opacity = 0.55 + 0.45 * Math.abs(Math.sin(t * 13) * Math.sin(t * 5.3));
+  const kick = s > 0 ? 0.045 * Math.exp(-6 * s) : 0;
+  $("world").style.transform = `scale(${1 + 0.02 * clamp(t / T.reveal) + kick})`;
+  // entrances: title slams, the two sides slide in from their edges
+  const p0 = spring(t, 8, 12);
+  $("title").style.transform = `scale(${1.5 - 0.5 * p0})`; $("title").style.opacity = clamp(t / 0.1);
+  $("stat").style.opacity = $("asof").style.opacity = clamp((t - 0.15) / 0.15);
+  $("stat").style.transform = `scaleX(${0.3 + 0.7 * spring(t - 0.15, 9, 12)})`;
+  const pl = spring(t - 0.1, 7, 10), pr = spring(t - T.right, 7, 10);
+  $("L").style.transform = `translateX(${(1 - pl) * -560}px)`; $("R").style.transform = `translateX(${(1 - pr) * 560}px)`;
+  $("vs").style.transform = `scale(${spring(t - 0.75, 9, 13)}) rotate(${(1 - ease((t - 0.75) / 0.5)) * -90}deg)`;
+  $("Lb").style.width = (100 * TL.left.n / MAX * ease((t - 0.5) / 0.6)) + "%";
+  // the right value: a pulsing "?" (shaking in the last second), then it flips and spins up from zero
+  const q = $("qbox"), rv = $("Rv");
+  if (x < 0) {
+    const shake = t > T.reveal - 1 ? (t - (T.reveal - 1)) * 10 : 0;
+    q.style.opacity = 1; rv.style.opacity = 0;
+    q.style.transform = `scale(${1 + 0.05 * Math.sin(t * 8)}) translate(${Math.sin(t * 70) * shake}px, ${Math.cos(t * 53) * shake}px)`;
+    $("Rb").style.width = "0%";
+  } else {
+    const flip = clamp(x / 0.25);
+    q.style.opacity = flip < 0.5 ? 1 : 0; q.style.transform = `rotateY(${flip * 90}deg)`;
+    const k = ease(clamp((x - 0.1) / (T.stamp - T.reveal - 0.1)));
+    rv.style.opacity = flip < 0.5 ? 0 : 1;
+    rv.firstChild.textContent = partial(TL.right.value, k);
+    rv.style.transform = `rotateY(${(1 - flip) * -90}deg) scale(${s > 0 ? 1 + 0.18 * Math.exp(-5 * s) * Math.cos(12 * s) : 1})`;
+    $("Rb").style.width = (100 * TL.right.n / MAX * k) + "%";
+  }
+  // the verdict stamp lands over the right side
+  const st = $("stamp"), ps = spring(s, 9, 15);
+  st.style.opacity = s < 0 ? 0 : 1;
+  st.style.transform = `rotate(-6deg) scale(${2.4 - 1.4 * ps})`;
+  // the question: two buttons, "comment it", and a 3-2-1 ring
+  const pb = spring(t - T.prompt, 8, 12);
+  $("btns").style.opacity = clamp((t - T.prompt) / 0.15);
+  $("btns").style.transform = `translateY(${(1 - pb) * 120}px)`;
+  const win = $(up ? "bHi" : "bLo"), lose = $(up ? "bLo" : "bHi");
+  lose.style.opacity = s > 0 ? 0.22 : 1;
+  win.style.transform = s > 0 ? `scale(${1 + 0.08 * Math.exp(-4 * s) + 0.03 * Math.sin(s * 8)})` : "none";
+  win.style.boxShadow = s > 0 ? `0 0 ${50 + 20 * Math.sin(s * 8)}px ${up ? "#3ddc84" : "#ff4d5e"}` : "none";
+  for (const b of ["bHi", "bLo"]) if (s <= 0) $(b).style.transform = `scale(${1 + 0.025 * Math.sin(t * 6 + (b === "bHi" ? 0 : Math.PI))})`;
+  const gone = s > 0 ? clamp(1 - s / 0.15) : 1;
+  $("cta").style.opacity = clamp((t - T.prompt - 0.3) / 0.2) * gone;
+  $("cta").style.transform = `scale(${1 + 0.04 * Math.sin(t * 7)})`;
+  const c = t - T.countdown, ring = $("ring");
+  ring.style.opacity = clamp((t - T.prompt - 0.5) / 0.2) * gone;
+  if (c < 0) { $("digit").textContent = "3"; $("arc").setAttribute("stroke-dashoffset", 0); ring.style.transform = "none"; }
+  else {
+    const n = Math.min(2, Math.floor(c)), f = c - Math.floor(c);
+    $("digit").textContent = x < 0 ? String(3 - n) : "";
+    $("arc").setAttribute("stroke-dashoffset", 603.2 * clamp(c / 3));
+    ring.style.transform = x < 0 ? `scale(${1 + 0.18 * Math.exp(-7 * f)})` : "none";
+  }
+  const pay = $("payoff"), y2 = t - T.payoff;
+  pay.style.opacity = clamp(y2 / 0.2);
+  pay.style.transform = `translateY(${(1 - ease(y2 / 0.35)) * 60}px)`;
+  $("flash").style.opacity = s >= 0 ? Math.max(0, 0.7 - s * 3.5) : 0;
+}
+</script>
+</body>
+</html>

@@ -9,6 +9,12 @@ from this repo's [videos release](../../releases/tag/videos).
 - `breakdowns/build.py`: voices each line (Chatterbox, checked word by word with faster-whisper and redone if a
   word is wrong), renders the page `breakdowns/template.html` frame by frame in headless Chrome, and publishes
   `<id>.mp4`, `<id>.jpg` (cover), `<id>.json` and `index.json`.
+- `cards.json` and `breakdowns/cards.py`: three short formats with no narration (on-screen text, our own music and
+  sounds, 12-18 s, built to loop): `guess` (Guess the Player), `hilo` (Higher or Lower) and `rank` (Rank These), each
+  with its own page in `breakdowns/cards/`. Append only, ids numbered per format (`guess-01`, ...). Items marked
+  `"placeholder": true` are only for testing the pages and are never published. Check a file with
+  `python -m breakdowns.cards --check --items FILE`; render one with `python -m breakdowns.cards guess-01`.
+  Their `<id>.json` adds `format`, `answer` and `why` for the caption (stories have `"format": "crazy"`).
 - `.github/workflows/build.yml`: runs the build when `items.json` changes and once a day. Public repos get free,
   unlimited Actions minutes, which is why this lives outside the private repo.
 

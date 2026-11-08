@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  /* RANK THESE: lettered tiles in a 2x2 grid under stage lights; on the reveal they fold into a leaderboard, slide
+     into the right order, and the ranks and numbers light up from #4 to #1. */
+  #stage { background: linear-gradient(180deg, #0b0b12 0%, #0d0e16 60%, #07070b 100%); }
+  .beam { position: absolute; top: -300px; width: 360px; height: 2300px; transform-origin: 50% 0;
+          background: linear-gradient(180deg, rgba(255,214,10,.16), rgba(255,214,10,.04) 55%, transparent 80%);
+          clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%); filter: blur(6px); }
+  #floor { position: absolute; left: -200px; right: -200px; top: 1380px; height: 700px;
+           background: radial-gradient(50% 40% at 50% 30%, rgba(255,214,10,.10), transparent 70%); }
+  #sport { top: 88px; }
+  #title { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-size: 140px; line-height: 1; letter-spacing: 4px; }
+  #title b { color: #ffd60a; font-weight: normal; }
+  #question { position: absolute; left: 80px; right: 80px; top: 310px; height: 140px; color: #fff; line-height: 1.12; }
+  .box { position: absolute; border-radius: 26px; background: #151924; box-shadow: inset 0 0 0 4px #2b3242, 0 18px 40px rgba(0,0,0,.5); }
+  .layer { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .gridL { width: 450px; height: 330px; }
+  .gridL .let { position: absolute; left: 22px; top: 22px; width: 84px; height: 84px; border-radius: 50%; background: #ffd60a; color: #07090d;
+                display: flex; align-items: center; justify-content: center; font-size: 58px; }
+  .gridL .nm { position: absolute; left: 25px; right: 25px; top: 110px; height: 200px; line-height: 1.02; letter-spacing: 1px; color: #fff; }
+  .rowL { width: 940px; height: 170px; }
+  .rowL .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 26px; background: linear-gradient(90deg, rgba(255,214,10,.05), rgba(255,214,10,.22)); }
+  .rowL .rk { position: absolute; left: 14px; top: 0; width: 140px; height: 170px; display: flex; align-items: center; justify-content: center;
+              font-size: 100px; color: #3a4258; }
+  .rowL .let { position: absolute; left: 160px; top: 48px; width: 74px; height: 74px; border-radius: 50%; background: #ffd60a; color: #07090d;
+               display: flex; align-items: center; justify-content: center; font-size: 48px; }
+  .rowL .nm { position: absolute; left: 254px; width: 430px; top: 15px; height: 140px; justify-content: flex-start; text-align: left;
+              line-height: 1.02; color: #fff; letter-spacing: 1px; }
+  .rowL .vl { position: absolute; right: 26px; width: 220px; top: 15px; height: 140px; justify-content: flex-end; color: #ffd60a; }
+  #prompt { position: absolute; left: 0; right: 0; top: 1222px; text-align: center; font-size: 74px; letter-spacing: 3px; }
+  #how { position: absolute; left: 0; right: 0; top: 1316px; text-align: center; font-size: 38px; color: #c9d1de; }
+  #how b { color: #ffd60a; font-weight: 800; }
+  #count { position: absolute; left: 0; right: 0; top: 1380px; display: flex; justify-content: center; gap: 30px; }
+  #count div { width: 130px; height: 130px; border-radius: 24px; display: flex; align-items: center; justify-content: center;
+               font-size: 96px; background: #151924; color: #3a4258; box-shadow: inset 0 0 0 4px #2b3242; }
+  #count div.on { background: #ffd60a; color: #07090d; box-shadow: 0 0 40px rgba(255,214,10,.45); }
+  #payoff { position: absolute; left: 70px; right: 70px; top: 1282px; height: 210px; padding: 0 34px; color: #fff; line-height: 1.15; opacity: 0;
+            border-radius: 26px; background: #07090de8; box-shadow: inset 0 0 0 4px #ffd60a; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="beam" id="b0" style="left:-40px"></div><div class="beam" id="b1" style="left:360px"></div><div class="beam" id="b2" style="left:760px"></div>
+  <div id="floor"></div>
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div class="chip" id="sport"></div>
+    <div id="title" class="anton">RANK <b>THESE</b></div>
+    <div id="question" class="fit inter"></div>
+    <div id="tiles"></div>
+    <div id="prompt" class="anton">COMMENT YOUR RANKING</div>
+    <div id="how" class="mono"></div>
+    <div id="count" class="anton"><div>3</div><div>2</div><div>1</div></div>
+    <div id="payoff" class="fit inter"></div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="common.js"></script>
+<script>
+let TL, RANK, MAX, MIN;
+const GRID = [[75, 490], [555, 490], [75, 850], [555, 850]], GW = 450, GH = 330;
+const RX = 70, RW = 940, RH = 170, rowY = (r) => 490 + r * 192;
+async function setup(tl) {
+  await FONTS;
+  TL = tl;
+  RANK = tl.items.map((_, k) => tl.order.indexOf(k));   // item k's place, 0 = #1
+  const ns = tl.items.map((it) => it.n);
+  MAX = Math.max(...ns); MIN = Math.min(...ns);
+  $("sport").textContent = tl.sport;
+  // under the RANK THESE title, a question that starts "Rank these" reads as "QBs by career passing TDs"
+  let q = tl.question.replace(/^rank these\s+/i, "");
+  q = q.charAt(0).toUpperCase() + q.slice(1);
+  fit($("question"), q, 60, 34);
+  $("how").innerHTML = `#1 TO #4 · LIKE: <b>${tl.example}</b>`;
+  $("tiles").innerHTML = tl.items.map((it, k) => `<div class="box" id="x${k}">
+      <div class="layer gridL" id="g${k}"><div class="let anton">${"ABCD"[k]}</div><div class="nm fit anton" id="gn${k}"></div></div>
+      <div class="layer rowL" id="r${k}"><div class="fill" id="rf${k}"></div><div class="rk anton" id="rk${k}">?</div>
+        <div class="let anton">${"ABCD"[k]}</div><div class="nm fit anton" id="rn${k}"></div><div class="vl fit anton" id="rv${k}"></div></div></div>`).join("");
+  // each name as big as its box allows (one long name shouldn't shrink the rest); the values share one size
+  tl.items.forEach((it, k) => { fit($("gn" + k), it.name.toUpperCase(), 92, 36); fit($("rn" + k), it.name.toUpperCase(), 72, 32); });
+  const vs = Math.min(...tl.items.map((it, k) => fit($("rv" + k), it.value, 92, 40)));
+  tl.items.forEach((it, k) => fit($("rv" + k), it.value, vs, vs));
+  fit($("payoff"), tl.payoff, 62, 32);
+}
+
+function render(t) {
+  const T = TL.t, x = t - T.reveal, last = T.ranks[3];
+  grain(t);
+  [0, 1, 2].forEach((k) => $("b" + k).style.transform = `rotate(${(k - 1) * 14 + 7 * Math.sin(t * 0.9 + k * 2)}deg)`);
+  const kick = t > last ? 0.04 * Math.exp(-6 * (t - last)) : 0;
+  $("world").style.transform = `scale(${1 + 0.02 * clamp(t / T.reveal) + kick})`;
+  const p0 = spring(t, 8, 12);
+  $("title").style.transform = `scale(${1.6 - 0.6 * p0})`; $("title").style.opacity = clamp(t / 0.1);
+  $("sport").style.opacity = clamp((t - 0.2) / 0.2);
+  $("question").style.opacity = clamp((t - 0.25) / 0.2);
+  $("question").style.transform = `translateY(${(1 - ease((t - 0.25) / 0.4)) * 40}px)`;
+  const fold = ease((t - T.fold) / 0.45), slide = easeIO((t - T.slide) / 0.9);
+  TL.items.forEach((it, k) => {
+    const el = $("x" + k), shownY = rowY(k), rankY = rowY(RANK[k]);
+    // grid tile -> leaderboard row (in the order shown) -> its real place
+    let L = GRID[k][0] + (RX - GRID[k][0]) * fold, Tp = GRID[k][1] + (shownY - GRID[k][1]) * fold;
+    let W = GW + (RW - GW) * fold, H = GH + (RH - GH) * fold;
+    Tp += (rankY - shownY) * slide;
+    L += Math.sin(Math.PI * slide) * (rankY > shownY ? 46 : rankY < shownY ? -46 : 0);  // pass each other, not through
+    el.style.left = L + "px"; el.style.top = Tp + "px"; el.style.width = W + "px"; el.style.height = H + "px";
+    el.style.zIndex = rankY < shownY ? 2 : 1;
+    const y = t - T.tiles[k], p = spring(y, 8, 12);
+    el.style.opacity = clamp(y / 0.1);
+    $("g" + k).style.opacity = clamp(1 - fold * 2);
+    $("r" + k).style.opacity = clamp(fold * 2 - 1);
+    // this item's rank lights up (from #4 up to #1): number pops, value counts up, bar fills
+    const r = RANK[k], at = T.ranks[3 - r], z = t - at;
+    const sc = x < 0 ? (y < 0.6 ? 0.4 + 0.6 * p : 1 + 0.015 * Math.sin(t * 5 + k)) : z > 0 && z < 0.6 ? 1 + 0.06 * Math.exp(-6 * z) * Math.cos(14 * z) : 1;
+    el.style.transform = `scale(${sc})`;
+    const rk = $("rk" + k);
+    rk.textContent = z >= 0 ? "#" + (r + 1) : "?";
+    rk.style.color = z >= 0 ? (r === 0 ? "#ffd60a" : "#f4f1ea") : "#3a4258";
+    rk.style.transform = z >= 0 ? `scale(${1 + 0.5 * Math.exp(-6 * z)})` : "none";
+    const c = clamp(z / 0.45);
+    $("rv" + k).firstChild.textContent = z >= 0 ? partial(it.value, ease(c)) : "";
+    const share = MAX === MIN ? 1 : 0.35 + 0.65 * (it.n - MIN) / (MAX - MIN);
+    $("rf" + k).style.width = (RW * share * ease(c)) + "px";
+    el.style.boxShadow = r === 0 && z >= 0 ? `inset 0 0 0 6px #ffd60a, 0 0 ${50 + 15 * Math.sin(t * 6)}px rgba(255,214,10,.45)`
+                                          : "inset 0 0 0 4px #2b3242, 0 18px 40px rgba(0,0,0,.5)";
+  });
+  // the question: comment prompt and a 3-2-1
+  const gone = x > 0 ? clamp(1 - x / 0.2) : 1;
+  const pp = spring(t - T.prompt, 8, 12);
+  $("prompt").style.opacity = clamp((t - T.prompt) / 0.12) * gone;
+  $("prompt").style.transform = `scale(${(0.5 + 0.5 * pp) * (1 + 0.035 * Math.sin(t * 7))})`;
+  $("how").style.opacity = clamp((t - T.prompt - 0.3) / 0.2) * gone;
+  $("count").style.opacity = clamp((t - T.prompt - 0.5) / 0.2) * gone;
+  const c = t - T.countdown;
+  [...$("count").children].forEach((d, k) => {
+    const on = c >= k && c < k + 1, f = c - k;
+    d.classList.toggle("on", on);
+    d.style.transform = on ? `scale(${1 + 0.25 * Math.exp(-7 * f)})` : "none";
+    d.style.opacity = c >= k + 1 ? 0.25 : 1;
+  });
+  const pay = $("payoff"), y2 = t - T.payoff;
+  pay.style.opacity = clamp(y2 / 0.2);
+  pay.style.transform = `translateY(${(1 - ease(y2 / 0.35)) * 60}px)`;
+  $("flash").style.opacity = t >= last ? Math.max(0, 0.6 - (t - last) * 3) : 0;
+}
+</script>
+</body>
+</html>
