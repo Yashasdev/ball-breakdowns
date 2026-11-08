@@ -111,6 +111,8 @@ def soundtrack(tl: dict, voices: list[np.ndarray], track: str, path: Path) -> No
         if b.get("flash"):
             add(sound.impact(rng), b["start"], 0.6)
             add(sound.bass_drop(), b["start"], 0.5)
+        if b["scene"]["type"] == "call":  # the famous call: the crowd erupts under it
+            add(sound.crowd(rng, (b["end"] - b["start"]) + 1.6), max(0, b["start"] - 0.15), 0.32)
         if b["scene"].get("stamp"):
             add(sound.impact(rng), b["start"] + 0.6, 0.5)
     prev = None

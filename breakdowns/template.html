@@ -76,6 +76,19 @@
   #s-debate .vs { position: absolute; left: 0; right: 0; top: 400px; text-align: center; font-family: Anton; font-size: 110px; color: #ffd60a; }
   #s-debate .cta { position: absolute; left: 50%; top: 870px; transform: translateX(-50%); background: #ff3b3b; color: #fff;
                    font-family: Anton; font-size: 60px; padding: 14px 54px; border-radius: 80px; letter-spacing: 4px; white-space: nowrap; }
+  /* the famous call: a quote card over a radio waveform */
+  #s-call .on { position: absolute; left: 0; right: 0; top: 40px; display: flex; justify-content: center; align-items: center;
+                font-family: Mono; font-size: 40px; color: #ff3b3b; letter-spacing: 6px; white-space: nowrap; }
+  #s-call .air { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #ff3b3b; margin-right: 18px; }
+  #s-call .wave { position: absolute; left: 90px; right: 90px; top: 130px; height: 150px; display: flex; align-items: center;
+                  justify-content: space-between; }
+  #s-call .wave i { display: block; width: 14px; border-radius: 7px; background: #ffd60a; }
+  #s-call .q { position: absolute; left: 70px; right: 70px; top: 330px; height: 640px; display: flex; align-items: center;
+               justify-content: center; text-align: center; font-family: Anton; color: #fff; line-height: 1.05; letter-spacing: 2px; }
+  #s-call .q b { color: #ffd60a; font-weight: normal; }
+  #s-call .q span { display: inline-block; margin: 0 0.12em; }
+  #s-call .who { position: absolute; left: 0; right: 0; top: 1000px; text-align: center; font-family: Mono; font-size: 40px;
+                 color: #c9d1dc; letter-spacing: 3px; }
   /* captions */
   #cap { position: absolute; left: 60px; right: 60px; top: 1420px; text-align: center; font-family: Inter; font-weight: 800;
          font-size: 86px; line-height: 1.12; color: #fff; text-shadow: 0 0 2px #000, 0 6px 0 #000, 0 10px 30px rgba(0,0,0,.8); }
@@ -114,6 +127,9 @@
 
     <div class="scene" id="s-debate"><div class="card" id="dbA" style="top:60px;background:#c8102e"></div><div class="vs">VS</div>
       <div class="card" id="dbB" style="top:530px;background:#1d4fa0"></div><div class="cta">COMMENT YOUR PICK ↓</div></div>
+
+    <div class="scene" id="s-call"><div class="on mono"><span class="air"></span><span id="clOn"></span></div>
+      <div class="wave" id="clW"></div><div class="q" id="clQ"></div><div class="who" id="clWho"></div></div>
 
     <div id="cap"></div>
   </div>
@@ -290,6 +306,27 @@ function render(t) {
     const stl = $("stealTag");
     stl.style.opacity = sp.steal ? 1 : 0;
     stl.style.transform = sp.steal && sp.show === 3 ? `scale(${0.6 + 0.4 * spring(x - 0.1, 9, 14)})` : "scale(1)";
+  } else if (sp.type === "call") {
+    show("s-call", x);
+    $("clOn").textContent = sp.on; $("clWho").textContent = "— " + sp.who;
+    document.querySelector("#s-call .air").style.opacity = Math.sin(t * 6) > -0.3 ? 1 : 0.25;
+    const q = $("clQ"), words = sp.quote.split(" ");
+    if (q.dataset.beat !== String(i)) {
+      q.dataset.beat = i;
+      q.style.fontSize = Math.min(150, Math.sqrt(640 * 940 / (0.55 * [...sp.quote].length))) + "px";
+      q.innerHTML = "<div>" + words.map((w) => `<span>${w}</span>`).join("") + "</div>";
+      $("clW").innerHTML = Array.from({length: 42}, () => "<i></i>").join("");
+    }
+    // words slam in across the first 70% of the line, like it's being shouted
+    [...q.querySelectorAll("span")].forEach((el, k) => {
+      const y = x - 0.1 - (k / words.length) * 0.7 * d, p = spring(y, 9, 14);
+      el.style.opacity = clamp(y / 0.06); el.style.transform = `scale(${1.6 - 0.6 * p})`;
+      el.style.color = k === Math.min(words.length - 1, Math.floor(((x - 0.1) / (0.7 * d)) * words.length)) ? "#ffd60a" : "#fff";
+    });
+    [...$("clW").children].forEach((el, k) => {
+      const a = 0.5 + 0.5 * Math.abs(Math.sin(t * 11 + k * 1.7) * Math.sin(t * 4.3 + k * 0.6));
+      el.style.height = (16 + 130 * a * (x < d ? 1 : 0.2)) + "px";
+    });
   } else if (sp.type === "debate") {
     show("s-debate", x);
     $("dbA").textContent = sp.a; $("dbB").textContent = sp.b;
@@ -300,8 +337,9 @@ function render(t) {
     document.querySelector("#s-debate .cta").style.transform = `translateX(-50%) scale(${1 + 0.06 * Math.sin(t * 7)})`;
   }
 
-  // captions: 2-4 words at a time, in sync with the voice
+  // captions: 2-4 words at a time, in sync with the voice (hidden under a famous call: the quote is the caption)
   const W = b.words, cap = $("cap");
+  cap.style.visibility = sp.type === "call" ? "hidden" : "visible";
   let g = W.findIndex((w) => w.t > t); g = g < 0 ? W.length : g;
   const cur = Math.max(0, g - 1), start = Math.floor(cur / 4) * 4;
   const chunk = W.slice(start, start + 4);

@@ -85,6 +85,17 @@ def whoosh(rng, dur: float = 0.55) -> np.ndarray:
     return shaped * np.sin(np.pi * x) ** 1.5 * 2.2
 
 
+def crowd(rng, dur: float = 3.0) -> np.ndarray:
+    """A stadium crowd erupting: band-limited noise (many voices) with a fast swell, a wobble and a long tail.
+    Synthesized, so there's nothing to license."""
+    n = int(dur * SR)
+    x = np.linspace(0, 1, n)
+    roar = _lowpass(rng.uniform(-1, 1, n), 2600) - _lowpass(rng.uniform(-1, 1, n), 260)
+    wobble = 1 + 0.25 * np.sin(2 * np.pi * 3.1 * x * dur) * np.sin(2 * np.pi * 0.7 * x * dur)
+    swell = np.minimum(1, x * dur / 0.35) * np.exp(-np.maximum(0, x * dur - 0.9) * 1.1)
+    return roar * wobble * swell * 2.0
+
+
 def impact(rng) -> np.ndarray:
     t = _t(0.9)
     freq = 38 + 70 * np.exp(-t * 9)

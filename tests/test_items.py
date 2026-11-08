@@ -10,7 +10,7 @@ from breakdowns.build import heard_ok
 
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS = json.loads((ROOT / "items.json").read_text())
-SCENES = {"score", "stat", "need", "catch", "kick", "shots", "debate"}
+SCENES = {"score", "stat", "need", "catch", "kick", "shots", "debate", "call"}
 
 
 def test_ids_are_unique_and_numbered_in_order():
@@ -28,6 +28,8 @@ def test_story(it):
     words = 0
     for b in it["beats"]:
         assert b["scene"]["type"] in SCENES
+        if b["scene"]["type"] == "call":  # a famous broadcast call, quoted (never the audio), with who said it
+            assert b["scene"]["quote"] and b["scene"]["who"] and b["scene"]["on"] and len(b["scene"]["quote"]) <= 70
         assert len(b["say"]) <= 130 and len(b["cap"]) <= 95, b["say"]
         assert max(len(w.strip("*.,!?")) for w in b["cap"].split()) <= 13, "every caption word fits one line"
         assert b["cap"].count("*") % 2 == 0, "accent *stars* come in pairs"

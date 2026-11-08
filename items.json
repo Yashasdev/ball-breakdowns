@@ -14,7 +14,8 @@
   },
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/400927752",
-   "https://en.wikipedia.org/wiki/Super_Bowl_LI"
+   "https://en.wikipedia.org/wiki/Super_Bowl_LI",
+   "https://www.si.com/nfl/2017/02/06/super-bowl-broadcast-review-fox-patriots-falcons-joe-buck"
   ],
   "beats": [
    {
@@ -104,6 +105,16 @@
     "scene": {
      "type": "score",
      "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Joe Buck: Patriots win the Super Bowl! Brady has his fifth!",
+    "cap": "*Patriots win the Super Bowl!* Brady has his fifth!",
+    "scene": {
+     "type": "call",
+     "quote": "PATRIOTS WIN THE SUPER BOWL! BRADY HAS HIS FIFTH!",
+     "who": "JOE BUCK",
+     "on": "FOX · OVERTIME"
     }
    },
    {
@@ -288,6 +299,16 @@
     }
    },
    {
+    "say": "And on the radio: Auburn's gonna win the football game!",
+    "cap": "*Auburn's gonna win the football game!*",
+    "scene": {
+     "type": "call",
+     "quote": "AUBURN'S GONNA WIN THE FOOTBALL GAME!",
+     "who": "ROD BRAMBLETT",
+     "on": "AUBURN RADIO"
+    }
+   },
+   {
     "say": "Touchdown. No time left. Auburn wins.",
     "cap": "*TOUCHDOWN.* Auburn wins *34–28.*",
     "score": [
@@ -338,7 +359,8 @@
   "ask": "Craziest last play ever? Comment yours 👇",
   "sources": [
    "https://en.wikipedia.org/wiki/Minneapolis_Miracle",
-   "https://africa.espn.com/nfl/story/_/id/22102295/inside-play-saved-minnesota-vikings-season-crushed-new-orleans-saints"
+   "https://africa.espn.com/nfl/story/_/id/22102295/inside-play-saved-minnesota-vikings-season-crushed-new-orleans-saints",
+   "https://vikingswire.usatoday.com/2018/01/16/this-call-of-the-minneapolis-miracle-will-give-you-the-chills/"
   ],
   "beats": [
    {
@@ -404,6 +426,16 @@
     }
    },
    {
+    "say": "On the radio: Are you kidding me? It's a Minneapolis Miracle!",
+    "cap": "Are you kidding me? *It's a Minneapolis Miracle!*",
+    "scene": {
+     "type": "call",
+     "quote": "ARE YOU KIDDING ME?! IT'S A MINNEAPOLIS MIRACLE!",
+     "who": "PAUL ALLEN",
+     "on": "KFAN RADIO"
+    }
+   },
+   {
     "say": "The first playoff game ever won on a touchdown as time ran out.",
     "cap": "First playoff game won on a TD *as time ran out.*",
     "scene": {
@@ -440,7 +472,8 @@
   "sources": [
    "https://www.basketball-reference.com/boxscores/pbp/201306180MIA.html",
    "https://www.nba.com/news/history-finals-moments-ray-allen-3-pointer-game-6",
-   "https://www.si.com/nba/2013/06/19/heat-fans-leave-early-miss-game-6-2013-nba-finals-san-antonio-spurs-miami-american-airlines-arena"
+   "https://www.si.com/nba/2013/06/19/heat-fans-leave-early-miss-game-6-2013-nba-finals-san-antonio-spurs-miami-american-airlines-arena",
+   "https://en.wikipedia.org/wiki/Mike_Breen"
   ],
   "beats": [
    {
@@ -502,8 +535,8 @@
     }
    },
    {
-    "say": "Corner three. Tied with five seconds left.",
-    "cap": "*CORNER THREE.* Tied with *5 seconds* left.",
+    "say": "Mike Breen: His three-pointer... BANG! Tie game!",
+    "cap": "His three-pointer... *BANG!* Tie game, *5 seconds left.*",
     "score": [
      95,
      95
@@ -511,7 +544,10 @@
     "clock": "4TH 0:05",
     "flash": true,
     "scene": {
-     "type": "score"
+     "type": "call",
+     "quote": "HIS THREE-POINTER, BANG! TIE GAME!",
+     "who": "MIKE BREEN",
+     "on": "ABC"
     }
    },
    {
@@ -993,6 +1029,16 @@
     }
    },
    {
+    "say": "Appalachian State has stunned the college football world!",
+    "cap": "App State has *stunned the college football world!*",
+    "scene": {
+     "type": "call",
+     "quote": "APPALACHIAN STATE HAS STUNNED THE COLLEGE FOOTBALL WORLD!",
+     "who": "THOM BRENNAMAN",
+     "on": "BIG TEN NETWORK"
+    }
+   },
+   {
     "say": "Biggest upset in college football history? Name a bigger one.",
     "cap": "Biggest upset ever? *Name a bigger one.*",
     "scene": {
@@ -1020,7 +1066,8 @@
   "sources": [
    "https://www.basketball-reference.com/boxscores/pbp/201606190GSW.html",
    "https://en.wikipedia.org/wiki/2016_NBA_Finals",
-   "https://www.espn.com/nba/playoffs/2016/story/_/id/16544563/nba-finals-2016-oral-history-lebron-chasedown-block"
+   "https://www.espn.com/nba/playoffs/2016/story/_/id/16544563/nba-finals-2016-oral-history-lebron-chasedown-block",
+   "https://www.si.com/media/2016/06/20/nba-finals-game-7-broadcast-espn-abc-mike-breen"
   ],
   "beats": [
    {
@@ -1107,6 +1154,16 @@
     "scene": {
      "type": "score",
      "stamp": "FINAL"
+    }
+   },
+   {
+    "say": "Mike Breen: Cleveland is a city of champions once again!",
+    "cap": "*Cleveland is a city of champions once again!*",
+    "scene": {
+     "type": "call",
+     "quote": "CLEVELAND IS A CITY OF CHAMPIONS ONCE AGAIN!",
+     "who": "MIKE BREEN",
+     "on": "ABC"
     }
    },
    {
