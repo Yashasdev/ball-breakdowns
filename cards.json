@@ -1,33 +1,1070 @@
 [
- {"id": "guess-00", "format": "guess", "placeholder": true, "sport": "nba", "answer": "Kobe Bryant",
-  "clues": ["Drafted 13th overall", "Went straight from high school", "5 championships, all with one team",
-            "Two jersey numbers retired by the same team", "81 points in one game"],
+ {
+  "id": "guess-00",
+  "format": "guess",
+  "placeholder": true,
+  "sport": "nba",
+  "answer": "Kobe Bryant",
+  "clues": [
+   "Drafted 13th overall",
+   "Went straight from high school",
+   "5 championships, all with one team",
+   "Two jersey numbers retired by the same team",
+   "81 points in one game"
+  ],
   "payoff": "81 points vs Toronto in 2006: the second-most ever in one game.",
-  "ask": "How many clues did you need?", "sources": ["https://www.basketball-reference.com/players/b/bryanko01.html"]},
- {"id": "guess-99", "format": "guess", "placeholder": true, "sport": "nba", "answer": "Giannis Antetokounmpo",
-  "clues": ["Drafted 15th overall out of a Greek second-division team", "Sold sunglasses and watches on the street as a kid",
-            "Won MVP, DPOY and Most Improved Player during his career", "Scored 50 points in the closeout game of the Finals"],
+  "ask": "How many clues did you need?",
+  "sources": [
+   "https://www.basketball-reference.com/players/b/bryanko01.html"
+  ]
+ },
+ {
+  "id": "guess-99",
+  "format": "guess",
+  "placeholder": true,
+  "sport": "nba",
+  "answer": "Giannis Antetokounmpo",
+  "clues": [
+   "Drafted 15th overall out of a Greek second-division team",
+   "Sold sunglasses and watches on the street as a kid",
+   "Won MVP, DPOY and Most Improved Player during his career",
+   "Scored 50 points in the closeout game of the Finals"
+  ],
   "payoff": "Text-fit stress test: the longest names and clues the pages should handle.",
-  "ask": "How many clues did you need?", "sources": ["https://www.basketball-reference.com/players/a/antetgi01.html"]},
- {"id": "hilo-00", "format": "hilo", "placeholder": true, "sport": "nba", "stat": "Career regular-season points",
-  "as_of": "career", "left": {"name": "Kareem Abdul-Jabbar", "value": 38387}, "right": {"name": "Michael Jordan", "value": 32292},
-  "answer": "lower", "payoff": "Jordan retired twice and still scored 32,292.",
-  "ask": "Higher or lower? Be honest, did you get it?", "sources": ["https://www.basketball-reference.com/leaders/pts_career.html"]},
- {"id": "hilo-99", "format": "hilo", "placeholder": true, "sport": "nba", "stat": "Points per game, 2024-25 regular season",
-  "as_of": "2024-25 season", "left": {"name": "Giannis Antetokounmpo", "value": 30.4},
-  "right": {"name": "Shai Gilgeous-Alexander", "value": 32.7},
-  "answer": "higher", "payoff": "Text-fit stress test: the longest names the pages should handle side by side.",
-  "ask": "Higher or lower?", "sources": ["https://www.basketball-reference.com/leagues/NBA_2025_per_game.html"]},
- {"id": "rank-00", "format": "rank", "placeholder": true, "sport": "nfl", "question": "Rank these QBs by career passing TDs",
+  "ask": "How many clues did you need?",
+  "sources": [
+   "https://www.basketball-reference.com/players/a/antetgi01.html"
+  ]
+ },
+ {
+  "id": "hilo-00",
+  "format": "hilo",
+  "placeholder": true,
+  "sport": "nba",
+  "stat": "Career regular-season points",
+  "as_of": "career",
+  "left": {
+   "name": "Kareem Abdul-Jabbar",
+   "value": 38387
+  },
+  "right": {
+   "name": "Michael Jordan",
+   "value": 32292
+  },
+  "answer": "lower",
+  "payoff": "Jordan retired twice and still scored 32,292.",
+  "ask": "Higher or lower? Be honest, did you get it?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/pts_career.html"
+  ]
+ },
+ {
+  "id": "hilo-99",
+  "format": "hilo",
+  "placeholder": true,
+  "sport": "nba",
+  "stat": "Points per game, 2024-25 regular season",
+  "as_of": "2024-25 season",
+  "left": {
+   "name": "Giannis Antetokounmpo",
+   "value": 30.4
+  },
+  "right": {
+   "name": "Shai Gilgeous-Alexander",
+   "value": 32.7
+  },
+  "answer": "higher",
+  "payoff": "Text-fit stress test: the longest names the pages should handle side by side.",
+  "ask": "Higher or lower?",
+  "sources": [
+   "https://www.basketball-reference.com/leagues/NBA_2025_per_game.html"
+  ]
+ },
+ {
+  "id": "rank-00",
+  "format": "rank",
+  "placeholder": true,
+  "sport": "nfl",
+  "question": "Rank these QBs by career passing TDs",
   "stat_label": "career passing TDs",
-  "items": [{"name": "Drew Brees", "value": 571}, {"name": "Philip Rivers", "value": 421},
-            {"name": "Tom Brady", "value": 649}, {"name": "Peyton Manning", "value": 539}],
-  "order": [2, 0, 3, 1], "payoff": "Brady threw 78 more than anyone else ever has.",
-  "ask": "Comment your ranking, #1 to #4", "sources": ["https://www.pro-football-reference.com/leaders/pass_td_career.htm"]},
- {"id": "rank-99", "format": "rank", "placeholder": true, "sport": "nba", "question": "Rank these by points per game in the 2024-25 season",
+  "items": [
+   {
+    "name": "Drew Brees",
+    "value": 571
+   },
+   {
+    "name": "Philip Rivers",
+    "value": 421
+   },
+   {
+    "name": "Tom Brady",
+    "value": 649
+   },
+   {
+    "name": "Peyton Manning",
+    "value": 539
+   }
+  ],
+  "order": [
+   2,
+   0,
+   3,
+   1
+  ],
+  "payoff": "Brady threw 78 more than anyone else ever has.",
+  "ask": "Comment your ranking, #1 to #4",
+  "sources": [
+   "https://www.pro-football-reference.com/leaders/pass_td_career.htm"
+  ]
+ },
+ {
+  "id": "rank-99",
+  "format": "rank",
+  "placeholder": true,
+  "sport": "nba",
+  "question": "Rank these by points per game in the 2024-25 season",
   "stat_label": "points per game, 2024-25",
-  "items": [{"name": "Karl-Anthony Towns", "value": 24.4}, {"name": "Shai Gilgeous-Alexander", "value": 32.7},
-            {"name": "Victor Wembanyama", "value": 24.3}, {"name": "Giannis Antetokounmpo", "value": 30.4}],
-  "order": [1, 3, 0, 2], "payoff": "Text-fit stress test: four long names, close values, decimals.",
-  "ask": "Comment your ranking, #1 to #4", "sources": ["https://www.basketball-reference.com/leagues/NBA_2025_per_game.html"]}
+  "items": [
+   {
+    "name": "Karl-Anthony Towns",
+    "value": 24.4
+   },
+   {
+    "name": "Shai Gilgeous-Alexander",
+    "value": 32.7
+   },
+   {
+    "name": "Victor Wembanyama",
+    "value": 24.3
+   },
+   {
+    "name": "Giannis Antetokounmpo",
+    "value": 30.4
+   }
+  ],
+  "order": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "payoff": "Text-fit stress test: four long names, close values, decimals.",
+  "ask": "Comment your ranking, #1 to #4",
+  "sources": [
+   "https://www.basketball-reference.com/leagues/NBA_2025_per_game.html"
+  ]
+ },
+ {
+  "id": "guess-01",
+  "format": "guess",
+  "sport": "nba",
+  "answer": "Dirk Nowitzki",
+  "clues": [
+   "Born in Würzburg, Germany",
+   "Drafted 9th overall in 1998",
+   "Traded on draft night for Robert Traylor",
+   "Won the 2007 MVP",
+   "Played all 21 seasons in Dallas"
+  ],
+  "payoff": "21 seasons, one team: the NBA record.",
+  "ask": "Which clue gave it away for you?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Dirk_Nowitzki",
+   "https://en.wikipedia.org/wiki/1998_NBA_draft"
+  ]
+ },
+ {
+  "id": "guess-02",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Jerry Rice",
+  "clues": [
+   "Played college ball at Mississippi Valley State",
+   "Picked 16th overall in 1985",
+   "Super Bowl XXIII MVP",
+   "Played in a Super Bowl at age 40",
+   "NFL record 22,895 receiving yards"
+  ],
+  "payoff": "22,895 yards. Nobody else has even reached 18,000.",
+  "ask": "How many clues did you need?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Jerry_Rice",
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_receiving_yards_leaders"
+  ]
+ },
+ {
+  "id": "guess-03",
+  "format": "guess",
+  "sport": "nba",
+  "answer": "Allen Iverson",
+  "clues": [
+   "Played two seasons at Georgetown",
+   "4-time NBA scoring champion",
+   "No. 1 pick in the 1996 draft",
+   "2001 MVP, listed at 6 feet tall",
+   "Stepped over Tyronn Lue in the 2001 Finals"
+  ],
+  "payoff": "The shortest and lightest MVP in NBA history.",
+  "ask": "Drop the clue number you got it on",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Allen_Iverson"
+  ]
+ },
+ {
+  "id": "guess-04",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Barry Sanders",
+  "clues": [
+   "No. 3 pick in the 1989 draft",
+   "Ran for an NCAA-record 2,628 yards in a season",
+   "1988 Heisman winner at Oklahoma State",
+   "Ran for 2,053 yards in 1997",
+   "Retired at 31 after 10 seasons as a Lion"
+  ],
+  "payoff": "Walked away at 31 with 15,269 rushing yards.",
+  "ask": "Who's the most elusive runner ever?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Barry_Sanders",
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_rushing_yards_leaders"
+  ]
+ },
+ {
+  "id": "guess-05",
+  "format": "guess",
+  "sport": "nba",
+  "answer": "Hakeem Olajuwon",
+  "clues": [
+   "Didn't play basketball until age 15",
+   "Was a soccer goalkeeper growing up in Lagos",
+   "Starred for Houston's Phi Slama Jama",
+   "Picked No. 1 in 1984, ahead of Michael Jordan",
+   "NBA's all-time blocks leader (3,830)"
+  ],
+  "payoff": "The only player with MVP, DPOY and Finals MVP in one season (1994).",
+  "ask": "Name a better center. We'll wait.",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Hakeem_Olajuwon",
+   "https://www.basketball-reference.com/leaders/blk_career.html",
+   "https://en.wikipedia.org/wiki/1984_NBA_draft"
+  ]
+ },
+ {
+  "id": "guess-06",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Kurt Warner",
+  "clues": [
+   "Went undrafted out of Northern Iowa",
+   "Played for the Iowa Barnstormers (Arena)",
+   "Stocked grocery shelves for $5.50 an hour",
+   "NFL MVP in 1999 and 2001",
+   "Super Bowl XXXIV MVP with the Rams"
+  ],
+  "payoff": "Grocery store to Super Bowl MVP to the Hall of Fame.",
+  "ask": "Best underdog story in NFL history?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Kurt_Warner"
+  ]
+ },
+ {
+  "id": "guess-07",
+  "format": "guess",
+  "sport": "nba",
+  "answer": "Dennis Rodman",
+  "clues": [
+   "Played college ball at Southeastern Oklahoma State",
+   "Drafted 27th overall in 1986",
+   "2-time Defensive Player of the Year",
+   "7 straight rebounding titles (1992-98)",
+   "Won 3 titles with Jordan's Bulls"
+  ],
+  "payoff": "Five rings: two in Detroit, three in Chicago.",
+  "ask": "How many clues did you need?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Dennis_Rodman"
+  ]
+ },
+ {
+  "id": "guess-08",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Calvin Johnson",
+  "clues": [
+   "Played college ball at Georgia Tech",
+   "No. 2 pick in the 2007 draft",
+   "Retired after nine seasons in Detroit",
+   "1,964 receiving yards in 2012",
+   "Nicknamed Megatron"
+  ],
+  "payoff": "His 1,964 yards in 2012 set the single-season record.",
+  "ask": "Who's the best receiver you've ever watched?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Calvin_Johnson",
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_annual_receiving_yards_leaders"
+  ]
+ },
+ {
+  "id": "guess-09",
+  "format": "guess",
+  "sport": "mlb",
+  "answer": "Ichiro Suzuki",
+  "clues": [
+   "Won a Gold Glove in each of his first 10 MLB seasons",
+   "Had 1,278 pro hits in Japan before MLB",
+   "10 straight 200-hit seasons",
+   "AL MVP and Rookie of the Year in 2001",
+   "262 hits in 2004, the MLB record"
+  ],
+  "payoff": "3,089 MLB hits after starting at age 27.",
+  "ask": "Which clue gave it away for you?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Ichiro_Suzuki",
+   "https://www.baseball-reference.com/leaders/H_career.shtml"
+  ]
+ },
+ {
+  "id": "guess-10",
+  "format": "guess",
+  "sport": "nba",
+  "answer": "Steve Nash",
+  "clues": [
+   "Born in Johannesburg, South Africa",
+   "Played college ball at Santa Clara",
+   "Drafted 15th overall in 1996",
+   "Four 50-40-90 seasons",
+   "Back-to-back MVP in 2005 and 2006"
+  ],
+  "payoff": "No one else has more than two 50-40-90 seasons.",
+  "ask": "Drop the clue number you got it on",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Steve_Nash",
+   "https://en.wikipedia.org/wiki/50%E2%80%9340%E2%80%9390_club"
+  ]
+ },
+ {
+  "id": "guess-11",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Ray Lewis",
+  "clues": [
+   "Played college ball at Miami (FL)",
+   "Picked 26th overall in 1996",
+   "2-time Defensive Player of the Year",
+   "Super Bowl XXXV MVP",
+   "Won Super Bowl XLVII in his last game"
+  ],
+  "payoff": "17 seasons, all in Baltimore, two rings.",
+  "ask": "Best linebacker ever? Wrong answers only",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Ray_Lewis"
+  ]
+ },
+ {
+  "id": "guess-12",
+  "format": "guess",
+  "sport": "nfl",
+  "answer": "Bo Jackson",
+  "clues": [
+   "Drafted by the Raiders in the 7th round",
+   "1989 MLB All-Star Game MVP",
+   "No. 1 pick in 1986, refused to sign",
+   "1985 Heisman winner at Auburn",
+   "An MLB All-Star and an NFL Pro Bowler"
+  ],
+  "payoff": "The only athlete named an All-Star in two major US sports.",
+  "ask": "Greatest athlete ever? Make your case",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Bo_Jackson"
+  ]
+ },
+ {
+  "id": "hilo-01",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career points (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Shaquille O'Neal",
+   "value": 28596
+  },
+  "right": {
+   "name": "Dirk Nowitzki",
+   "value": 31560
+  },
+  "answer": "higher",
+  "payoff": "Dirk outscored Shaq by almost 3,000 points.",
+  "ask": "Did you get it right? Be honest",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/pts_career.html"
+  ]
+ },
+ {
+  "id": "hilo-02",
+  "format": "hilo",
+  "sport": "nfl",
+  "stat": "Career rushing yards (reg. season)",
+  "as_of": "career",
+  "left": {
+   "name": "Frank Gore",
+   "value": 16000
+  },
+  "right": {
+   "name": "Barry Sanders",
+   "value": 15269
+  },
+  "answer": "lower",
+  "payoff": "Gore played 16 seasons. Barry retired after 10.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_rushing_yards_leaders"
+  ]
+ },
+ {
+  "id": "hilo-03",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career assists (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Magic Johnson",
+   "value": 10141
+  },
+  "right": {
+   "name": "Mark Jackson",
+   "value": 10334
+  },
+  "answer": "higher",
+  "payoff": "Mark Jackson has 193 more career assists than Magic.",
+  "ask": "Who saw this coming?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/ast_career.html"
+  ]
+ },
+ {
+  "id": "hilo-04",
+  "format": "hilo",
+  "sport": "nfl",
+  "stat": "Official career sacks (reg. season)",
+  "as_of": "career",
+  "left": {
+   "name": "Reggie White",
+   "value": 198
+  },
+  "right": {
+   "name": "Bruce Smith",
+   "value": 200
+  },
+  "answer": "higher",
+  "payoff": "Sacks became official in 1982. Only Smith has 200.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_sacks_leaders"
+  ]
+ },
+ {
+  "id": "hilo-05",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career steals (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Jason Kidd",
+   "value": 2684
+  },
+  "right": {
+   "name": "Michael Jordan",
+   "value": 2514
+  },
+  "answer": "lower",
+  "payoff": "Kidd has 170 more career steals than MJ.",
+  "ask": "Did you get it right? Be honest",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/stl_career.html"
+  ]
+ },
+ {
+  "id": "hilo-06",
+  "format": "hilo",
+  "sport": "nfl",
+  "stat": "Career passing yards (reg. season)",
+  "as_of": "career",
+  "left": {
+   "name": "Brett Favre",
+   "value": 71838
+  },
+  "right": {
+   "name": "Peyton Manning",
+   "value": 71940
+  },
+  "answer": "higher",
+  "payoff": "Peyton passed Favre by just 102 yards.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_passing_yards_leaders"
+  ]
+ },
+ {
+  "id": "hilo-07",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career blocks (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Shaquille O'Neal",
+   "value": 2732
+  },
+  "right": {
+   "name": "Mark Eaton",
+   "value": 3064
+  },
+  "answer": "higher",
+  "payoff": "Mark Eaton blocked 332 more shots than Shaq.",
+  "ask": "Who saw this coming?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/blk_career.html"
+  ]
+ },
+ {
+  "id": "hilo-08",
+  "format": "hilo",
+  "sport": "nfl",
+  "stat": "Career receptions (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Jerry Rice",
+   "value": 1549
+  },
+  "right": {
+   "name": "Larry Fitzgerald",
+   "value": 1432
+  },
+  "answer": "lower",
+  "payoff": "Fitz is second all-time and still 117 catches short.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_receptions_leaders"
+  ]
+ },
+ {
+  "id": "hilo-09",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career 3-pointers made (reg. season)",
+  "as_of": "career",
+  "left": {
+   "name": "Kobe Bryant",
+   "value": 1827
+  },
+  "right": {
+   "name": "Dirk Nowitzki",
+   "value": 1982
+  },
+  "answer": "higher",
+  "payoff": "The 7-footer made 155 more threes than Kobe.",
+  "ask": "Did you get it right? Be honest",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/fg3_career.html"
+  ]
+ },
+ {
+  "id": "hilo-10",
+  "format": "hilo",
+  "sport": "nfl",
+  "stat": "Career rushing TDs (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "LaDainian Tomlinson",
+   "value": 145
+  },
+  "right": {
+   "name": "Walter Payton",
+   "value": 110
+  },
+  "answer": "lower",
+  "payoff": "LT ran for 35 more touchdowns than Sweetness.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_rushing_touchdowns_leaders"
+  ]
+ },
+ {
+  "id": "hilo-11",
+  "format": "hilo",
+  "sport": "nba",
+  "stat": "Career games played (reg. season)",
+  "as_of": "career",
+  "left": {
+   "name": "Robert Parish",
+   "value": 1611
+  },
+  "right": {
+   "name": "Kareem Abdul-Jabbar",
+   "value": 1560
+  },
+  "answer": "lower",
+  "payoff": "Parish played 21 seasons, 51 more games than Kareem.",
+  "ask": "Who saw this coming?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/g_career.html"
+  ]
+ },
+ {
+  "id": "hilo-12",
+  "format": "hilo",
+  "sport": "mlb",
+  "stat": "Career MLB hits (regular season)",
+  "as_of": "career",
+  "left": {
+   "name": "Derek Jeter",
+   "value": 3465
+  },
+  "right": {
+   "name": "Ichiro Suzuki",
+   "value": 3089
+  },
+  "answer": "lower",
+  "payoff": "Ichiro also had 1,278 hits in Japan before MLB.",
+  "ask": "Higher or lower? Did you get it?",
+  "sources": [
+   "https://www.baseball-reference.com/leaders/H_career.shtml",
+   "https://en.wikipedia.org/wiki/Ichiro_Suzuki"
+  ]
+ },
+ {
+  "id": "rank-01",
+  "format": "rank",
+  "sport": "nfl",
+  "question": "Rank these QBs by career passing TDs",
+  "stat_label": "career passing TDs (reg. season)",
+  "items": [
+   {
+    "name": "Joe Montana",
+    "value": 273
+   },
+   {
+    "name": "Ben Roethlisberger",
+    "value": 418
+   },
+   {
+    "name": "John Elway",
+    "value": 300
+   },
+   {
+    "name": "Dan Marino",
+    "value": 420
+   }
+  ],
+  "order": [
+   3,
+   1,
+   2,
+   0
+  ],
+  "payoff": "Montana has 4 rings but the fewest TDs here.",
+  "ask": "How many did you get in the right spot?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_passing_touchdowns_leaders"
+  ]
+ },
+ {
+  "id": "rank-02",
+  "format": "rank",
+  "sport": "nba",
+  "question": "Rank these by career points",
+  "stat_label": "career points (reg. season)",
+  "items": [
+   {
+    "name": "Kobe Bryant",
+    "value": 33643
+   },
+   {
+    "name": "Michael Jordan",
+    "value": 32292
+   },
+   {
+    "name": "Kareem Abdul-Jabbar",
+    "value": 38387
+   },
+   {
+    "name": "Karl Malone",
+    "value": 36928
+   }
+  ],
+  "order": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "payoff": "Karl Malone scored more than Kobe and MJ.",
+  "ask": "Did you have Jordan last?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/pts_career.html"
+  ]
+ },
+ {
+  "id": "rank-03",
+  "format": "rank",
+  "sport": "nba",
+  "question": "Rank these point guards by career assists",
+  "stat_label": "career assists (reg. season)",
+  "items": [
+   {
+    "name": "Steve Nash",
+    "value": 10335
+   },
+   {
+    "name": "Magic Johnson",
+    "value": 10141
+   },
+   {
+    "name": "Isiah Thomas",
+    "value": 9061
+   },
+   {
+    "name": "Jason Kidd",
+    "value": 12091
+   }
+  ],
+  "order": [
+   3,
+   0,
+   1,
+   2
+  ],
+  "payoff": "Nash has 194 more career assists than Magic.",
+  "ask": "Post your ranking before you watch the answer",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/ast_career.html"
+  ]
+ },
+ {
+  "id": "rank-04",
+  "format": "rank",
+  "sport": "nfl",
+  "question": "Rank these RBs by career rushing yards",
+  "stat_label": "career rushing yards (reg. season)",
+  "items": [
+   {
+    "name": "Jim Brown",
+    "value": 12312
+   },
+   {
+    "name": "Eric Dickerson",
+    "value": 13259
+   },
+   {
+    "name": "Adrian Peterson",
+    "value": 14918
+   },
+   {
+    "name": "LaDainian Tomlinson",
+    "value": 13684
+   }
+  ],
+  "order": [
+   2,
+   3,
+   1,
+   0
+  ],
+  "payoff": "Jim Brown is last here, but he played only 9 seasons.",
+  "ask": "How many did you get in the right spot?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_rushing_yards_leaders"
+  ]
+ },
+ {
+  "id": "rank-05",
+  "format": "rank",
+  "sport": "nfl",
+  "question": "Rank these WRs by career receiving yards",
+  "stat_label": "career receiving yards (reg. season)",
+  "items": [
+   {
+    "name": "Terrell Owens",
+    "value": 15934
+   },
+   {
+    "name": "Randy Moss",
+    "value": 15292
+   },
+   {
+    "name": "Jerry Rice",
+    "value": 22895
+   },
+   {
+    "name": "Larry Fitzgerald",
+    "value": 17492
+   }
+  ],
+  "order": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "payoff": "Randy Moss is last of these four.",
+  "ask": "Did you have Moss above T.O.?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_career_receiving_yards_leaders"
+  ]
+ },
+ {
+  "id": "rank-06",
+  "format": "rank",
+  "sport": "nba",
+  "question": "Rank these bigs by career rebounds",
+  "stat_label": "career rebounds (reg. season)",
+  "items": [
+   {
+    "name": "Dennis Rodman",
+    "value": 11954
+   },
+   {
+    "name": "Kareem Abdul-Jabbar",
+    "value": 17440
+   },
+   {
+    "name": "Dwight Howard",
+    "value": 14627
+   },
+   {
+    "name": "Tim Duncan",
+    "value": 15091
+   }
+  ],
+  "order": [
+   1,
+   3,
+   2,
+   0
+  ],
+  "payoff": "Rodman won 7 rebounding titles but is last here.",
+  "ask": "Post your ranking before you watch the answer",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/trb_career.html"
+  ]
+ },
+ {
+  "id": "rank-07",
+  "format": "rank",
+  "sport": "nba",
+  "question": "Rank these players by NBA titles won",
+  "stat_label": "NBA championships as a player",
+  "items": [
+   {
+    "name": "Kobe Bryant",
+    "value": 5
+   },
+   {
+    "name": "Robert Horry",
+    "value": 7
+   },
+   {
+    "name": "Shaquille O'Neal",
+    "value": 4
+   },
+   {
+    "name": "Michael Jordan",
+    "value": 6
+   }
+  ],
+  "order": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "payoff": "Robert Horry has more rings than Jordan.",
+  "ask": "How many did you get in the right spot?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_NBA_players_with_most_championships"
+  ]
+ },
+ {
+  "id": "rank-08",
+  "format": "rank",
+  "sport": "nfl",
+  "question": "Rank these players by Super Bowl rings",
+  "stat_label": "Super Bowl wins as a player",
+  "items": [
+   {
+    "name": "Joe Montana",
+    "value": 4
+   },
+   {
+    "name": "Peyton Manning",
+    "value": 2
+   },
+   {
+    "name": "Tom Brady",
+    "value": 7
+   },
+   {
+    "name": "Charles Haley",
+    "value": 5
+   }
+  ],
+  "order": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "payoff": "Charles Haley won 5: two in San Francisco, three in Dallas.",
+  "ask": "Did you know Charles Haley?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Charles_Haley",
+   "https://en.wikipedia.org/wiki/List_of_Super_Bowl_records",
+   "https://en.wikipedia.org/wiki/Peyton_Manning",
+   "https://en.wikipedia.org/wiki/Joe_Montana"
+  ]
+ },
+ {
+  "id": "rank-09",
+  "format": "rank",
+  "sport": "mlb",
+  "question": "Rank these sluggers by career home runs",
+  "stat_label": "career home runs",
+  "items": [
+   {
+    "name": "Willie Mays",
+    "value": 660
+   },
+   {
+    "name": "Albert Pujols",
+    "value": 703
+   },
+   {
+    "name": "Ken Griffey Jr.",
+    "value": 630
+   },
+   {
+    "name": "Alex Rodriguez",
+    "value": 696
+   }
+  ],
+  "order": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "payoff": "Pujols passed A-Rod with 703.",
+  "ask": "How many did you get in the right spot?",
+  "sources": [
+   "https://www.baseball-reference.com/leaders/HR_career.shtml"
+  ]
+ },
+ {
+  "id": "rank-10",
+  "format": "rank",
+  "sport": "soccer",
+  "question": "Rank these strikers by Premier League goals",
+  "stat_label": "Premier League goals",
+  "items": [
+   {
+    "name": "Thierry Henry",
+    "value": 175
+   },
+   {
+    "name": "Andy Cole",
+    "value": 187
+   },
+   {
+    "name": "Sergio Agüero",
+    "value": 184
+   },
+   {
+    "name": "Wayne Rooney",
+    "value": 208
+   }
+  ],
+  "order": [
+   3,
+   1,
+   2,
+   0
+  ],
+  "payoff": "Andy Cole scored more PL goals than Agüero and Henry.",
+  "ask": "Did you have Henry last?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_Premier_League_top_scorers",
+   "https://global.espn.com/football/story/_/id/42269743/who-top-scorers-premier-league-history"
+  ]
+ },
+ {
+  "id": "rank-11",
+  "format": "rank",
+  "sport": "nfl",
+  "question": "Rank these single-season rushing totals",
+  "stat_label": "rushing yards in one season",
+  "items": [
+   {
+    "name": "Barry Sanders (1997)",
+    "value": 2053
+   },
+   {
+    "name": "Eric Dickerson (1984)",
+    "value": 2105
+   },
+   {
+    "name": "Jamal Lewis (2003)",
+    "value": 2066
+   },
+   {
+    "name": "Adrian Peterson (2012)",
+    "value": 2097
+   }
+  ],
+  "order": [
+   1,
+   3,
+   2,
+   0
+  ],
+  "payoff": "Jamal Lewis's 2003 beats Barry's 1997.",
+  "ask": "Did you have Jamal Lewis that high?",
+  "sources": [
+   "https://en.wikipedia.org/wiki/List_of_National_Football_League_rushing_champions"
+  ]
+ },
+ {
+  "id": "rank-12",
+  "format": "rank",
+  "sport": "nba",
+  "question": "Rank these seasons by points per game",
+  "stat_label": "points per game in one season",
+  "items": [
+   {
+    "name": "Kobe Bryant (2005-06)",
+    "value": 35.4
+   },
+   {
+    "name": "Wilt Chamberlain (1961-62)",
+    "value": 50.4
+   },
+   {
+    "name": "James Harden (2018-19)",
+    "value": 36.1
+   },
+   {
+    "name": "Michael Jordan (1986-87)",
+    "value": 37.1
+   }
+  ],
+  "order": [
+   1,
+   3,
+   2,
+   0
+  ],
+  "payoff": "Harden's 2018-19 tops Kobe's 81-point season.",
+  "ask": "How many did you get in the right spot?",
+  "sources": [
+   "https://www.basketball-reference.com/leaders/pts_per_g_season.html"
+  ]
+ }
 ]
