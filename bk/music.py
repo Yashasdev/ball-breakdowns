@@ -40,7 +40,9 @@ SETTINGS = {  # tempo range, mode, swing, which parts play
     # Nov 2026, more rap variety for Ball: Atlanta trap (bouncy bell/piano hook, rolling hats, sliding 808s, the
     # "Lil Baby type beat" sound) and a melodic, moody beat (airy pads, soft piano, long 808s, the "Drake type beat"
     # sound). Original compositions in those styles; nothing is copied from anyone's songs.
-    "atltrap": dict(bpm=(140, 150), minor=0.9, swing=0.0, drums="atltrap", keys=None, lead="bell", bass="808slide"),
+    # reworked after research (LANDR, Native Instruments): 132-142 BPM, minor key, a dark triplet piano arpeggio over
+    # soft pad chords, sparse half-time drums on a triplet grid, and a mono 808 that glides between root and fifth
+    "atltrap": dict(bpm=(132, 142), minor=1.0, swing=0.0, drums="atltrap", keys="tripletarp", lead=None, bass="808glide"),
     "melodic": dict(bpm=(132, 144), minor=1.0, swing=0.0, drums="melodic", keys="pad", lead="epiano", bass="808long"),
     "rapquick": dict(bpm=(150, 160), minor=1.0, swing=0.0, drums="rapquick", keys="stab", lead="bell", bass="808q"),
 }
@@ -120,6 +122,14 @@ def bass(f: float, dur: float, kind: str) -> np.ndarray:
         tone = np.tanh(1.6 * (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(4 * np.pi * f * t)))
         tone *= np.exp(-t * (0.8 if kind == "sub" else 2.5))
     return (tone * _adsr(len(t), 0.005, 0, 1, 0.04)).astype(np.float32)
+
+
+def glide808(f_from: float, f_to: float, dur: float) -> np.ndarray:
+    """A mono 808 note that slides from the previous pitch into this one, saturated, with a long tail."""
+    t = _t(dur)
+    freq = f_to + (f_from - f_to) * np.exp(-t * 18) + f_to * 0.5 * np.exp(-t * 40)  # the slide plus a punchy start
+    tone = np.tanh(2.0 * np.sin(2 * np.pi * np.cumsum(freq) / SR)) * np.exp(-t * 0.9)
+    return (tone * _adsr(len(t), 0.004, 0, 1, 0.06)).astype(np.float32)
 
 
 def brass(f: float, dur: float) -> np.ndarray:
@@ -256,6 +266,17 @@ def render(name: str, seconds: float) -> np.ndarray:
             for hit in ((0,) if style == "drumline" else (0, 1.5, 3)):
                 for f in chord(degree):
                     mix.add(brass(f, beat * (1.4 if hit == 0 else 0.6)), at + hit * beat, 0.10 if style == "stadium" else 0.07)
+        elif cfg["keys"] == "tripletarp":
+            notes = chord(degree)
+            for f in notes:
+                mix.add(pad(f / 2, bar + 0.5), at, 0.05)
+            arp = [0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 0] if b % 2 == 0 else [0, 2, 1, 2, 1, 0, 2, 1, 0, 1, 2, 1]
+            for j, k in enumerate(arp):  # twelve triplet eighths per bar
+                f = notes[k % len(notes)] * 2
+                accent = 1.0 if j % 3 == 0 else 0.75
+                mix.add(piano(f, beat * 0.7), at + j * beat / 3, 0.075 * accent, pan=-0.15)
+                if j % 6 == 0:
+                    mix.add(bell(f * 2, beat * 1.2), at + j * beat / 3, 0.018, pan=0.25)
         elif cfg["keys"] == "stab":  # short piano stabs on a syncopated rhythm
             for hit in (0, 0.75, 2, 2.75):
                 for f in chord(degree):
@@ -276,10 +297,12 @@ def render(name: str, seconds: float) -> np.ndarray:
             if cfg["bass"] == "808" and style == "drill":  # sliding 808s: a long note that glides into the next
                 mix.add(bass(bf, beat * 1.4, "808"), at, 0.30)
                 mix.add(bass(bf * 2 ** (rng.choice([-2, 3, 5]) / 12), beat * 1.6, "808"), at + 2.5 * beat, 0.28)
-            elif cfg["bass"] == "808slide":  # an 808 on 1 that slides up into a second hit
-                mix.add(bass(bf, beat * 1.2, "808"), at, 0.30)
-                mix.add(bass(bf * 2 ** (rng.choice([3, 5, 7]) / 12), beat * 0.9, "808"), at + 1.5 * beat, 0.26)
-                mix.add(bass(bf, beat * 0.6, "808"), at + 3 * beat, 0.24)
+            elif cfg["bass"] == "808glide":  # mono 808: root, root, then a glide up to the fifth (always in key)
+                fifth = bf * 2 ** (7 / 12)
+                mix.add(glide808(bf, bf, beat * 1.45), at, 0.32)
+                if b % 2:
+                    mix.add(glide808(bf, bf, beat * 1.2), at + 1.5 * beat, 0.28)
+                mix.add(glide808(bf, fifth, beat * 1.2), at + 2.75 * beat, 0.30)
             elif cfg["bass"] == "808long":  # one long, soft 808 per bar under the pads
                 mix.add(bass(bf, bar * 0.95, "808"), at, 0.26)
             elif cfg["bass"] == "808q":  # the 808 bounces with the kick
@@ -313,19 +336,20 @@ def render(name: str, seconds: float) -> np.ndarray:
         kind = cfg["drums"]
         if kind in ("stadium", "drumline") and b % 4 == 1:
             mix.add(crash(rng), at, 0.10)
-        if kind == "atltrap":  # Atlanta trap: hats in 8ths with 16th and triplet rolls, clap on 3 (half time)
-            for j in range(8):
-                mix.add(hat(rng), at + j * beat / 2, 0.055)
-            roll = (2.5, 3.5) if b % 2 else (3.5,)
-            for start in roll:
-                n = 3 if start == 2.5 else 6
-                for r in range(n):
-                    mix.add(hat(rng), at + start * beat + r * beat / (2 * n / 2 if n == 3 else 6), 0.04)
-            for hit in (0, 1.75, 2.75) if b % 2 else (0, 2.75):
-                mix.add(kick(False), at + hit * beat, 0.40)
+        if kind == "atltrap":
+            for j in range(12):  # hats on the triplet grid, accented on each beat
+                if not (b % 2 and 7 <= j <= 8):  # leave room for the roll
+                    mix.add(hat(rng), at + j * beat / 3, 0.055 if j % 3 == 0 else 0.035, pan=0.2)
+            if b % 2:  # a 1/32 roll that speeds up and gets louder into the snare
+                for r in range(6):
+                    mix.add(hat(rng), at + 1.5 * beat + r * beat / 12, 0.02 + 0.007 * r, pan=0.2)
+            else:
+                mix.add(hat(rng, open_=True), at + 3.5 * beat, 0.04, pan=-0.2)
+            for hit in (0, 1.5, 2.75) if b % 2 else (0, 2.75):  # the kick hits with the 808
+                mix.add(kick(False), at + hit * beat, 0.38)
                 mix.kicks.append(int((at + hit * beat) * SR))
-            mix.add(clap(rng), at + 2 * beat, 0.16)
-            mix.add(snare(rng, False), at + 2 * beat, 0.10)
+            mix.add(clap(rng), at + 2 * beat, 0.15)
+            mix.add(snare(rng, False), at + 2 * beat, 0.09)
             continue
         if kind == "melodic":  # sparse and moody: soft kick, snap on 3, hats in 8ths with a triplet flutter
             for j in range(8):

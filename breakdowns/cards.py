@@ -45,7 +45,7 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
-CARD_BUILD = 3  # raise to rebuild every published card (3: four rap beat styles, mixed up front)
+CARD_BUILD = 4  # raise to rebuild every published card (4: reworked Atlanta trap beat)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
 # then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat
 CARD_STYLES = ["rapquick", "atltrap", "melodic", "drill"]
