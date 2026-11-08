@@ -45,7 +45,9 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
-CARD_BUILD = 1  # raise to rebuild every published card (after changing the pages, timing or sound)
+CARD_BUILD = 2  # raise to rebuild every published card (2: the quick rap beat, mixed up front)
+# Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
+CARD_STYLES = ["rapquick"]
 
 
 def load(path: Path = CARDS) -> list[dict]:
@@ -200,7 +202,7 @@ def track_for(it: dict) -> str:
     """A different original track per item: its sport's styles, offset by format so the same day's cards differ."""
     if it.get("music"):
         return it["music"]
-    styles = STYLES.get(it["sport"], OTHER_STYLES)
+    styles = CARD_STYLES or STYLES.get(it["sport"], OTHER_STYLES)
     options = [f"{s}-{k}" for k in range(1, 6) for s in styles]
     n = int(it["id"].split("-")[-1])
     return options[(n + 2 * list(FORMATS).index(it["format"])) % len(options)]
@@ -314,7 +316,7 @@ def soundtrack(tl: dict, track: str, path: Path) -> None:
             dip(t["ranks"][-1] - 0.1, 1.2)
     bed = music.render(track, total)[:n].mean(axis=1)
     sm = np.convolve(duck[: len(bed)], np.ones(2205) / 2205, mode="same")
-    buf[: len(bed)] += (bed * sm * 0.5).astype(np.float32)
+    buf[: len(bed)] += (bed * sm * 0.7).astype(np.float32)  # no voice on cards, so the beat sits up front
     buf = buf[: int(total * SR)]
     fade = int(0.3 * SR)
     buf[-fade:] *= np.linspace(1, 0, fade)        # a soft end, so the loop back to the start is clean
