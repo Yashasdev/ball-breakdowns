@@ -71,3 +71,28 @@ def test_nothing_that_matters_is_under_the_phone_overlays():
     """Header, score bug, scenes and captions stay inside make.SAFE at every beat and caption of every story."""
     from breakdowns import make
     assert make.unsafe(ITEMS) == {i["id"]: [] for i in ITEMS}
+
+
+@pytest.mark.parametrize("it", ITEMS, ids=[i["id"] for i in ITEMS])
+def test_every_story_has_a_send_line_for_the_losing_fans(it):
+    """The caption's first line names who to send it to; it isn't in the video, so it doesn't rebuild it."""
+    from breakdowns import build
+    core = re.sub(r"^(a|an|the|your)\s+", "", it["who"], flags=re.I).lower()
+    assert it["send"].startswith("Send this to ") and core in it["send"].lower() and len(it["send"]) <= 70
+    changed = {**it, "send": "Send this to somebody else.", "who": "somebody else"}
+    assert build.story_hash(changed) == build.story_hash(it), "a send line never rebuilds a video"
+    info = build.post_info(it, {"seconds": 30.0, "music": "stadium-1"})
+    assert info["send"] == it["send"] and info["hash"] == build.story_hash(it)
+
+
+def test_a_new_send_line_updates_the_published_index_without_a_rebuild(monkeypatch, tmp_path):
+    from breakdowns import build
+    monkeypatch.setattr(build, "OUT", tmp_path)
+    uploads = []
+    monkeypatch.setattr(build.subprocess, "run", lambda args, **k: uploads.append(args))
+    it = ITEMS[0]
+    index = {it["id"]: {"id": it["id"], "format": "crazy", "hash": build.story_hash(it), "hook": "x"}}
+    assert build.refresh_info(ITEMS, index) == [it["id"]]
+    assert index[it["id"]]["send"] == it["send"] and index[it["id"]]["hook"] == "x"
+    assert json.loads((tmp_path / f"{it['id']}.json").read_text())["send"] == it["send"] and uploads
+    assert build.refresh_info(ITEMS, index) == [], "nothing to do the second time"

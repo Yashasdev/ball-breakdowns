@@ -63,6 +63,12 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
 VOICE_AT = 0.12  # the pain card's spoken line starts here
+DEADPAN = 0.35  # Chatterbox exaggeration for that line: flat and dry (the stories use 1.0, full hype)
+
+
+def voiced(it: dict) -> bool:
+    """Cards with a spoken line: only the pain card's opening ("Send this to a Falcons fan.")."""
+    return it.get("format") == "pain"
 CARD_BUILD = 5  # raise to rebuild every published card (5: layout inside the phone's safe area)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
 # then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat

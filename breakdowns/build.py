@@ -71,8 +71,15 @@ def released() -> set[str]:
 BUILD = 3  # raise to rebuild every published video (3: layout inside the phone's safe area)
 
 
+# Fields only the poster's caption uses: they're left out of the hash, so adding or fixing one doesn't rebuild a video
+# (refresh_info() updates the published index instead). "send" is the caption's first line, aimed at the losing team's
+# fans ("Send this to a Falcons fan."); "who" is who that is. The video's first second doesn't show them.
+CAPTION_ONLY = ("send", "who")
+
+
 def story_hash(item: dict) -> str:
     """Changes whenever a story's script, captions or scenes change (or BUILD), so a fixed story is built again."""
+    item = {k: v for k, v in item.items() if k not in CAPTION_ONLY}
     return hashlib.sha1(json.dumps([BUILD, item], sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
 
 
@@ -82,7 +89,7 @@ def published_index() -> dict[str, dict]:
     return {v["id"]: v for v in json.loads(r.stdout)} if r.returncode == 0 and r.stdout.strip() else {}
 
 
-def voice(model, whisper, item: dict, out: Path) -> bool:
+def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = None) -> bool:
     import torch
     import torchaudio
     from breakdowns.voice import CFG, EXAGGERATION, REF
@@ -91,7 +98,8 @@ def voice(model, whisper, item: dict, out: Path) -> bool:
     for k, beat in enumerate(item["beats"]):
         for attempt in range(4):
             torch.manual_seed(int(item["id"].split("-")[-1]) * 1000 + k * 10 + attempt)
-            x = model.generate(beat["say"], audio_prompt_path=str(REF), exaggeration=EXAGGERATION, cfg_weight=CFG)[0]
+            x = model.generate(beat["say"], audio_prompt_path=str(REF), cfg_weight=CFG,
+                               exaggeration=EXAGGERATION if exaggeration is None else exaggeration)[0]
             loud = (x.abs() > 0.02).nonzero()
             if len(loud):
                 x = x[max(0, int(loud[0]) - 800): min(len(x), int(loud[-1]) + 2400)]
@@ -115,7 +123,8 @@ def post_info(item: dict, result: dict) -> dict:
     """What the poster needs: the caption's hook line and comment question, the length and the music."""
     return {"id": item["id"], "format": "crazy", "title": item["title"], "kicker": item["kicker"], "sport": item["sport"],
             "hook": item["beats"][0]["cap"].replace("*", ""), "ask": item["ask"],
-            "seconds": result["seconds"], "music": result["music"], "sources": item["sources"], "hash": story_hash(item)}
+            "seconds": result["seconds"], "music": result["music"], "sources": item["sources"], "hash": story_hash(item),
+            **{k: item[k] for k in CAPTION_ONLY if item.get(k)}}
 
 
 def wanted(stories: list[dict], card_items: list[dict]) -> list[tuple[dict, str]]:
@@ -142,7 +151,7 @@ def main() -> None:
     card_items = [i for i in items if "beats" not in i]
     done = set() if a.dry else released()
     index = {} if a.dry else published_index()
-    fixed = [] if a.dry else backfill_format(index)
+    fixed = [] if a.dry else backfill_format(index) + refresh_info(json.loads(ITEMS.read_text()), index)
     # new videos, and published ones whose script or card was fixed since (their hash changed)
     todo = [(i, h) for i, h in want if f"{i['id']}.mp4" not in done or index.get(i["id"], {}).get("hash") != h][: a.max]
     print(f"{len(items) - len(card_items)} stories, {len(card_items)} cards, {len(index)} published, "
@@ -152,7 +161,7 @@ def main() -> None:
             publish_index(items, index)
         return
     from breakdowns import make
-    if any("beats" in i for i, _ in todo):  # the narrator and the voice check load only when a story needs voicing
+    if any("beats" in i or cards.voiced(i) for i, _ in todo):  # the narrator loads only when something is voiced
         from chatterbox.tts import ChatterboxTTS
         from faster_whisper import WhisperModel
         model = ChatterboxTTS.from_pretrained(device="cpu")
@@ -163,7 +172,14 @@ def main() -> None:
         card = "beats" not in it
         print(f"== {it['id']} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
         if card:
-            result = cards.render(it, OUT / f"{it['id']}.mp4")
+            line = None
+            if cards.voiced(it):  # the pain card's deadpan opening line, checked like every story line
+                vdir = Path(tempfile.mkdtemp()) / it["id"]
+                if voice(model, whisper, {"id": it["id"], "beats": [{"say": cards.opening(it)}]}, vdir, cards.DEADPAN):
+                    line = vdir / "line00.wav"
+                else:
+                    print(f"::warning::{it['id']}: the opening line never matched; building it without the voice")
+            result = cards.render(it, OUT / f"{it['id']}.mp4", voice_wav=line)
             info = cards.post_info(it, result, h)
         else:
             vdir = Path(tempfile.mkdtemp()) / it["id"]
@@ -200,6 +216,26 @@ def backfill_format(index: dict[str, dict]) -> list[str]:
     subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber", *(str(OUT / f"{k}.json") for k in fixed)],
                    check=True)
     print(f"marked {len(fixed)} published stories as format crazy")
+    return fixed
+
+
+def refresh_info(stories: list[dict], index: dict[str, dict]) -> list[str]:
+    """Published stories whose caption-only fields (CAPTION_ONLY, e.g. a new send line) differ from items.json: update
+    their index entry and <id>.json without rebuilding the video (their hash doesn't change)."""
+    fixed = []
+    for it in stories:
+        v = index.get(it["id"])
+        if v and v.get("hash") == story_hash(it) and any(v.get(k) != it.get(k) for k in CAPTION_ONLY):
+            index[it["id"]] = {**{k: x for k, x in v.items() if k not in CAPTION_ONLY},
+                               **{k: it[k] for k in CAPTION_ONLY if it.get(k)}}
+            fixed.append(it["id"])
+    if fixed:
+        OUT.mkdir(exist_ok=True)
+        for k in fixed:
+            (OUT / f"{k}.json").write_text(json.dumps(index[k], indent=1, ensure_ascii=False))
+        subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber",
+                        *(str(OUT / f"{k}.json") for k in fixed)], check=True)
+        print(f"updated the send line of {len(fixed)} published stories (no rebuild)")
     return fixed
 
 

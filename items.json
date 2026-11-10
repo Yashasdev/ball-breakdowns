@@ -127,7 +127,9 @@
     }
    }
   ],
-  "ask": "Greatest comeback ever: 28–3 or Cavs 3–1? Comment 👇"
+  "ask": "Greatest comeback ever: 28–3 or Cavs 3–1? Comment 👇",
+  "who": "a Falcons fan",
+  "send": "Send this to a Falcons fan."
  },
  {
   "id": "crazy-02",
@@ -241,7 +243,9 @@
     }
    }
   ],
-  "ask": "More clutch than 13 in 33? Name it 👇"
+  "ask": "More clutch than 13 in 33? Name it 👇",
+  "who": "a Spurs fan",
+  "send": "Send this to a Spurs fan."
  },
  {
   "id": "crazy-03",
@@ -341,7 +345,9 @@
     }
    }
   ],
-  "ask": "Craziest ending in college football? Prove us wrong 👇"
+  "ask": "Craziest ending in college football? Prove us wrong 👇",
+  "who": "an Alabama fan",
+  "send": "Send this to an Alabama fan."
  },
  {
   "id": "crazy-04",
@@ -453,7 +459,9 @@
      "b": "KICK SIX"
     }
    }
-  ]
+  ],
+  "who": "a Saints fan",
+  "send": "Send this to a Saints fan."
  },
  {
   "id": "crazy-05",
@@ -572,7 +580,9 @@
      "b": "YOUR PICK"
     }
    }
-  ]
+  ],
+  "who": "a Spurs fan",
+  "send": "Send this to a Spurs fan."
  },
  {
   "id": "crazy-06",
@@ -687,7 +697,9 @@
      "b": "KICK SIX"
     }
    }
-  ]
+  ],
+  "who": "an Oklahoma fan",
+  "send": "Send this to an Oklahoma fan."
  },
  {
   "id": "crazy-07",
@@ -811,7 +823,9 @@
      "b": "28–3"
     }
    }
-  ]
+  ],
+  "who": "a Titans fan who remembers the Oilers",
+  "send": "Send this to a Titans fan who remembers the Oilers."
  },
  {
   "id": "crazy-08",
@@ -945,7 +959,9 @@
      "b": "T-MAC"
     }
    }
-  ]
+  ],
+  "who": "a Knicks fan",
+  "send": "Send this to a Knicks fan."
  },
  {
   "id": "crazy-09",
@@ -1047,7 +1063,9 @@
      "b": "YOUR PICK"
     }
    }
-  ]
+  ],
+  "who": "a Michigan fan",
+  "send": "Send this to a Michigan fan."
  },
  {
   "id": "crazy-10",
@@ -1175,6 +1193,8 @@
      "b": "28–3"
     }
    }
-  ]
+  ],
+  "who": "a Warriors fan",
+  "send": "Send this to a Warriors fan."
  }
 ]
