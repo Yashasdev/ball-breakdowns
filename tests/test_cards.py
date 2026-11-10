@@ -39,13 +39,17 @@ def test_card(c):
     if not c.get("placeholder"):
         assert c["sources"] and all(s.startswith("https://") for s in c["sources"])
     tl = cards.timeline(c, cards.track_for(c))
-    assert 12 <= tl["total"] + cards.COVER_TAIL <= 18, "12-18 seconds"
+    lo, hi = cards.LENGTHS.get(c["format"], (12, 18))
+    assert lo <= tl["total"] + cards.COVER_TAIL <= hi, f"{lo}-{hi} seconds"
     assert tl["cover"] < tl["t"]["reveal"], "the cover shows the question, never the answer"
     assert cards.track_for(c) in music.TRACKS, "only our own composed tracks"
     info = cards.post_info(c, {"seconds": round(tl["total"] + cards.COVER_TAIL, 2), "music": cards.track_for(c)},
                            cards.card_hash(c))
     assert FIELDS <= set(info) and info["format"] == c["format"]
-    assert len(info["ask"]) < 80 and info["answer"] and info["why"]
+    assert len(info["ask"]) < 80 and info["why"]
+    assert bool(info["answer"]) == (c["format"] not in ("pain", "boxscore")), "pain and boxscore have nothing to guess"
+    if c["format"] in cards.SHARE:
+        assert info["send"] == c["send"] and info["who"] == c["who"], "the poster opens the caption with the send line"
 
 
 @pytest.mark.parametrize("c", [c for c in CARDS if c["format"] == "hilo"], ids=lambda c: c["id"])
@@ -127,3 +131,46 @@ def test_the_safe_area_check_catches_a_covered_element():
         bad = page.evaluate("L => unsafe(L)", make.SAFE)
         browser.close()
     assert any(b.startswith("btns: ") and "lower half" in b for b in bad) and any(b.startswith("title: top") for b in bad)
+
+
+SHARE = [c for c in CARDS if c["format"] in cards.SHARE]
+
+
+@pytest.mark.parametrize("c", SHARE, ids=[c["id"] for c in SHARE])
+def test_share_card_names_who_to_send_it_to(c):
+    """The send line names a person (SHARE_PLAN), opens the caption, and the facts are sourced."""
+    core = re.sub(r"^(a|an|the|your)\s+", "", c["who"], flags=re.I).lower()
+    assert c["send"].startswith("Send this to ") and core in c["send"].lower()
+    assert cards.opening(c) == f"Send this to {c['who']}."
+    assert c["reason"] in cards.REASONS and c["hook"]
+    if not c.get("placeholder"):
+        assert len(c["sources"]) >= 2, "every share card lists at least two sources"
+    if c["format"] == "cap":
+        assert sum(1 for x in c["names"] if x["name"] == c["names"][c["fake"]]["name"]) == 1
+    if c["format"] == "pain":
+        bars = cards.meter(c)
+        assert len(bars) == len(c["steps"]) + 2 and bars[-1] == 0 and all(a >= b for a, b in zip(bars, bars[1:]))
+
+
+def test_fake_answers_are_spread_across_the_letters():
+    fakes = [c["fake"] for c in REAL if c["format"] == "cap"]
+    if len(fakes) >= 4:
+        assert len(set(fakes)) == 4, "the invented player sits at every letter, A to D"
+
+
+def test_the_share_checks_catch_mistakes():
+    for f in cards.SHARE:
+        c = next((c for c in CARDS if c["format"] == f), None)
+        if c is None:
+            continue
+        bad = copy.deepcopy(c)
+        bad["send"] = "Send this to someone."
+        assert any("must name" in p for p in cards.problems(bad))
+        bad = copy.deepcopy(c)
+        bad["hook"] = bad["hook"] + " Place your bets."
+        assert any("gambling" in p for p in cards.problems(bad))
+    pain = next((c for c in CARDS if c["format"] == "pain"), None)
+    if pain:
+        bad = copy.deepcopy(pain)
+        bad["final"]["score"] = bad["final"]["score"][::-1]
+        assert cards.problems(bad)

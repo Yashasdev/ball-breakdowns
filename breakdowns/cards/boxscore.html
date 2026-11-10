@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  /* THIS BOX SCORE IS REAL: a black card, one stat line in huge type, context one line at a time, then the twist. */
+  #stage { background: #000; }
+  #chip { top: 262px; background: #000; color: #fff; box-shadow: inset 0 0 0 4px #fff; }
+  #stats { position: absolute; left: 70px; right: 80px; top: 400px; height: 380px; display: flex; gap: 24px; }
+  .cell { flex: 1; position: relative; }
+  .cell .v { position: absolute; left: 0; right: 0; top: 0; height: 290px; color: #fff; line-height: 1; }
+  .cell .k { position: absolute; left: 0; right: 0; top: 300px; text-align: center; font-size: 34px; color: #9a9a9a; letter-spacing: 4px; }
+  .ctx { position: absolute; left: 70px; right: 80px; height: 76px; color: #e8e8e8; line-height: 1.1; }
+  #twist { position: absolute; left: 70px; width: 820px; top: 1140px; height: 230px; padding: 0 34px; border-radius: 24px;
+           background: #000; box-shadow: inset 8px 0 0 #ffd60a, 0 0 0 3px #333; color: #ffd60a; line-height: 1.1; opacity: 0; }
+  #endc { background: rgba(0,0,0,.97); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div class="chip" id="chip" data-safe="head">THIS BOX SCORE IS REAL</div>
+    <div id="stats" data-safe="box"></div>
+    <div id="ctxs"></div>
+    <div id="twist" class="fit anton" data-safe="box"></div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="common.js"></script>
+<script>
+let TL;
+async function setup(tl) {
+  await FONTS;
+  TL = tl;
+  const n = tl.stats.length;
+  $("stats").innerHTML = tl.stats.map((x, k) => `<div class="cell"><div class="v fit anton" id="v${k}" data-safe="text"></div>
+      <div class="k mono" data-safe="text">${esc(x.k.toUpperCase())}</div></div>`).join("");
+  // one size for every value, the biggest that fits the widest
+  const vs = Math.min(...tl.stats.map((x, k) => fit($("v" + k), x.v, n === 1 ? 300 : 260, 80)));
+  tl.stats.forEach((x, k) => fit($("v" + k), x.v, vs, vs));
+  $("ctxs").innerHTML = tl.context.map((c, k) => `<div class="ctx fit inter" id="c${k}" data-safe="text" style="top:${830 + k * 90}px"></div>`).join("");
+  const cs = Math.min(...tl.context.map((c, k) => fit($("c" + k), c, 56, 30)));
+  tl.context.forEach((c, k) => fit($("c" + k), c, cs, cs));
+  fit($("twist"), tl.twist.toUpperCase(), 80, 40);
+  shareSetup(tl, "", "");
+  $("open").style.display = "none";
+}
+
+function render(t) {
+  const T = TL.t, x = t - T.twist;
+  grain(t);
+  const kick = (t < 0.6 ? 0.05 * Math.exp(-7 * t) : 0) + (x > 0 ? 0.03 * Math.exp(-6 * x) : 0);
+  $("world").style.transform = `scale(${1 + 0.02 * clamp(t / T.endcard) + kick})`;
+  // the stat line slams in at once (the first second is the hook and the cover)
+  TL.stats.forEach((s, k) => {
+    const p = spring(t - 0.04 * k, 9, 13), v = $("v" + k);
+    v.style.transform = `scale(${1.6 - 0.6 * p})`;
+    v.style.opacity = clamp((t - 0.04 * k) / 0.06);
+  });
+  $("chip").style.opacity = clamp((t - 0.2) / 0.2);
+  TL.context.forEach((c, k) => {
+    const y = t - T.context[k], el = $("c" + k);
+    el.style.opacity = clamp(y / 0.15) * (x > 0 ? 0.55 : 1);
+    el.style.transform = `translateY(${(1 - ease(y / 0.3)) * 40}px)`;
+  });
+  const tw = $("twist"), p = spring(x, 9, 13);
+  tw.style.opacity = clamp(x / 0.08);
+  tw.style.transform = `scale(${x > 0 ? 1.3 - 0.3 * p : 1.3}) rotate(${-2 * (1 - p)}deg)`;
+  $("flash").style.opacity = x >= 0 ? Math.max(0, 0.5 - x * 3) : (t < 0.12 ? 0.4 * (1 - t / 0.12) : 0);
+  shareRender(t, -1, T.endcard);
+  $("open").style.display = "none";
+}
+</script>
+</body>
+</html>

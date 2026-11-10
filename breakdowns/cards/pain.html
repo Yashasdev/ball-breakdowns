@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  /* THE PAIN SCOREBOARD: the target line, then one scoreboard: the lead, the collapse one score at a time, the final. */
+  #stage { background: #0a0708; }
+  #glow { position: absolute; inset: 0; background: radial-gradient(70% 45% at 50% 32%, rgba(200,16,46,.22), transparent 70%); }
+  #vig { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 45%, transparent 40%, rgba(3,2,3,.9) 100%); }
+  #kicker { top: 262px; }
+  #board { position: absolute; left: 110px; width: 860px; top: 380px; height: 380px; }
+  .tm { position: absolute; left: 0; right: 0; height: 175px; border-radius: 26px; background: #15121a; overflow: hidden;
+        box-shadow: inset 0 0 0 4px #2b2430; }
+  #t0 { top: 0; } #t1 { top: 195px; }
+  .tm .ab { position: absolute; left: 0; top: 0; bottom: 0; width: 330px; color: #fff; letter-spacing: 3px; }
+  .tm .sc { position: absolute; right: 40px; top: 0; bottom: 0; width: 420px; display: flex; align-items: center;
+            justify-content: flex-end; font-size: 160px; color: #fff; line-height: 1; }
+  .tm.hit { box-shadow: inset 0 0 0 6px #ffd60a, 0 0 50px rgba(255,214,10,.35); }
+  #clock { position: absolute; left: 340px; width: 400px; top: 790px; height: 70px; border-radius: 14px; background: #ffd60a;
+           color: #07090d; font-size: 44px; letter-spacing: 4px; }
+  #stamp { position: absolute; left: 300px; top: 470px; padding: 0 34px; border: 12px solid #ff4d5e; border-radius: 24px; color: #ff4d5e;
+           font-size: 130px; line-height: 1.05; letter-spacing: 10px; background: #0a0708dd; opacity: 0; }
+  #line { position: absolute; left: 60px; right: 60px; top: 880px; height: 100px; color: #fff; line-height: 1.1; }
+  #mlbl { position: absolute; left: 70px; width: 820px; top: 1000px; font-size: 32px; color: #c9b9be; letter-spacing: 4px; }
+  #meter { position: absolute; left: 70px; width: 820px; top: 1048px; height: 40px; border-radius: 20px; background: #ffffff12; overflow: hidden; }
+  #meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 20px; }
+  #record { position: absolute; left: 70px; width: 820px; top: 1150px; height: 220px; padding: 0 34px; border-radius: 24px;
+            background: #0a0708ee; box-shadow: inset 8px 0 0 #ff4d5e, 0 0 0 3px #2b2430; color: #fff; line-height: 1.12; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="glow"></div><div id="vig"></div>
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div class="chip" id="kicker" data-safe="head"></div>
+    <div id="board" data-safe="box">
+      <div class="tm" id="t0"><div class="ab fit anton" id="a0"></div><div class="sc anton" id="s0" data-safe="text"></div></div>
+      <div class="tm" id="t1"><div class="ab fit anton" id="a1"></div><div class="sc anton" id="s1" data-safe="text"></div></div>
+    </div>
+    <div id="stamp" class="anton" data-safe="box">FINAL</div>
+    <div id="clock" class="fit mono" data-safe="box"></div>
+    <div id="line" class="fit inter" data-safe="text"></div>
+    <div id="mlbl" class="mono" data-safe="text"></div>
+    <div id="meter" data-safe="box"><i id="bar"></i></div>
+    <div id="record" class="fit inter" data-safe="box"></div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="common.js"></script>
+<script>
+let TL, SEQ;
+async function setup(tl) {
+  await FONTS;
+  TL = tl;
+  $("kicker").textContent = tl.kicker;
+  tl.teams.forEach((x, k) => { $("a" + k).style.background = x.color; fit($("a" + k), x.abbr, 110, 50); });
+  // every score shown, in order: the lead, each step of the collapse, the final
+  SEQ = [{...tl.lead, at: -1}, ...tl.steps.map((x, k) => ({...x, at: tl.t.steps[k]})), {...tl.final, at: tl.t.final}];
+  fit($("line"), tl.lead.line, 70, 36);
+  $("mlbl").textContent = tl.meter.toUpperCase();
+  fit($("record"), tl.record, 62, 32);
+  // the widest clock label sets one size for all
+  const cs = Math.min(...SEQ.map((x) => fit($("clock"), x.clock.toUpperCase(), 44, 26)));
+  $("clock").dataset.size = cs;
+  shareSetup(tl, "", "");
+  $("openSub").style.display = "block";
+  fit($("openSub"), tl.kicker, 46, 28);
+  $("openSub").style.color = "#c9b9be";
+}
+
+function render(t) {
+  const T = TL.t, b = t - T.board, f = t - T.final;
+  grain(t);
+  // which score is up, and how long since it landed
+  let k = 0; SEQ.forEach((x, j) => { if (t >= x.at) k = j; });
+  const cur = SEQ[k], y = t - Math.max(cur.at, T.board);
+  const kick = (k > 0 && y < 0.6 ? 0.03 * Math.exp(-7 * y) : 0) + (f > 0 ? 0.03 * Math.exp(-6 * f) : 0);
+  $("world").style.transform = `scale(${1 + 0.02 * clamp(b / (T.final - T.board)) + kick})`;
+  const p0 = spring(b, 8, 12);
+  $("board").style.transform = `scale(${1.3 - 0.3 * p0})`;
+  $("board").style.opacity = clamp(b / 0.1);
+  $("kicker").style.opacity = $("clock").style.opacity = clamp((b - 0.1) / 0.2);
+  [0, 1].forEach((j) => {
+    const s = $("s" + j), changed = k > 0 && cur.score[j] !== SEQ[k - 1].score[j];
+    s.textContent = cur.score[j];
+    s.style.transform = changed && y < 0.6 ? `scale(${1 + 0.35 * Math.exp(-7 * y) * Math.cos(14 * y)})` : "none";
+    s.style.color = j === 1 && k > 0 ? "#ffd60a" : "#fff";
+    $("t" + j).classList.toggle("hit", changed && y < 0.5 && f < 0);
+  });
+  $("t0").style.transform = k > 0 && y < 0.4 && f < 0 ? `translateX(${Math.sin(y * 70) * 14 * (1 - y / 0.4)}px)` : "none";
+  const cl = $("clock"), sz = +cl.dataset.size;
+  fit(cl, cur.clock.toUpperCase(), sz, sz);
+  $("line").style.opacity = clamp((t - T.line) / 0.2) * (k > 0 ? clamp(1 - (t - T.steps[0]) / 0.2) : 1);
+  $("line").style.transform = `translateY(${(1 - ease((t - T.line) / 0.3)) * 30}px)`;
+  // the bar drains toward each score's value
+  const prev = k > 0 ? TL.bars[k - 1] : TL.bars[0], v = prev + (TL.bars[k] - prev) * ease(y / 0.6);
+  $("mlbl").style.opacity = $("meter").style.opacity = clamp((b - 0.3) / 0.2);
+  const bar = $("bar");
+  bar.style.width = (100 * v * ease((b - 0.3) / 0.5)) + "%";
+  bar.style.background = v > 0.6 ? "#3ddc84" : v > 0.3 ? "#ffd60a" : "#ff4d5e";
+  // the final: FINAL stamps over the board, then the record line
+  const st = $("stamp"), ps = spring(f, 9, 15);
+  st.style.opacity = f >= 0 ? 1 : 0;
+  st.style.transform = `rotate(-8deg) scale(${2.4 - 1.4 * ps})`;
+  const r = $("record"), y2 = t - T.record;
+  r.style.opacity = clamp(y2 / 0.2);
+  r.style.transform = `translateY(${(1 - ease(y2 / 0.35)) * 50}px)`;
+  $("flash").style.opacity = f >= 0 ? Math.max(0, 0.6 - f * 3) : (k > 0 && y < 0.15 ? 0.18 * (1 - y / 0.15) : 0);
+  $("flash").style.background = f >= 0 ? "#fff" : "#ff2a3c";
+  shareRender(t, T.board - 0.1, T.endcard);
+}
+</script>
+</body>
+</html>
