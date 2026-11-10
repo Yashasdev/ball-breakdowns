@@ -89,7 +89,9 @@ def published_index() -> dict[str, dict]:
     return {v["id"]: v for v in json.loads(r.stdout)} if r.returncode == 0 and r.stdout.strip() else {}
 
 
-def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = None) -> bool:
+def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = None, strict: bool = False) -> bool:
+    """strict: every word must match (short card lines, where the letter match lets "Warrior Spam" pass for
+    "Warriors fan")."""
     import torch
     import torchaudio
     from breakdowns.voice import CFG, EXAGGERATION, REF
@@ -108,6 +110,8 @@ def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = No
             segs, _ = whisper.transcribe(str(path), language="en")
             heard = " ".join(s.text for s in segs).strip()
             ok, why = heard_ok(beat["say"], heard)
+            if strict and ok and words(beat["say"]) != words(heard):
+                ok, why = False, "a word differs"
             print(f"  line {k} try {attempt + 1}: {'ok' if ok else 'redo'} | {heard}" + (f" | {why}" if why else ""), flush=True)
             if ok:
                 break
@@ -175,7 +179,7 @@ def main() -> None:
             line = None
             if cards.voiced(it):  # the pain card's deadpan opening line, checked like every story line
                 vdir = Path(tempfile.mkdtemp()) / it["id"]
-                if voice(model, whisper, {"id": it["id"], "beats": [{"say": cards.opening(it)}]}, vdir, cards.DEADPAN):
+                if voice(model, whisper, {"id": it["id"], "beats": [{"say": cards.opening(it)}]}, vdir, cards.DEADPAN, strict=True):
                     line = vdir / "line00.wav"
                 else:
                     print(f"::warning::{it['id']}: the opening line never matched; building it without the voice")

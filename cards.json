@@ -1507,7 +1507,7 @@
   "id": "pain-03",
   "format": "pain",
   "sport": "nba",
-  "who": "the Warriors fan who brings up 73 wins",
+  "who": "a Warriors fan",
   "send": "Send this to the Warriors fan who brings up 73 wins.",
   "reason": "tease",
   "hook": "The best regular season ever ended like this.",
@@ -1651,7 +1651,7 @@
     38,
     10
    ],
-   "clock": "3RD 13:39",
+   "clock": "3RD 13:44",
    "line": "Up 28. In the playoffs."
   },
   "steps": [
@@ -1717,7 +1717,7 @@
   "id": "pain-06",
   "format": "pain",
   "sport": "nfl",
-  "who": "the Cowboys fan who says this is our year",
+  "who": "a Cowboys fan",
   "send": "Send this to the Cowboys fan who says this is our year.",
   "reason": "tease",
   "hook": "Cowboys fans: how old were you in January 1996?",

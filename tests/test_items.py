@@ -96,3 +96,9 @@ def test_a_new_send_line_updates_the_published_index_without_a_rebuild(monkeypat
     assert index[it["id"]]["send"] == it["send"] and index[it["id"]]["hook"] == "x"
     assert json.loads((tmp_path / f"{it['id']}.json").read_text())["send"] == it["send"] and uploads
     assert build.refresh_info(ITEMS, index) == [], "nothing to do the second time"
+
+
+def test_the_strict_check_for_card_lines():
+    from breakdowns.build import heard_ok, words
+    assert heard_ok("Send this to a Warriors fan.", "Send this to a Warrior Spam.")[0], "the letter match is lenient"
+    assert words("Send this to a Warriors fan.") != words("Send this to a Warrior Spam."), "so cards also compare words"

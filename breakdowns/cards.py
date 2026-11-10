@@ -229,6 +229,7 @@ def problems(it: dict) -> list[str]:
         need(all(b[0] >= a[0] and b[1] >= a[1] and b != a for a, b in zip(seq, seq[1:])),
              "every score changes and never goes down")
         need(final["score"][0] < final["score"][1], "the final: the team in pain loses")
+        need(len(it["who"]) <= 24, "who: short (24 characters max), so the spoken opening fits the first 2 seconds")
         need(lead["score"][0] >= lead["score"][1], "the lead: the team in pain is ahead (or level)")
     elif f == "boxscore":
         stats, ctx = it.get("stats"), it.get("context")
