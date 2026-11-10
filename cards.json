@@ -1416,7 +1416,7 @@
    "clock": "FINAL / OT"
   },
   "record": "The biggest comeback in Super Bowl history.",
-  "meter": "Falcons win chance",
+  "meter": "Falcons lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/400927752",
@@ -1496,7 +1496,7 @@
    "clock": "FINAL"
   },
   "record": "The third-biggest comeback in NFL playoff history.",
-  "meter": "Chargers win chance",
+  "meter": "Chargers lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/401437998",
@@ -1554,7 +1554,7 @@
    "clock": "GAME 7 · 89-93"
   },
   "record": "The first team ever to blow a 3-1 lead in the Finals.",
-  "meter": "Warriors title chance",
+  "meter": "Warriors series lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.basketball-reference.com/playoffs/2016-nba-finals-cavaliers-vs-warriors.html",
@@ -1620,7 +1620,7 @@
    "clock": "GAME 7 · 3-10"
   },
   "record": "Still the only MLB team to lose a 3-0 series lead.",
-  "meter": "Yankees pennant chance",
+  "meter": "Yankees series lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.baseball-reference.com/postseason/2004_ALCS.shtml",
@@ -1706,7 +1706,7 @@
    "clock": "FINAL"
   },
   "record": "The second-biggest comeback in NFL playoff history.",
-  "meter": "Chiefs win chance",
+  "meter": "Chiefs lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/340104011",
@@ -1923,7 +1923,7 @@
    "clock": "FINAL / OT"
   },
   "record": "Seattle scored 15 points in the last 2:09.",
-  "meter": "Packers win chance",
+  "meter": "Packers lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/400749519",

@@ -21,7 +21,7 @@ caption's first line.
   cap      Know Ball or Cap: "Send this to the friend who says he knows ball." Four players with a one-line career,
            one of them invented (never a real, named person); a 5-second timer; FAKE is stamped; a real one is proved.
   pain     The Pain Scoreboard: "Send this to a Falcons fan." full screen (the cover; one deadpan voiced line when
-           built), then one scoreboard: the lead, the collapse one score at a time with a hit and a draining win-chance
+           built), then one scoreboard: the lead, the collapse one score at a time with a hit and a draining lead
            bar, the final and one record line, and an end card with the send line and a comment question.
   boxscore This Box Score Is Real: a black card with one absurd stat line in huge type, context lines one at a time,
            a twist line, then the send line and a comment question. No voice.
