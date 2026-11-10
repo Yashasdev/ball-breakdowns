@@ -27,6 +27,34 @@ function overflowing() {
   return [...document.querySelectorAll('[data-fit="overflow"]')].map((e) => (e.id || e.className) + ": " + e.textContent);
 }
 
+// Key elements outside the phone's safe area, at this moment (the tests and `cards --check` call this; L is
+// make.SAFE). Elements marked data-safe: "head" (header text), "text" (measured by its text) or "box" (its box);
+// hidden ones are skipped.
+function unsafe(L) {
+  const out = [];
+  for (const el of document.querySelectorAll("[data-safe]")) {
+    let o = 1;
+    for (let e = el; e && e !== document.body; e = e.parentElement) {
+      const cs = getComputedStyle(e);
+      if (cs.display === "none" || cs.visibility === "hidden") o = 0;
+      o *= parseFloat(cs.opacity);
+    }
+    if (o < 0.05) continue;
+    let r;
+    if (el.dataset.safe === "box") r = el.getBoundingClientRect();
+    else { const g = document.createRange(); g.selectNodeContents(el); r = g.getBoundingClientRect(); }
+    if (!r.width || !r.height) continue;
+    const name = el.id || el.className, why = [];
+    if (r.top < (el.dataset.safe === "head" ? L.head : L.top)) why.push(`top ${Math.round(r.top)}`);
+    if (r.bottom > L.bottom) why.push(`bottom ${Math.round(r.bottom)}`);
+    if (r.left < L.left) why.push(`left ${Math.round(r.left)}`);
+    if (r.right > L.right) why.push(`right ${Math.round(r.right)}`);
+    if (r.bottom > L.low_from && r.right > L.low_right) why.push(`right ${Math.round(r.right)} in the lower half`);
+    if (why.length) out.push(`${name}: ${why.join(", ")}`);
+  }
+  return out;
+}
+
 // a shown value ("38,652", "27.1", "41.2%") at share k of the way from 0, in the same style
 function partial(shown, k) {
   const m = String(shown).match(/^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/);

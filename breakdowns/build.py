@@ -68,7 +68,7 @@ def released() -> set[str]:
     return set(r.stdout.split())
 
 
-BUILD = 2  # raise to rebuild every published video (2: a different music track per story)
+BUILD = 3  # raise to rebuild every published video (3: layout inside the phone's safe area)
 
 
 def story_hash(item: dict) -> str:

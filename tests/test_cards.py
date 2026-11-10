@@ -106,4 +106,24 @@ def chromium():
 
 @pytest.mark.skipif(not chromium(), reason="needs Chromium (python -m playwright install chromium)")
 def test_all_text_fits_on_screen():
+    """Every text fits its box, and nothing that matters is under the phone's overlays (make.SAFE)."""
     assert cards.overflow(CARDS) == {c["id"]: [] for c in CARDS}
+
+
+@pytest.mark.skipif(not chromium(), reason="needs Chromium (python -m playwright install chromium)")
+def test_the_safe_area_check_catches_a_covered_element():
+    from playwright.sync_api import sync_playwright
+    from breakdowns import make
+    c = next(c for c in REAL if c["format"] == "hilo")
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": make.W, "height": make.H})
+        page.goto((cards.PAGES / "hilo.html").as_uri())
+        page.evaluate("tl => setup(tl)", cards.timeline(c, cards.track_for(c)))
+        page.evaluate("render(12)")
+        assert page.evaluate("L => unsafe(L)", make.SAFE) == []
+        page.evaluate("document.getElementById('btns').style.left = '200px'")   # under the like/comment column
+        page.evaluate("document.getElementById('title').style.top = '150px'")   # under the clock
+        bad = page.evaluate("L => unsafe(L)", make.SAFE)
+        browser.close()
+    assert any(b.startswith("btns: ") and "lower half" in b for b in bad) and any(b.startswith("title: top") for b in bad)

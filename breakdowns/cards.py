@@ -45,7 +45,7 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
-CARD_BUILD = 4  # raise to rebuild every published card (4: reworked Atlanta trap beat)
+CARD_BUILD = 5  # raise to rebuild every published card (5: layout inside the phone's safe area)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
 # then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat
 CARD_STYLES = ["rapquick", "atltrap", "melodic", "drill"]
@@ -338,7 +338,8 @@ def render(it: dict, out: Path, track: str | None = None) -> dict:
 
 
 def overflow(items: list[dict]) -> dict[str, list[str]]:
-    """Text that doesn't fit on screen, per item id (empty lists when everything fits). Needs Chromium."""
+    """Text that doesn't fit its box, and key elements outside the phone's safe area (make.SAFE), per item id, on the
+    cover (the question) and at the end (the answer); empty lists when everything fits. Needs Chromium."""
     from playwright.sync_api import sync_playwright
     found = {}
     with sync_playwright() as p:
@@ -353,6 +354,7 @@ def overflow(items: list[dict]) -> dict[str, list[str]]:
             for at in (tl["cover"], tl["total"] - 0.05):  # the question, and the answer
                 page.evaluate(f"render({at})")
                 bad += page.evaluate("overflowing()")
+                bad += [f"outside the safe area: {e}" for e in page.evaluate("L => unsafe(L)", make.SAFE)]
             found[it["id"]] = sorted(set(bad))
         browser.close()
     return found
@@ -371,7 +373,7 @@ def main() -> None:
         bad = 0
         fit = overflow([i for i in items if not problems(i)])
         for i in items:
-            msgs = problems(i) + [f"doesn't fit on screen: {e}" for e in fit.get(i["id"], [])]
+            msgs = problems(i) + [e if e.startswith("outside") else f"doesn't fit on screen: {e}" for e in fit.get(i["id"], [])]
             bad += bool(msgs)
             print(f"{i.get('id')}: {'ok' if not msgs else '; '.join(msgs)}")
         raise SystemExit(1 if bad else 0)

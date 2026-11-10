@@ -11,28 +11,27 @@
             linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
           background-size: 120px 120px, 120px 120px, 30px 30px, 30px 30px; }
   #vig { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 45%, transparent 40%, rgba(3,5,9,.85) 100%); }
-  #sport { top: 92px; }
-  #title { position: absolute; left: 0; right: 0; top: 160px; text-align: center; font-size: 132px; line-height: 1; letter-spacing: 3px; }
+  #title { position: absolute; left: 0; right: 0; top: 334px; text-align: center; font-size: 116px; line-height: 1; letter-spacing: 3px; }
   #title b { color: #ffd60a; font-weight: normal; }
-  #sub { position: absolute; left: 0; right: 0; top: 304px; text-align: center; font-size: 34px; color: #8a96ab; }
+  #sub { position: absolute; left: 0; right: 0; top: 462px; text-align: center; font-size: 34px; color: #8a96ab; }
   /* the file: a mystery photo and the clues-used meter */
-  #file { position: absolute; left: 90px; right: 90px; top: 380px; height: 250px; }
-  #photo { position: absolute; left: 0; top: 0; width: 230px; height: 250px; border-radius: 22px; background: #111a29;
+  #file { position: absolute; left: 90px; right: 90px; top: 528px; height: 210px; }
+  #photo { position: absolute; left: 0; top: 0; width: 200px; height: 210px; border-radius: 22px; background: #111a29;
            box-shadow: inset 0 0 0 5px #2a3854; overflow: hidden; }
-  #photo svg { position: absolute; left: 15px; bottom: -6px; }
-  #photo .q { position: absolute; left: 0; right: 0; top: 18px; text-align: center; font-size: 150px; color: #ffd60a;
+  #photo svg { position: absolute; left: 0; bottom: -6px; }
+  #photo .q { position: absolute; left: 0; right: 0; top: 4px; text-align: center; font-size: 130px; color: #ffd60a;
               text-shadow: 0 8px 30px #000; }
-  #photo .tape { position: absolute; left: -30px; top: 186px; width: 300px; height: 44px; background: #ffd60a; transform: rotate(-8deg);
+  #photo .tape { position: absolute; left: -30px; top: 150px; width: 260px; height: 44px; background: #ffd60a; transform: rotate(-8deg);
                  color: #07090d; font-size: 26px; font-weight: 800; text-align: center; line-height: 44px; letter-spacing: 6px; }
-  #meter { position: absolute; left: 270px; right: 0; top: 18px; }
+  #meter { position: absolute; left: 240px; right: 0; top: 4px; }
   #meter .lbl { font-size: 32px; color: #8a96ab; }
-  #meter .num { font-size: 120px; line-height: 1.05; margin-top: 4px; }
+  #meter .num { font-size: 104px; line-height: 1.05; margin-top: 4px; }
   #meter .num b { color: #ffd60a; font-weight: normal; }
   #pips { display: flex; gap: 14px; margin-top: 8px; }
   #pips i { display: block; height: 26px; flex: 1; border-radius: 13px; background: #1c2638; box-shadow: inset 0 0 0 3px #2a3854; }
   #pips i.on { background: #ffd60a; box-shadow: 0 0 22px rgba(255,214,10,.5); }
   /* the clues */
-  #clues { position: absolute; left: 90px; right: 90px; top: 676px; height: 724px; }
+  #clues { position: absolute; left: 60px; width: 840px; top: 770px; height: 600px; }
   .clue { position: absolute; left: 0; right: 0; border-radius: 22px; background: #101827; box-shadow: inset 0 0 0 4px #223049;
           display: flex; align-items: center; gap: 26px; padding: 0 30px 0 22px; box-sizing: border-box; }
   .clue .n { flex: none; width: 88px; height: 88px; border-radius: 18px; background: #1c2638; color: #56647d; display: flex;
@@ -43,13 +42,13 @@
   .clue.new { box-shadow: inset 0 0 0 5px #ffd60a, 0 0 40px rgba(255,214,10,.25); }
   .clue .txt i { font-style: normal; opacity: 0; }
   /* comment prompt, then the payoff */
-  #prompt { position: absolute; left: 50%; top: 1436px; transform: translateX(-50%); white-space: nowrap; background: #ffd60a; color: #07090d;
-            font-size: 58px; padding: 12px 46px; border-radius: 80px; letter-spacing: 3px; }
+  #prompt { position: absolute; left: 480px; top: 1424px; transform: translateX(-50%); white-space: nowrap; background: #ffd60a; color: #07090d;
+            font-size: 50px; padding: 12px 34px; border-radius: 80px; letter-spacing: 2px; }
   /* the reveal */
-  #name { position: absolute; left: 60px; right: 60px; top: 372px; height: 230px; color: #ffd60a; line-height: .98; letter-spacing: 2px;
+  #name { position: absolute; left: 70px; right: 70px; top: 516px; height: 200px; color: #ffd60a; line-height: .98; letter-spacing: 2px;
           text-shadow: 0 10px 40px rgba(0,0,0,.8), 0 0 60px rgba(255,214,10,.3); opacity: 0; }
-  #ask { position: absolute; left: 0; right: 0; top: 614px; text-align: center; font-size: 32px; color: #c9d1de; opacity: 0; }
-  #payoff { position: absolute; left: 90px; right: 90px; top: 1424px; height: 170px; padding: 0 34px; border-radius: 22px;
+  #ask { position: absolute; left: 0; right: 0; top: 718px; text-align: center; font-size: 32px; color: #c9d1de; opacity: 0; }
+  #payoff { position: absolute; left: 60px; width: 840px; top: 1422px; height: 150px; padding: 0 34px; border-radius: 22px;
             background: #07090dee; box-shadow: inset 8px 0 0 #ffd60a, 0 0 0 3px #223049; color: #fff; line-height: 1.15; opacity: 0; }
 </style>
 </head>
@@ -58,20 +57,20 @@
   <div id="grid"></div><div id="vig"></div>
   <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
   <div id="world">
-    <div class="chip" id="sport"></div>
-    <div id="title" class="anton">GUESS THE <b>PLAYER</b></div>
-    <div id="sub" class="mono"></div>
-    <div id="file">
+    <div class="chip" id="sport" data-safe="head"></div>
+    <div id="title" class="anton" data-safe="head">GUESS THE <b>PLAYER</b></div>
+    <div id="sub" class="mono" data-safe="text"></div>
+    <div id="file" data-safe="box">
       <div id="photo"><svg width="200" height="210" viewBox="0 0 200 210"><circle cx="100" cy="72" r="46" fill="#1f2b40"/>
         <path d="M10 210 C 14 140, 50 122, 100 122 C 150 122, 186 140, 190 210 Z" fill="#1f2b40"/></svg>
         <div class="q anton">?</div><div class="tape mono">CLASSIFIED</div></div>
       <div id="meter"><div class="lbl mono">CLUES USED</div><div class="num anton" id="count"></div><div id="pips"></div></div>
     </div>
-    <div id="name" class="fit anton"></div>
-    <div id="ask" class="mono">HOW MANY CLUES DID YOU NEED?</div>
-    <div id="clues"></div>
-    <div id="prompt" class="anton">COMMENT THE MOMENT YOU KNOW</div>
-    <div id="payoff" class="fit inter"></div>
+    <div id="name" class="fit anton" data-safe="text"></div>
+    <div id="ask" class="mono" data-safe="text">HOW MANY CLUES DID YOU NEED?</div>
+    <div id="clues" data-safe="box"></div>
+    <div id="prompt" class="anton" data-safe="box">COMMENT THE MOMENT YOU KNOW</div>
+    <div id="payoff" class="fit inter" data-safe="box"></div>
   </div>
   <div id="flash"></div>
 </div>
@@ -84,18 +83,18 @@ async function setup(tl) {
   $("sport").textContent = tl.sport;
   $("sub").textContent = `${N} CLUES · HARDEST FIRST`;
   $("pips").innerHTML = "<i></i>".repeat(N);
-  const gap = 12; ROWH = (724 - gap * (N - 1)) / N;
+  const gap = 12; ROWH = (600 - gap * (N - 1)) / N;
   $("clues").innerHTML = tl.clues.map((c, k) => `<div class="clue" id="c${k}" style="top:${k * (ROWH + gap)}px;height:${ROWH}px">
       <div class="n anton">${k + 1}</div><div class="txt fit inter" id="ct${k}"></div><div class="lock mono">CLUE ${k + 1} · LOCKED</div></div>`).join("");
   // every clue at one size (the largest at which all fit); the full text decides the layout, then its letters are
   // revealed in place, so nothing reflows while a clue types in
-  const size = Math.min(...tl.clues.map((c, k) => fit($("ct" + k), c, N === 5 ? 54 : 58, 30)));
+  const size = Math.min(...tl.clues.map((c, k) => fit($("ct" + k), c, N === 5 ? 52 : 56, 30)));
   tl.clues.forEach((c, k) => {
     const el = $("ct" + k);
     fit(el, c, size, size);
     el.firstChild.innerHTML = [...c].map((ch) => `<i>${esc(ch)}</i>`).join("");
   });
-  fit($("name"), tl.answer.toUpperCase(), 170, 70);
+  fit($("name"), tl.answer.toUpperCase(), 160, 70);
   fit($("payoff"), tl.payoff, 58, 32);
 }
 

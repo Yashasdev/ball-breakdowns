@@ -30,6 +30,12 @@ ITEMS = ROOT / "items.json"
 TEMPLATE = Path(__file__).resolve().parent / "template.html"
 FPS, W, H, SR = 30, 1080, 1920, sound.SR
 LEAD_IN, GAP, TAIL, COVER_TAIL = 0.25, 0.08, 1.2, 0.5
+# The phone's safe area in the 1080x1920 frame, measured from Yashas's iPhone screenshot of a posted Instagram reel
+# (Nov 9, 2026; TikTok and Shorts cover about the same): the app hides y < 230 (clock, back button), y > 1630 (username,
+# caption, message bar), x < 45, x > 1035, and x > 920 below y 1100 (the like/comment/share column). The pages put
+# headers at 245 or lower, nothing that matters below 1600, and the lower half within x 60-900; these limits leave
+# the camera push-in a few pixels of that margin. The pages' unsafe(SAFE) lists key elements outside them.
+SAFE = {"head": 245, "top": 230, "bottom": 1600, "left": 50, "right": 1030, "low_from": 1100, "low_right": 910}
 STYLES_BY_SPORT = {"nfl": ["stadium", "drumline"], "cfb": ["drumline", "stadium"], "nba": ["phonk", "drill", "trap"]}
 
 
@@ -157,6 +163,37 @@ def encode(work: Path, out: Path) -> None:
                     "-movflags", "+faststart", str(out)], check=True)
     shutil.copy(work / "frames" / "cover.jpg", out.with_suffix(".jpg"))
     shutil.rmtree(work, ignore_errors=True)
+
+
+def rough_voices(it: dict, words_per_second: float = 2.9) -> list[np.ndarray]:
+    """Stand-in narration (soft noise, each line as long as it takes to say) for layout checks and previews."""
+    rng = np.random.default_rng(1)
+    return [(rng.standard_normal(int(len(b["say"].split()) / words_per_second * SR)) * 0.2).astype(np.float32)
+            for b in it["beats"]]
+
+
+def unsafe(items: list[dict]) -> dict[str, list[str]]:
+    """Key elements outside the phone's safe area (SAFE), per story id: checked at the end of every beat and as each
+    caption chunk is complete, with stand-in voices (the layout doesn't depend on the voice). Needs Chromium."""
+    from playwright.sync_api import sync_playwright
+    found = {}
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": W, "height": H})
+        for it in items:
+            tl = timeline(it, rough_voices(it), track_for(it))
+            page.goto(TEMPLATE.as_uri())
+            page.evaluate("tl => setup(tl)", tl)
+            times = [b["end"] - 0.05 for b in tl["beats"]]
+            times += [b["words"][min(len(b["words"]), k + 4) - 1]["t"] + 0.05 for b in tl["beats"]
+                      for k in range(0, len(b["words"]), 4)]
+            bad = set()
+            for t in sorted(times):
+                page.evaluate(f"render({t})")
+                bad.update(page.evaluate("L => unsafe(L)", SAFE))
+            found[it["id"]] = sorted(bad)
+        browser.close()
+    return found
 
 
 def render(item_id: str, voice_dir: Path, out: Path, track: str | None = None) -> dict:

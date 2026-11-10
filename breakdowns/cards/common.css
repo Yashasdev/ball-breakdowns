@@ -5,7 +5,11 @@
 html, body { margin: 0; background: #07090d; }
 #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #07090d; color: #f4f1ea; }
 #grain { position: absolute; inset: -40px; opacity: .14; mix-blend-mode: overlay; pointer-events: none; }
-#world { position: absolute; inset: 0; transform-origin: 50% 45%; }
+/* Phone safe area (Yashas's iPhone screenshot of a posted reel, Nov 9, 2026; make.SAFE): the app covers y < 230,
+   y > 1630, the outer 45 px and, below y 1100, x > 920 (like/comment/share). Headers start at 245, nothing that
+   matters goes below 1600, and everything in the lower half stays within x 60-900 (centered on x 480). The camera
+   push-in is centered there too, so it never carries anything into the covered strips. */
+#world { position: absolute; inset: 0; transform-origin: 480px 900px; }
 .mono { font-family: Mono; letter-spacing: 3px; }
 .anton { font-family: Anton; font-weight: normal; }
 .inter { font-family: Inter; font-weight: 800; }
@@ -14,7 +18,7 @@ html, body { margin: 0; background: #07090d; }
 .fit { overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center;
        box-sizing: border-box; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .fit > span { display: block; max-width: 100%; }
-.chip { position: absolute; left: 50%; transform: translateX(-50%); padding: 8px 22px; border-radius: 10px;
+.chip { position: absolute; left: 50%; top: 262px; transform: translateX(-50%); padding: 8px 22px; border-radius: 10px;
         background: #ffd60a; color: #07090d; font-family: Mono; font-weight: 800; font-size: 30px; letter-spacing: 5px;
         white-space: nowrap; }
 #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }

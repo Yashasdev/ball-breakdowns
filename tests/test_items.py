@@ -54,3 +54,20 @@ def test_the_voice_check_catches_slurs_and_stray_sounds():
                         "Tax Axe of, Miami wins in overtime, then wins game 7, champions!")[0]
     assert not heard_ok("Third and ten. The plan: a catch.", "3rd and 10. The plan. A catch. 3rd and 10. The plan. A catch.")[0]
     assert not heard_ok("It's short. Chris Davis is waiting, nine yards deep in the end zone.", "Chris Davis is")[0]
+
+
+def chromium():
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            p.chromium.launch().close()
+        return True
+    except Exception:
+        return False
+
+
+@pytest.mark.skipif(not chromium(), reason="needs Chromium (python -m playwright install chromium)")
+def test_nothing_that_matters_is_under_the_phone_overlays():
+    """Header, score bug, scenes and captions stay inside make.SAFE at every beat and caption of every story."""
+    from breakdowns import make
+    assert make.unsafe(ITEMS) == {i["id"]: [] for i in ITEMS}
