@@ -149,7 +149,8 @@ def test_share_card_names_who_to_send_it_to(c):
         assert sum(1 for x in c["names"] if x["name"] == c["names"][c["fake"]]["name"]) == 1
     if c["format"] == "pain":
         bars = cards.meter(c)
-        assert len(bars) == len(c["steps"]) + 2 and bars[-1] == 0 and all(a >= b for a, b in zip(bars, bars[1:]))
+        # it can tick up when the leading team scores again, but it starts highest and ends empty
+        assert len(bars) == len(c["steps"]) + 2 and bars[-1] == 0 and bars[0] == max(bars)
 
 
 def test_fake_answers_are_spread_across_the_letters():

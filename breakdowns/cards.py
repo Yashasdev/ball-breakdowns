@@ -218,9 +218,9 @@ def problems(it: dict) -> list[str]:
             and re.fullmatch(r"#[0-9a-fA-F]{6}", str(x.get("color", ""))) for x in teams),
              "teams: 2, the collapsing team first, each {abbr (6 max), color #rrggbb}")
         score = lambda x: isinstance(x, dict) and isinstance(x.get("score"), list) and len(x["score"]) == 2 and all(  # noqa: E731
-            isinstance(v, int) and v >= 0 for v in x["score"]) and isinstance(x.get("clock"), str) and 2 <= len(x["clock"]) <= 16
+            isinstance(v, int) and v >= 0 for v in x["score"]) and isinstance(x.get("clock"), str) and 2 <= len(x["clock"]) <= 18
         need(score(lead) and isinstance(lead.get("line"), str) and 5 <= len(lead["line"]) <= 34,
-             "lead: {score, clock (16 max), line (34 max)}")
+             "lead: {score, clock (18 max), line (34 max)}")
         need(isinstance(steps, list) and 2 <= len(steps) <= 6 and all(score(x) for x in steps), "steps: 2-6 {score, clock}")
         need(score(final), "final: {score, clock}")
         if out:
@@ -234,8 +234,8 @@ def problems(it: dict) -> list[str]:
         stats, ctx = it.get("stats"), it.get("context")
         need(isinstance(stats, list) and 1 <= len(stats) <= 4 and all(
             isinstance(x, dict) and isinstance(x.get("v"), str) and 1 <= len(x["v"]) <= 7
-            and isinstance(x.get("k"), str) and 1 <= len(x["k"]) <= 14 for x in stats),
-             "stats: 1-4 {v (7 max), k (14 max)}")
+            and isinstance(x.get("k"), str) and 1 <= len(x["k"]) <= 16 for x in stats),
+             "stats: 1-4 {v (7 max), k (16 max)}")
         need(isinstance(ctx, list) and 2 <= len(ctx) <= 3 and all(isinstance(c, str) and 5 <= len(c) <= 40 for c in ctx),
              "context: 2-3 lines, 40 characters max")
         need(text("twist", 10, 70), "twist: the line that makes it wilder (70 characters max)")

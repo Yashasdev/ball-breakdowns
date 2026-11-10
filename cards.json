@@ -1066,5 +1066,1103 @@
   "sources": [
    "https://www.basketball-reference.com/leaders/pts_per_g_season.html"
   ]
+ },
+ {
+  "id": "cap-01",
+  "format": "cap",
+  "sport": "nfl",
+  "who": "a Cowboys fan",
+  "send": "Send this to a Cowboys fan and see if he bluffs.",
+  "reason": "tease",
+  "hook": "Cowboys fans only. One of these quarterbacks never existed.",
+  "group": "Cowboys QBs after Aikman",
+  "names": [
+   {
+    "name": "Quincy Carter",
+    "line": "QB · Cowboys · 2001-03"
+   },
+   {
+    "name": "Brandon Kessler",
+    "line": "QB · Cowboys · 2003"
+   },
+   {
+    "name": "Chad Hutchinson",
+    "line": "QB · Cowboys · 2002-03"
+   },
+   {
+    "name": "Drew Henson",
+    "line": "QB · Cowboys · 2004"
+   }
+  ],
+  "fake": 1,
+  "proof": "Drew Henson's only start for Dallas: Thanksgiving 2004.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.pro-football-reference.com/teams/dal/2002.htm",
+   "https://www.pro-football-reference.com/teams/dal/2004.htm",
+   "https://www.pro-football-reference.com/boxscores/200411250dal.htm"
+  ]
+ },
+ {
+  "id": "cap-02",
+  "format": "cap",
+  "sport": "nba",
+  "who": "the Lakers fan who says he never missed a game",
+  "send": "Send this to the Lakers fan who says he never missed a game.",
+  "reason": "tease",
+  "hook": "Three played with Kobe. One I made up.",
+  "group": "Kobe's Lakers teammates",
+  "names": [
+   {
+    "name": "Smush Parker",
+    "line": "PG · Lakers · 2005-07"
+   },
+   {
+    "name": "Kwame Brown",
+    "line": "C · Lakers · 2005-08"
+   },
+   {
+    "name": "Chris Mihm",
+    "line": "C · Lakers · 2004-09"
+   },
+   {
+    "name": "Darnell Vickery",
+    "line": "F · Lakers · 2005-07"
+   }
+  ],
+  "fake": 3,
+  "proof": "Smush Parker started all 82 games for the Lakers in 2005-06.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.basketball-reference.com/players/p/parkesm01.html",
+   "https://www.basketball-reference.com/players/b/brownkw01.html",
+   "https://www.basketball-reference.com/players/m/mihmch01.html"
+  ]
+ },
+ {
+  "id": "cap-03",
+  "format": "cap",
+  "sport": "nfl",
+  "who": "a Patriots fan",
+  "send": "Send this to a Patriots fan. No searching.",
+  "reason": "tease",
+  "hook": "Brady made it work with these guys. One of them isn't real.",
+  "group": "Brady's 2006 receivers",
+  "names": [
+   {
+    "name": "Marcus Tillery",
+    "line": "WR · Patriots · 2006"
+   },
+   {
+    "name": "Reche Caldwell",
+    "line": "WR · Patriots · 2006"
+   },
+   {
+    "name": "Jabar Gaffney",
+    "line": "WR · Patriots · 2006"
+   },
+   {
+    "name": "Doug Gabriel",
+    "line": "WR · Patriots · 2006"
+   }
+  ],
+  "fake": 0,
+  "proof": "Reche Caldwell led the 2006 Patriots with 61 catches.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.pro-football-reference.com/teams/nwe/2006.htm",
+   "https://www.pro-football-reference.com/teams/nwe/2006_roster.htm"
+  ]
+ },
+ {
+  "id": "cap-04",
+  "format": "cap",
+  "sport": "nba",
+  "who": "the Heat fan from 2012",
+  "send": "Send this to the Heat fan from 2012.",
+  "reason": "tease",
+  "hook": "Three of these got a ring with LeBron. One never existed.",
+  "group": "2012 Heat: a ring with LeBron",
+  "names": [
+   {
+    "name": "Eddy Curry",
+    "line": "C · 2012 Heat"
+   },
+   {
+    "name": "Juwan Howard",
+    "line": "F · 2012 Heat"
+   },
+   {
+    "name": "Terrence Oakley",
+    "line": "F · 2012 Heat"
+   },
+   {
+    "name": "Ronny Turiaf",
+    "line": "C · 2012 Heat"
+   }
+  ],
+  "fake": 2,
+  "proof": "Juwan Howard played 9 games in the 2012 playoffs.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.basketball-reference.com/teams/MIA/2012.html",
+   "https://www.basketball-reference.com/players/c/curryed01.html"
+  ]
+ },
+ {
+  "id": "cap-05",
+  "format": "cap",
+  "sport": "nba",
+  "who": "your dad",
+  "send": "Send this to your dad. He'll know.",
+  "reason": "tease",
+  "hook": "Everyone knows Jordan and Pippen. Do you know the bench?",
+  "group": "Jordan's bench, 1996-98",
+  "names": [
+   {
+    "name": "Jud Buechler",
+    "line": "F · Bulls · 1996-98"
+   },
+   {
+    "name": "Dickey Simpkins",
+    "line": "F · Bulls · 1996-98"
+   },
+   {
+    "name": "Bill Wennington",
+    "line": "C · Bulls · 1996-98"
+   },
+   {
+    "name": "Corey Haddix",
+    "line": "G · Bulls · 1996-98"
+   }
+  ],
+  "fake": 3,
+  "proof": "Jud Buechler played in all three of those title runs.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.basketball-reference.com/teams/CHI/1997.html",
+   "https://www.basketball-reference.com/players/s/simpkdi01.html",
+   "https://www.basketball-reference.com/players/w/wennibi01.html"
+  ]
+ },
+ {
+  "id": "cap-06",
+  "format": "cap",
+  "sport": "nfl",
+  "who": "a Browns fan",
+  "send": "Send this to a Browns fan. He's seen worse.",
+  "reason": "tease",
+  "hook": "Browns fans only. One of these starting quarterbacks is made up.",
+  "group": "Browns starting QBs",
+  "names": [
+   {
+    "name": "Tyler Brannigan",
+    "line": "Started at QB · 2004"
+   },
+   {
+    "name": "Spergon Wynn",
+    "line": "Started at QB · 2000"
+   },
+   {
+    "name": "Ken Dorsey",
+    "line": "Started at QB · 2008"
+   },
+   {
+    "name": "Seneca Wallace",
+    "line": "Started at QB · 2010-11"
+   }
+  ],
+  "fake": 0,
+  "proof": "Ken Dorsey started 3 games for Cleveland in 2008.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.pro-football-reference.com/teams/cle/2000.htm",
+   "https://www.pro-football-reference.com/teams/cle/2008.htm",
+   "https://www.pro-football-reference.com/teams/cle/2010.htm"
+  ]
+ },
+ {
+  "id": "cap-07",
+  "format": "cap",
+  "sport": "nba",
+  "who": "a Cavs fan",
+  "send": "Send this to a Cavs fan who says he was there in 2007.",
+  "reason": "tease",
+  "hook": "LeBron's first Finals team. One of these four never existed.",
+  "group": "LeBron's first Finals team",
+  "names": [
+   {
+    "name": "Daniel Gibson",
+    "line": "G · 2007 Cavs"
+   },
+   {
+    "name": "Drew Gooden",
+    "line": "F · 2007 Cavs"
+   },
+   {
+    "name": "Marcus Dellinger",
+    "line": "F · 2007 Cavs"
+   },
+   {
+    "name": "Sasha Pavlovic",
+    "line": "G · 2007 Cavs"
+   }
+  ],
+  "fake": 2,
+  "proof": "Sasha Pavlovic started all 20 of Cleveland's 2007 playoff games.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.basketball-reference.com/teams/CLE/2007.html",
+   "https://www.basketball-reference.com/players/p/pavloal01.html"
+  ]
+ },
+ {
+  "id": "cap-08",
+  "format": "cap",
+  "sport": "nfl",
+  "who": "a Lions fan",
+  "send": "Send this to a Lions fan. He'll remember.",
+  "reason": "tease",
+  "hook": "The 0-16 Lions started three quarterbacks. Here are four.",
+  "group": "QBs who started for 0-16 Detroit",
+  "names": [
+   {
+    "name": "Jon Kitna",
+    "line": "QB · 2008 Lions"
+   },
+   {
+    "name": "Jared Winslow",
+    "line": "QB · 2008 Lions"
+   },
+   {
+    "name": "Dan Orlovsky",
+    "line": "QB · 2008 Lions"
+   },
+   {
+    "name": "Daunte Culpepper",
+    "line": "QB · 2008 Lions"
+   }
+  ],
+  "fake": 1,
+  "proof": "Dan Orlovsky started 7 games for the 0-16 Lions.",
+  "ask": "Which one did you pick? Be honest.",
+  "sources": [
+   "https://www.pro-football-reference.com/teams/det/2008.htm",
+   "https://www.pro-football-reference.com/teams/det/2008_roster.htm"
+  ]
+ },
+ {
+  "id": "pain-01",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "a Falcons fan",
+  "send": "Send this to a Falcons fan. Say nothing.",
+  "reason": "tease",
+  "hook": "Up 28-3 in the Super Bowl. Guess how it ended.",
+  "kicker": "SUPER BOWL LI · FEB 5, 2017",
+  "teams": [
+   {
+    "abbr": "ATL",
+    "color": "#a71930"
+   },
+   {
+    "abbr": "NE",
+    "color": "#1d4fa0"
+   }
+  ],
+  "lead": {
+   "score": [
+    28,
+    3
+   ],
+   "clock": "3RD 8:31",
+   "line": "Up 25. In the Super Bowl."
+  },
+  "steps": [
+   {
+    "score": [
+     28,
+     9
+    ],
+    "clock": "3RD 2:06"
+   },
+   {
+    "score": [
+     28,
+     12
+    ],
+    "clock": "4TH 9:44"
+   },
+   {
+    "score": [
+     28,
+     20
+    ],
+    "clock": "4TH 5:56"
+   },
+   {
+    "score": [
+     28,
+     28
+    ],
+    "clock": "4TH 0:57"
+   }
+  ],
+  "final": {
+   "score": [
+    28,
+    34
+   ],
+   "clock": "FINAL / OT"
+  },
+  "record": "The biggest comeback in Super Bowl history.",
+  "meter": "Falcons win chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.espn.com/nfl/playbyplay/_/gameId/400927752",
+   "https://www.pro-football-reference.com/teams/atl/2016.htm",
+   "https://www.pro-football-reference.com/super-bowl/"
+  ]
+ },
+ {
+  "id": "pain-02",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "a Chargers fan",
+  "send": "Send this to a Chargers fan. They already know.",
+  "reason": "tease",
+  "hook": "Up 27-0 in a playoff game. Guess how it ended.",
+  "kicker": "AFC WILD CARD · JAN 14, 2023",
+  "teams": [
+   {
+    "abbr": "LAC",
+    "color": "#0080c6"
+   },
+   {
+    "abbr": "JAX",
+    "color": "#006778"
+   }
+  ],
+  "lead": {
+   "score": [
+    27,
+    0
+   ],
+   "clock": "2ND 4:25",
+   "line": "Up 27. In a playoff game."
+  },
+  "steps": [
+   {
+    "score": [
+     27,
+     7
+    ],
+    "clock": "2ND 0:24"
+   },
+   {
+    "score": [
+     27,
+     14
+    ],
+    "clock": "3RD 5:11"
+   },
+   {
+    "score": [
+     30,
+     14
+    ],
+    "clock": "3RD 2:58"
+   },
+   {
+    "score": [
+     30,
+     20
+    ],
+    "clock": "3RD 0:44"
+   },
+   {
+    "score": [
+     30,
+     28
+    ],
+    "clock": "4TH 5:25"
+   }
+  ],
+  "final": {
+   "score": [
+    30,
+    31
+   ],
+   "clock": "FINAL"
+  },
+  "record": "The third-biggest comeback in NFL playoff history.",
+  "meter": "Chargers win chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.espn.com/nfl/playbyplay/_/gameId/401437998",
+   "https://www.pro-football-reference.com/teams/sdg/2022.htm"
+  ]
+ },
+ {
+  "id": "pain-03",
+  "format": "pain",
+  "sport": "nba",
+  "who": "the Warriors fan who brings up 73 wins",
+  "send": "Send this to the Warriors fan who brings up 73 wins.",
+  "reason": "tease",
+  "hook": "The best regular season ever ended like this.",
+  "kicker": "2016 NBA FINALS",
+  "teams": [
+   {
+    "abbr": "GSW",
+    "color": "#1d428a"
+   },
+   {
+    "abbr": "CLE",
+    "color": "#860038"
+   }
+  ],
+  "lead": {
+   "score": [
+    3,
+    1
+   ],
+   "clock": "AFTER GAME 4",
+   "line": "73-9. Up 3-1 in the Finals."
+  },
+  "steps": [
+   {
+    "score": [
+     3,
+     2
+    ],
+    "clock": "GAME 5 · 97-112"
+   },
+   {
+    "score": [
+     3,
+     3
+    ],
+    "clock": "GAME 6 · 101-115"
+   }
+  ],
+  "final": {
+   "score": [
+    3,
+    4
+   ],
+   "clock": "GAME 7 · 89-93"
+  },
+  "record": "The first team ever to blow a 3-1 lead in the Finals.",
+  "meter": "Warriors title chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.basketball-reference.com/playoffs/2016-nba-finals-cavaliers-vs-warriors.html",
+   "https://www.basketball-reference.com/teams/GSW/2016.html",
+   "https://www.espn.com/nba/game/_/gameId/400878160"
+  ]
+ },
+ {
+  "id": "pain-04",
+  "format": "pain",
+  "sport": "mlb",
+  "who": "a Yankees fan",
+  "send": "Send this to a Yankees fan. Say nothing.",
+  "reason": "tease",
+  "hook": "Up 3-0 on Boston. Then this happened.",
+  "kicker": "2004 ALCS · YANKEES VS RED SOX",
+  "teams": [
+   {
+    "abbr": "NYY",
+    "color": "#1c3f7a"
+   },
+   {
+    "abbr": "BOS",
+    "color": "#bd3039"
+   }
+  ],
+  "lead": {
+   "score": [
+    3,
+    0
+   ],
+   "clock": "AFTER GAME 3",
+   "line": "Up 3-0 on Boston."
+  },
+  "steps": [
+   {
+    "score": [
+     3,
+     1
+    ],
+    "clock": "GAME 4 · 12 INN"
+   },
+   {
+    "score": [
+     3,
+     2
+    ],
+    "clock": "GAME 5 · 14 INN"
+   },
+   {
+    "score": [
+     3,
+     3
+    ],
+    "clock": "GAME 6 · 2-4"
+   }
+  ],
+  "final": {
+   "score": [
+    3,
+    4
+   ],
+   "clock": "GAME 7 · 3-10"
+  },
+  "record": "Still the only MLB team to lose a 3-0 series lead.",
+  "meter": "Yankees pennant chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.baseball-reference.com/postseason/2004_ALCS.shtml",
+   "https://www.mlb.com/news/rays-win-alcs-2026"
+  ]
+ },
+ {
+  "id": "pain-05",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "a Chiefs fan",
+  "send": "Send this to a Chiefs fan. Ask about January 2014.",
+  "reason": "tease",
+  "hook": "Up 38-10 in a playoff game. Then the Colts scored 35.",
+  "kicker": "AFC WILD CARD · JAN 4, 2014",
+  "teams": [
+   {
+    "abbr": "KC",
+    "color": "#e31837"
+   },
+   {
+    "abbr": "IND",
+    "color": "#2a5bb5"
+   }
+  ],
+  "lead": {
+   "score": [
+    38,
+    10
+   ],
+   "clock": "3RD 13:39",
+   "line": "Up 28. In the playoffs."
+  },
+  "steps": [
+   {
+    "score": [
+     38,
+     17
+    ],
+    "clock": "3RD 11:52"
+   },
+   {
+    "score": [
+     38,
+     24
+    ],
+    "clock": "3RD 7:36"
+   },
+   {
+    "score": [
+     41,
+     24
+    ],
+    "clock": "3RD 4:17"
+   },
+   {
+    "score": [
+     41,
+     31
+    ],
+    "clock": "3RD 2:34"
+   },
+   {
+    "score": [
+     41,
+     38
+    ],
+    "clock": "4TH 10:45"
+   },
+   {
+    "score": [
+     44,
+     38
+    ],
+    "clock": "4TH 5:40"
+   }
+  ],
+  "final": {
+   "score": [
+    44,
+    45
+   ],
+   "clock": "FINAL"
+  },
+  "record": "The second-biggest comeback in NFL playoff history.",
+  "meter": "Chiefs win chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.espn.com/nfl/playbyplay/_/gameId/340104011",
+   "https://www.pro-football-reference.com/teams/kan/2013.htm"
+  ]
+ },
+ {
+  "id": "pain-06",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "the Cowboys fan who says this is our year",
+  "send": "Send this to the Cowboys fan who says this is our year.",
+  "reason": "tease",
+  "hook": "Cowboys fans: how old were you in January 1996?",
+  "kicker": "COWBOYS · DIVISIONAL ROUND",
+  "teams": [
+   {
+    "abbr": "WINS",
+    "color": "#003594"
+   },
+   {
+    "abbr": "LOSSES",
+    "color": "#6b7680"
+   }
+  ],
+  "lead": {
+   "score": [
+    0,
+    0
+   ],
+   "clock": "SINCE 1996",
+   "line": "Dallas in the divisional round."
+  },
+  "steps": [
+   {
+    "score": [
+     0,
+     1
+    ],
+    "clock": "1996 · CAR"
+   },
+   {
+    "score": [
+     0,
+     2
+    ],
+    "clock": "2007 · NYG"
+   },
+   {
+    "score": [
+     0,
+     3
+    ],
+    "clock": "2009 · MIN"
+   },
+   {
+    "score": [
+     0,
+     4
+    ],
+    "clock": "2014 · GB"
+   },
+   {
+    "score": [
+     0,
+     5
+    ],
+    "clock": "2016 · GB"
+   },
+   {
+    "score": [
+     0,
+     6
+    ],
+    "clock": "2018 · LAR"
+   }
+  ],
+  "final": {
+   "score": [
+    0,
+    7
+   ],
+   "clock": "2022 · SF"
+  },
+  "record": "0-7. No NFC title game since January 1996.",
+  "meter": "Cowboys fans' hope",
+  "ask": "How old were you in January 1996? Be honest.",
+  "sources": [
+   "https://www.pro-football-reference.com/teams/dal/",
+   "https://www.pro-football-reference.com/teams/dal/1996.htm",
+   "https://www.pro-football-reference.com/teams/dal/2025.htm"
+  ]
+ },
+ {
+  "id": "pain-07",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "a Bills fan",
+  "send": "Send this to a Bills fan. Don't add a message.",
+  "reason": "tease",
+  "hook": "Four straight Super Bowls. Zero wins.",
+  "kicker": "BILLS IN THE SUPER BOWL",
+  "teams": [
+   {
+    "abbr": "WINS",
+    "color": "#00338d"
+   },
+   {
+    "abbr": "LOSSES",
+    "color": "#c60c30"
+   }
+  ],
+  "lead": {
+   "score": [
+    0,
+    0
+   ],
+   "clock": "1990-93 SEASONS",
+   "line": "Four straight Super Bowls."
+  },
+  "steps": [
+   {
+    "score": [
+     0,
+     1
+    ],
+    "clock": "XXV · NYG 20-19"
+   },
+   {
+    "score": [
+     0,
+     2
+    ],
+    "clock": "XXVI · WAS 37-24"
+   },
+   {
+    "score": [
+     0,
+     3
+    ],
+    "clock": "XXVII · DAL 52-17"
+   }
+  ],
+  "final": {
+   "score": [
+    0,
+    4
+   ],
+   "clock": "XXVIII · DAL 30-13"
+  },
+  "record": "Still the only team to lose four straight Super Bowls.",
+  "meter": "Bills fans' hope",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.pro-football-reference.com/super-bowl/",
+   "https://www.pro-football-reference.com/teams/buf/2025.htm"
+  ]
+ },
+ {
+  "id": "pain-08",
+  "format": "pain",
+  "sport": "nfl",
+  "who": "a Packers fan",
+  "send": "Send this to a Packers fan. They'll remember.",
+  "reason": "tease",
+  "hook": "Up 19-7 with three minutes left in the NFC title game.",
+  "kicker": "NFC TITLE GAME · JAN 18, 2015",
+  "teams": [
+   {
+    "abbr": "GB",
+    "color": "#203731"
+   },
+   {
+    "abbr": "SEA",
+    "color": "#2e5aa8"
+   }
+  ],
+  "lead": {
+   "score": [
+    19,
+    7
+   ],
+   "clock": "4TH 3:00",
+   "line": "Up 12. Three minutes left."
+  },
+  "steps": [
+   {
+    "score": [
+     19,
+     14
+    ],
+    "clock": "4TH 2:09"
+   },
+   {
+    "score": [
+     19,
+     22
+    ],
+    "clock": "4TH 1:25"
+   },
+   {
+    "score": [
+     22,
+     22
+    ],
+    "clock": "4TH 0:14"
+   }
+  ],
+  "final": {
+   "score": [
+    22,
+    28
+   ],
+   "clock": "FINAL / OT"
+  },
+  "record": "Seattle scored 15 points in the last 2:09.",
+  "meter": "Packers win chance",
+  "ask": "What's the worst loss your team ever took?",
+  "sources": [
+   "https://www.espn.com/nfl/playbyplay/_/gameId/400749519",
+   "https://www.pro-football-reference.com/teams/gnb/2014.htm"
+  ]
+ },
+ {
+  "id": "boxscore-01",
+  "format": "boxscore",
+  "sport": "nfl",
+  "who": "the friend who thinks his quarterback is bad",
+  "send": "Send this to the friend who thinks his quarterback is bad.",
+  "reason": "disbelief",
+  "hook": "1 for 15. Four yards. By the No. 2 pick in the draft.",
+  "stats": [
+   {
+    "v": "1/15",
+    "k": "COMP/ATT"
+   },
+   {
+    "v": "4",
+    "k": "YARDS"
+   },
+   {
+    "v": "2",
+    "k": "INT"
+   }
+  ],
+  "context": [
+   "Ryan Leaf. Chargers at Chiefs.",
+   "Sept. 20, 1998. His 3rd NFL start.",
+   "The No. 2 pick in that draft."
+  ],
+  "twist": "More passes caught by the other team than by his own.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://profootballarchives.com/nflboxscores2/1998nfl036.html",
+   "https://www.pro-football-reference.com/boxscores/199809200kan.htm",
+   "https://www.cbsnews.com/news/chargers-fall-in-sloppy-loss"
+  ]
+ },
+ {
+  "id": "boxscore-02",
+  "format": "boxscore",
+  "sport": "nba",
+  "who": "someone who'll say that's impossible",
+  "send": "Send this to someone who'll say that's impossible.",
+  "reason": "disbelief",
+  "hook": "He averaged more minutes than a game has.",
+  "stats": [
+   {
+    "v": "48.5",
+    "k": "MIN PER GAME"
+   }
+  ],
+  "context": [
+   "Wilt Chamberlain, 1961-62.",
+   "An NBA game is 48 minutes long.",
+   "Every minute of 79 of his 80 games."
+  ],
+  "twist": "He also averaged 50.4 points a game.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.basketball-reference.com/players/c/chambwi01.html",
+   "https://www.basketball-reference.com/players/c/chambwi01/gamelog/1962"
+  ]
+ },
+ {
+  "id": "boxscore-03",
+  "format": "boxscore",
+  "sport": "nba",
+  "who": "the big man in your pickup game",
+  "send": "Send this to the big man in your pickup game.",
+  "reason": "disbelief",
+  "hook": "19 seasons. One three. Guess who.",
+  "stats": [
+   {
+    "v": "1/22",
+    "k": "CAREER 3PT"
+   }
+  ],
+  "context": [
+   "Shaquille O'Neal. 19 seasons.",
+   "His only three: Feb. 16, 1996.",
+   "He went 1 for 1 that night."
+  ],
+  "twist": "He still scored 28,596 points.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.basketball-reference.com/players/o/onealsh01.html",
+   "https://www.basketball-reference.com/boxscores/199602160ORL.html"
+  ]
+ },
+ {
+  "id": "boxscore-04",
+  "format": "boxscore",
+  "sport": "nfl",
+  "who": "the friend who still says system quarterback",
+  "send": "Send this to the friend who still says system quarterback.",
+  "reason": "disbelief",
+  "hook": "One man has more Super Bowl wins than any franchise.",
+  "stats": [
+   {
+    "v": "7",
+    "k": "SUPER BOWL WINS"
+   }
+  ],
+  "context": [
+   "Tom Brady.",
+   "6 with New England, 1 with Tampa Bay.",
+   "Most by any franchise: 6."
+  ],
+  "twist": "One player has more rings than every NFL team.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.pro-football-reference.com/super-bowl/",
+   "https://www.pro-football-reference.com/players/B/BradTo00.htm",
+   "https://www.cbssports.com/nfl/news/super-bowl-results-winners-mvps-history-full-list/"
+  ]
+ },
+ {
+  "id": "boxscore-05",
+  "format": "boxscore",
+  "sport": "nba",
+  "who": "the teammate who never passes",
+  "send": "Send this to the teammate who never passes.",
+  "reason": "disbelief",
+  "hook": "50 shots. In one game. At 37.",
+  "stats": [
+   {
+    "v": "60",
+    "k": "POINTS"
+   },
+   {
+    "v": "50",
+    "k": "SHOTS"
+   }
+  ],
+  "context": [
+   "Kobe Bryant's last game.",
+   "April 13, 2016. Age 37.",
+   "Lakers 101, Jazz 96."
+  ],
+  "twist": "His teammates took 35 shots. Combined.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.basketball-reference.com/boxscores/201604130LAL.html",
+   "https://www.basketball-reference.com/players/b/bryanko01.html"
+  ]
+ },
+ {
+  "id": "boxscore-06",
+  "format": "boxscore",
+  "sport": "nhl",
+  "who": "the hockey fan who says it's close",
+  "send": "Send this to the hockey fan who says it's close.",
+  "reason": "disbelief",
+  "hook": "His assists alone would make him the NHL's all-time points leader.",
+  "stats": [
+   {
+    "v": "1,963",
+    "k": "ASSISTS"
+   }
+  ],
+  "context": [
+   "Wayne Gretzky. 1,487 games.",
+   "Not points. Just assists.",
+   "No other player has 1,963 points."
+  ],
+  "twist": "Without a single goal, he'd still be the points leader.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.hockey-reference.com/players/g/gretzwa01.html",
+   "https://www.hockey-reference.com/leaders/points_career.html"
+  ]
+ },
+ {
+  "id": "boxscore-07",
+  "format": "boxscore",
+  "sport": "mlb",
+  "who": "a Dodgers fan",
+  "send": "Send this to a Dodgers fan. Say nothing.",
+  "reason": "disbelief",
+  "hook": "Two grand slams. One inning. Same pitcher.",
+  "stats": [
+   {
+    "v": "2",
+    "k": "GRAND SLAMS"
+   },
+   {
+    "v": "1",
+    "k": "INNING"
+   }
+  ],
+  "context": [
+   "Fernando Tatis. Cardinals at Dodgers.",
+   "April 23, 1999. The 3rd inning.",
+   "Both off the same pitcher."
+  ],
+  "twist": "Nobody in MLB has done it since.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.retrosheet.org/boxesetc/1999/B04230LAN1999.htm",
+   "https://www.baseball-reference.com/boxes/LAN/LAN199904230.shtml",
+   "https://sabr.org/gamesproj/game/april-23-1999-fernando-tatis-hits-two-grand-slams-in-one-inning/"
+  ]
+ },
+ {
+  "id": "boxscore-08",
+  "format": "boxscore",
+  "sport": "nba",
+  "who": "the friend who says he's hot from three",
+  "send": "Send this to the friend who says he's hot from three.",
+  "reason": "disbelief",
+  "hook": "37 points in one quarter. He didn't miss.",
+  "stats": [
+   {
+    "v": "37",
+    "k": "POINTS"
+   },
+   {
+    "v": "13/13",
+    "k": "FG"
+   },
+   {
+    "v": "9/9",
+    "k": "3PT"
+   }
+  ],
+  "context": [
+   "Klay Thompson vs Sacramento.",
+   "Jan. 23, 2015.",
+   "All in one quarter: the third."
+  ],
+  "twist": "Not one miss. The NBA record for a quarter.",
+  "ask": "Worst stat line you've ever seen?",
+  "sources": [
+   "https://www.basketball-reference.com/boxscores/201501230GSW.html",
+   "https://www.nba.com/warriors/news-blogs/tdiwh-klay37"
+  ]
  }
 ]
