@@ -70,3 +70,35 @@ function grain(t) { $("grain").style.transform = `translate(${(t * 41) % 40 - 20
 
 // Fonts load only once something uses them, so load all three before setup() measures any text.
 const FONTS = Promise.all(["50px Anton", "800 50px Inter", "30px Mono"].map((f) => document.fonts.load(f)));
+
+// Share formats: the opening target line ("Send this to a Falcons fan.") and the end card (send line + question).
+// Pages include SHARE_HTML's elements (#open, #endc) and call these from setup() and render().
+const SHARE_HTML = `<div id="open"><div id="openTo" class="mono" data-safe="text">SEND THIS TO</div>
+  <div id="openWho" class="fit anton" data-safe="text"></div><div id="openSub" class="fit inter" data-safe="text"></div></div>
+  <div id="endc"><div id="endTop" class="fit anton" data-safe="text"></div><div id="endSend" class="fit anton" data-safe="text"></div>
+  <div id="endAsk" class="fit inter" data-safe="box"></div></div>`;
+function shareSetup(tl, sub, top) {
+  document.getElementById("stage").insertAdjacentHTML("beforeend", SHARE_HTML);
+  const who = tl.opening.replace(/^Send this to\s+/, "").toUpperCase();
+  fit($("openWho"), who, 150, 70);
+  if (sub) fit($("openSub"), sub, 54, 30); else $("openSub").style.display = "none";
+  if (top) fit($("endTop"), top, 64, 36); else $("endTop").style.display = "none";
+  fit($("endSend"), tl.send.toUpperCase(), 110, 54);
+  fit($("endAsk"), tl.ask, 56, 30);
+}
+// openUntil: when the target line gives way; endAt: when the end card comes in
+function shareRender(t, openUntil, endAt) {
+  const o = $("open"), p = spring(t, 8, 12), out = clamp((t - openUntil) / 0.18);
+  o.style.opacity = 1 - out;
+  o.style.display = out >= 1 ? "none" : "block";
+  $("openWho").style.transform = `scale(${1.5 - 0.5 * p}) rotate(${-2 * (1 - p)}deg)`;
+  $("openTo").style.opacity = clamp(t / 0.1);
+  $("openSub").style.opacity = clamp((t - 0.35) / 0.2);
+  const e = $("endc"), y = t - endAt;
+  e.style.opacity = clamp(y / 0.2);
+  e.style.display = y < 0 ? "none" : "block";
+  $("endSend").style.transform = `scale(${y > 0 ? 1.3 - 0.3 * spring(y, 8, 12) : 1.3})`;
+  $("endAsk").style.transform = `translateY(${(1 - ease((y - 0.4) / 0.35)) * 60}px)`;
+  $("endAsk").style.opacity = clamp((y - 0.4) / 0.2);
+  $("endTop").style.opacity = clamp((y - 0.1) / 0.2);
+}

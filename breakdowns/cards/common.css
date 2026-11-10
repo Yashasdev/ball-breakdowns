@@ -22,3 +22,13 @@ html, body { margin: 0; background: #07090d; }
         background: #ffd60a; color: #07090d; font-family: Mono; font-weight: 800; font-size: 30px; letter-spacing: 5px;
         white-space: nowrap; }
 #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+/* Share formats (cap, pain, boxscore): the full-screen target line first, the send line and a question at the end */
+#open { position: absolute; inset: 0; background: #07090d; display: block; }
+#openTo { position: absolute; left: 60px; right: 60px; top: 560px; text-align: center; font-size: 60px; color: #c9d1de; letter-spacing: 8px; }
+#openWho { position: absolute; left: 60px; right: 60px; top: 650px; height: 330px; color: #fff; line-height: 1.02; letter-spacing: 2px; }
+#openSub { position: absolute; left: 60px; right: 60px; top: 1000px; height: 90px; color: #ffd60a; line-height: 1.1; }
+#endc { position: absolute; inset: 0; background: rgba(7,9,13,.9); opacity: 0; }
+#endTop { position: absolute; left: 60px; right: 60px; top: 470px; height: 120px; color: #c9d1de; line-height: 1.1; letter-spacing: 1px; }
+#endSend { position: absolute; left: 60px; right: 60px; top: 610px; height: 420px; color: #fff; line-height: 1.05; letter-spacing: 1px; }
+#endAsk { position: absolute; left: 60px; width: 840px; top: 1150px; height: 200px; padding: 0 36px; border-radius: 28px;
+          background: #ffd60a; color: #07090d; line-height: 1.12; }

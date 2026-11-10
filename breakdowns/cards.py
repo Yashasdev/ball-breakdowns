@@ -1,4 +1,5 @@
-"""Ball Knowledge's quick card formats: Guess the Player, Higher or Lower, Rank These.
+"""Ball Knowledge's quick card formats: Guess the Player, Higher or Lower, Rank These, and the share-first formats
+Know Ball or Cap, The Pain Scoreboard and This Box Score Is Real.
 
     python -m breakdowns.cards guess-01                       # render one item from cards.json into out/
     python -m breakdowns.cards guess-01 --items FILE --out X  # from another items file (a draft), to X.mp4
@@ -12,6 +13,18 @@ breakdowns) and its own layout and motion, so the channel never posts look-alike
   hilo   a split-screen duel: the left value is shown, the right is a "?"; a 3-2-1 ring; the number counts up and a
          HIGHER / LOWER stamp lands.
   rank   a 2x2 grid of lettered tiles; a 3-2-1; the tiles fold into a leaderboard and slide into the right order.
+
+Share-first formats (Nov 2026, ~/virality-research/sports.md recipes 5, 1 and 4; docs/SHARE_PLAN.md in act-reels): each
+item names who it would be sent to ("who") and carries the send line ("send") shown at the end and used as the
+caption's first line.
+
+  cap      Know Ball or Cap: "Send this to the friend who says he knows ball." Four players with a one-line career,
+           one of them invented (never a real, named person); a 5-second timer; FAKE is stamped; a real one is proved.
+  pain     The Pain Scoreboard: "Send this to a Falcons fan." full screen (the cover; one deadpan voiced line when
+           built), then one scoreboard: the lead, the collapse one score at a time with a hit and a draining win-chance
+           bar, the final and one record line, and an end card with the send line and a comment question.
+  boxscore This Box Score Is Real: a black card with one absurd stat line in huge type, context lines one at a time,
+           a twist line, then the send line and a comment question. No voice.
 
 The last 0.5 s is the cover: the question, never the answer. Items are in cards.json; "placeholder": true items are
 for building and testing the pages only and are never published.
@@ -35,7 +48,11 @@ from breakdowns import make
 ROOT = Path(__file__).resolve().parent.parent
 CARDS = ROOT / "cards.json"
 PAGES = Path(__file__).resolve().parent / "cards"
-FORMATS = {"guess": "Guess the player", "hilo": "Higher or lower", "rank": "Rank these"}
+FORMATS = {"guess": "Guess the player", "hilo": "Higher or lower", "rank": "Rank these", "cap": "Know Ball or Cap",
+           "pain": "The Pain Scoreboard", "boxscore": "This Box Score Is Real"}
+SHARE = ("cap", "pain", "boxscore")  # the share-first formats: each item has "who", "send", "reason" and "hook"
+LENGTHS = {"cap": (12, 16), "pain": (15, 18), "boxscore": (8, 12)}  # seconds; the other formats run 12-18
+REASONS = ("tease", "disbelief")  # why someone sends it (SHARE_PLAN: tease a rival or a friend; "you won't believe this")
 SPORTS = {"nba": "NBA", "nfl": "NFL", "cfb": "COLLEGE FOOTBALL", "cbb": "COLLEGE HOOPS", "wnba": "WNBA", "mlb": "MLB",
           "nhl": "NHL", "soccer": "SOCCER", "f1": "FORMULA 1", "golf": "GOLF", "tennis": "TENNIS", "boxing": "BOXING",
           "ufc": "UFC", "olympics": "OLYMPICS"}
@@ -45,6 +62,7 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
+VOICE_AT = 0.12  # the pain card's spoken line starts here
 CARD_BUILD = 5  # raise to rebuild every published card (5: layout inside the phone's safe area)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
 # then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat
@@ -88,6 +106,11 @@ def card_hash(it: dict) -> str:
 
 
 # --- what the poster needs ----------------------------------------------------------------------------------------
+def opening(it: dict) -> str:
+    """The share formats' target line, shown full screen first (pain: also the voiced line)."""
+    return f"Send this to {it['who']}."
+
+
 def hook(it: dict) -> str:
     """The first on-screen line (the caption's first line)."""
     if it.get("hook"):
@@ -105,6 +128,11 @@ def letters(it: dict) -> str:
 
 
 def answer(it: dict) -> str:
+    """The answer for the bottom of the caption; empty for pain and boxscore, which have nothing to guess."""
+    if it["format"] == "cap":
+        return f"{'ABCD'[it['fake']]}. {it['names'][it['fake']]['name']} never existed"
+    if it["format"] in ("pain", "boxscore"):
+        return ""
     if it["format"] == "guess":
         return it["answer"]
     if it["format"] == "hilo":
@@ -113,7 +141,7 @@ def answer(it: dict) -> str:
 
 
 def why(it: dict) -> str:
-    return it.get("why") or it["payoff"]
+    return it.get("why") or it.get("payoff") or it.get("proof") or it.get("record") or it.get("twist")
 
 
 def post_info(it: dict, result: dict, item_hash: str) -> dict:
@@ -122,6 +150,8 @@ def post_info(it: dict, result: dict, item_hash: str) -> dict:
             "music": result["music"], "sources": it["sources"], "hash": item_hash}
     if it["format"] == "rank":
         info["letters"] = letters(it)
+    if it["format"] in SHARE:  # the poster's caption opens with the send line
+        info.update(send=it["send"], who=it["who"])
     return info
 
 
@@ -136,14 +166,74 @@ def problems(it: dict) -> list[str]:
     need(re.fullmatch(rf"{f}-\d{{2,3}}", str(it.get("id", ""))), f"id must look like {f}-01")
     need(isinstance(it.get("sport"), str) and re.fullmatch(r"[a-z0-9]+", it["sport"]), "sport: a short lowercase code")
     need(isinstance(it.get("ask"), str) and 10 <= len(it["ask"]) < 80, "ask: the caption's question, under 80 characters")
-    need(isinstance(it.get("payoff"), str) and 5 <= len(it["payoff"]) <= 90, "payoff: one short line (90 characters max)")
+    text = lambda k, lo, hi: isinstance(it.get(k), str) and lo <= len(it[k]) <= hi  # noqa: E731
+    if f in SHARE:
+        need(text("who", 5, 50), "who: who they'd send it to, e.g. a Falcons fan (50 characters max)")
+        need(text("hook", 10, 90), "hook: the caption's and YouTube title's line (90 characters max)")
+        need(it.get("reason") in REASONS, f"reason: one of {REASONS}")
+        need(text("send", 15, 70) and it["send"].startswith("Send this to "), 'send: "Send this to ...", 70 characters max')
+        if not out:  # the send line names the person: "a Falcons fan" -> "Falcons fan" is in it
+            core = re.sub(r"^(a|an|the|your)\s+", "", it["who"], flags=re.I).lower()
+            need(core in it["send"].lower(), f"send must name who it's for ({core!r})")
+            need(not re.search(r"\b(bet|bets|betting|parlay|odds|wager)\b", " ".join(
+                str(v) for v in it.values()).lower()), "no gambling words")
+    else:
+        need(text("payoff", 5, 90), "payoff: one short line (90 characters max)")
     src = it.get("sources")
     if not it.get("placeholder"):
         need(isinstance(src, list) and src and all(isinstance(s, str) and s.startswith("https://") for s in src),
              "sources: a list of https:// links")
     if out:
         return out
-    if f == "guess":
+    if f == "cap":
+        names = it.get("names")
+        need(text("group", 5, 34), "group: who the four are, e.g. COWBOYS QBs AFTER AIKMAN (34 characters max)")
+        need(text("proof", 10, 80), "proof: one line proving a real one is real (80 characters max)")
+        need(isinstance(names, list) and len(names) == 4, "names: exactly 4 (3 real, 1 invented)")
+        need(it.get("fake") in (0, 1, 2, 3), "fake: the index (0-3) of the invented player")
+        if out:
+            return out
+        for x in names:
+            need(isinstance(x, dict) and isinstance(x.get("name"), str) and 5 <= len(x["name"]) <= 22,
+                 f"every name 5-22 characters: {x}")
+            need(isinstance(x, dict) and isinstance(x.get("line"), str) and 5 <= len(x["line"]) <= 30,
+                 f"every career line 5-30 characters: {x}")
+        if not out:
+            need(len({x["name"] for x in names}) == 4, "four different names")
+            fake = names[it["fake"]]["name"]
+            need(fake.split()[-1].lower() not in it["proof"].lower(), "the proof line is about a real one, not the fake")
+    elif f == "pain":
+        teams, lead, steps, final = it.get("teams"), it.get("lead"), it.get("steps"), it.get("final")
+        need(text("kicker", 5, 34), "kicker: the game, e.g. SUPER BOWL LI · FEB 5, 2017 (34 characters max)")
+        need(text("record", 10, 70), "record: one line under the final (70 characters max)")
+        need(text("meter", 5, 24), "meter: the draining bar's label (24 characters max)")
+        need(isinstance(teams, list) and len(teams) == 2 and all(
+            isinstance(x, dict) and isinstance(x.get("abbr"), str) and 1 <= len(x["abbr"]) <= 6
+            and re.fullmatch(r"#[0-9a-fA-F]{6}", str(x.get("color", ""))) for x in teams),
+             "teams: 2, the collapsing team first, each {abbr (6 max), color #rrggbb}")
+        score = lambda x: isinstance(x, dict) and isinstance(x.get("score"), list) and len(x["score"]) == 2 and all(  # noqa: E731
+            isinstance(v, int) and v >= 0 for v in x["score"]) and isinstance(x.get("clock"), str) and 2 <= len(x["clock"]) <= 16
+        need(score(lead) and isinstance(lead.get("line"), str) and 5 <= len(lead["line"]) <= 34,
+             "lead: {score, clock (16 max), line (34 max)}")
+        need(isinstance(steps, list) and 2 <= len(steps) <= 6 and all(score(x) for x in steps), "steps: 2-6 {score, clock}")
+        need(score(final), "final: {score, clock}")
+        if out:
+            return out
+        seq = [lead["score"]] + [x["score"] for x in steps] + [final["score"]]
+        need(all(b[0] >= a[0] and b[1] >= a[1] and b != a for a, b in zip(seq, seq[1:])),
+             "every score changes and never goes down")
+        need(final["score"][0] < final["score"][1], "the final: the team in pain loses")
+        need(lead["score"][0] >= lead["score"][1], "the lead: the team in pain is ahead (or level)")
+    elif f == "boxscore":
+        stats, ctx = it.get("stats"), it.get("context")
+        need(isinstance(stats, list) and 1 <= len(stats) <= 4 and all(
+            isinstance(x, dict) and isinstance(x.get("v"), str) and 1 <= len(x["v"]) <= 7
+            and isinstance(x.get("k"), str) and 1 <= len(x["k"]) <= 14 for x in stats),
+             "stats: 1-4 {v (7 max), k (14 max)}")
+        need(isinstance(ctx, list) and 2 <= len(ctx) <= 3 and all(isinstance(c, str) and 5 <= len(c) <= 40 for c in ctx),
+             "context: 2-3 lines, 40 characters max")
+        need(text("twist", 10, 70), "twist: the line that makes it wilder (70 characters max)")
+    elif f == "guess":
         clues = it.get("clues")
         need(isinstance(it.get("answer"), str) and 3 <= len(it["answer"]) <= 30, "answer: the player's name")
         need(isinstance(clues, list) and 4 <= len(clues) <= 5, "clues: 4 or 5")
@@ -209,14 +299,61 @@ def track_for(it: dict) -> str:
     return options[(n + 2 * list(FORMATS).index(it["format"])) % len(options)]
 
 
-def timeline(it: dict, track: str) -> dict:
-    """When everything happens (seconds), snapped to the track's half-beats so hits land on the music."""
+def meter(it: dict) -> list[float]:
+    """The pain card's draining bar, one value per score shown (lead, steps, final). Drawn, not a model's number: a
+    real lead drains with the lead (level = half), the final is empty; a tally (Bills 0-4) drains evenly."""
+    seq = [it["lead"]["score"]] + [x["score"] for x in it["steps"]] + [it["final"]["score"]]
+    d0 = seq[0][0] - seq[0][1]
+    if d0 > 0:
+        bars = [0.5 + 0.47 * (a - b) / d0 if a >= b else max(0.06, 0.5 + 0.5 * (a - b) / d0) for a, b in seq[:-1]]
+    else:
+        bars = [0.97 * (1 - k / (len(seq) - 1)) for k in range(len(seq) - 1)]
+    return [round(b, 3) for b in bars] + [0.0]
+
+
+def timeline(it: dict, track: str, voice_seconds: float | None = None) -> dict:
+    """When everything happens (seconds), snapped to the track's half-beats so hits land on the music.
+    voice_seconds: the pain card's voiced opening line, which holds the opening screen until it's said."""
     half = 60 / music.bpm(track) / 2
     snap = lambda t: round(round(t / half) * half, 3)  # noqa: E731
     f = it["format"]
     data = {"format": f, "title": FORMATS[f], "sport": SPORTS.get(it["sport"], it["sport"].upper()), "hook": hook(it),
-            "payoff": it["payoff"]}
-    if f == "guess":
+            "payoff": why(it)}
+    if f in SHARE:
+        data.update(opening=opening(it), send=it["send"], ask=it["ask"])
+    if f == "cap":
+        board = snap(1.8)
+        timer = round(board + 1.0, 3)
+        reveal = round(timer + 5.0, 3)
+        t = {"board": board, "tiles": [round(board + 0.15 + 0.2 * k, 3) for k in range(4)], "timer": timer,
+             "reveal": reveal, "real": round(reveal + 0.55, 3), "proof": round(reveal + 1.0, 3),
+             "endcard": round(reveal + 3.2, 3), "end": round(reveal + 6.2, 3)}
+        data.update(group=it["group"], names=it["names"], fake=it["fake"], proof=it["proof"], t=t)
+        cover = reveal - 0.05
+        checks = [1.2, cover, t["proof"] + 1.0]
+    elif f == "pain":
+        board = snap(max(1.5, (voice_seconds or 1.3) + 0.4))
+        n = len(it["steps"])
+        gap = 6.0 / n
+        steps = [snap(board + 2.4 + k * gap) for k in range(n)]
+        final = round(board + 2.4 + 6.0 + 0.2, 3)
+        t = {"board": board, "line": round(board + 0.5, 3), "steps": steps, "final": final,
+             "record": round(final + 0.6, 3), "endcard": round(final + 3.0, 3), "end": round(final + 6.0, 3),
+             "reveal": final}
+        data.update(kicker=it["kicker"], teams=it["teams"], lead=it["lead"], steps=it["steps"], final=it["final"],
+                    record=it["record"], meter=it["meter"], bars=meter(it), t=t)
+        cover = 1.0  # the target line
+        checks = [1.0, board + 1.5, steps[-1] + 0.6, t["record"] + 1.0]
+    elif f == "boxscore":
+        n = len(it["context"])
+        ctx = [snap(1.2 + 1.0 * k) for k in range(n)]
+        twist = snap(ctx[-1] + 1.6)
+        t = {"context": ctx, "twist": twist, "reveal": twist, "endcard": round(twist + 2.6, 3),
+             "end": round(twist + 5.6, 3)}
+        data.update(stats=it["stats"], context=it["context"], twist=it["twist"], t=t)
+        cover = 0.9  # the stat line alone
+        checks = [0.9, twist + 1.0]
+    elif f == "guess":
         n = len(it["clues"])
         step = 2.5 if n == 5 else 3.0
         clues = [snap(0.9 + k * step) for k in range(n)]
@@ -248,11 +385,62 @@ def timeline(it: dict, track: str) -> dict:
         cover = cd - 0.05
     data["total"] = t["end"]
     data["cover"] = round(cover, 3)
+    # when the fit and safe-area check looks: the share formats change layout several times
+    data["checks"] = [round(x, 3) for x in (checks if f in SHARE else [cover])] + [round(t["end"] - 0.05, 3)]
     return data
 
 
 # --- sound -------------------------------------------------------------------------------------------------------
-def soundtrack(tl: dict, track: str, path: Path) -> None:
+def share_sounds(tl: dict, add, dip, rng) -> None:
+    """Hits for the share formats (the shared title slam isn't used: each opens on its own sound)."""
+    t, f = tl["t"], tl["format"]
+    if f == "cap":
+        add(sound.scratch(rng), 0.0, 0.45)
+        add(sound.whoosh(rng, 0.3), t["board"] - 0.1, 0.3)
+        for k, c in enumerate(t["tiles"]):
+            add(sound.pop(1.0 + 0.12 * k), c, 0.45)
+        for k in range(5):                          # the 5-second timer
+            add(sound.tick(high=True), t["timer"] + k, 0.5)
+            add(sound.tick(), t["timer"] + k + 0.5, 0.25)
+        add(sound.riser(rng, 1.3), t["reveal"] - 1.3, 0.35)
+        add(sound.impact(rng), t["reveal"], 1.0)
+        add(sound.buzzer(), t["reveal"] + 0.02, 0.35)
+        for k in range(3):
+            add(sound.pop(1.3 + 0.1 * k), t["real"] + 0.12 * k, 0.35)
+        add(sound.bell(), t["proof"], 0.4)
+        dip(t["reveal"] - 0.1, 1.2)
+    elif f == "pain":
+        add(sound.scratch(rng), 0.0, 0.6)           # the record scratch under the target line
+        add(sound.impact(rng), 0.02, 0.5)
+        add(sound.whoosh(rng, 0.35), t["board"] - 0.15, 0.35)
+        add(sound.impact(rng), t["board"], 0.7)
+        add(sound.pop(1.0), t["line"], 0.35)
+        for k, at in enumerate(t["steps"]):         # every point of the collapse lands like a hit
+            add(sound.impact(rng), at, 0.75)
+            add(sound.pop(0.9 - 0.06 * k), at, 0.45)
+            dip(at - 0.05, 0.5, 0.7)
+        add(sound.buzzer(), t["final"], 0.45)
+        add(sound.bass_drop(), t["final"], 0.6)
+        add(sound.impact(rng), t["final"], 0.9)
+        dip(t["final"] - 0.1, 1.4)
+        add(sound.tick(high=True), t["record"], 0.4)
+        add(sound.whoosh(rng, 0.35), t["endcard"] - 0.1, 0.35)
+        add(sound.pop(1.2), t["endcard"] + 0.1, 0.4)
+    else:  # boxscore
+        add(sound.impact(rng), 0.02, 0.9)
+        add(sound.bass_drop(), 0.02, 0.6)
+        for k, at in enumerate(t["context"]):
+            add(sound.pop(1.0 + 0.1 * k), at, 0.4)
+            for j in range(4):
+                add(sound.tick(), at + 0.05 + j * 0.06, 0.1)
+        add(sound.impact(rng), t["twist"], 0.9)
+        add(sound.scratch(rng), t["twist"] - 0.05, 0.35)
+        dip(t["twist"] - 0.1, 1.2)
+        add(sound.whoosh(rng, 0.35), t["endcard"] - 0.1, 0.35)
+        add(sound.pop(1.2), t["endcard"] + 0.1, 0.4)
+
+
+def soundtrack(tl: dict, track: str, path: Path, voice: np.ndarray | None = None) -> None:
     total = tl["total"] + COVER_TAIL
     n = int(total * sound.SR) + sound.SR
     buf = np.zeros(n, np.float32)
@@ -271,9 +459,17 @@ def soundtrack(tl: dict, track: str, path: Path) -> None:
         duck[int(at * SR): int((at + dur) * SR)] = level
 
     t = tl["t"]
-    add(sound.whoosh(rng, 0.35), 0, 0.35)          # the title slams in
-    add(sound.impact(rng), 0.05, 0.6)
-    if tl["format"] == "guess":
+    if tl["format"] in SHARE:
+        share_sounds(tl, add, dip, rng)
+        if voice is not None:                       # the pain card's deadpan opening line
+            add(voice / (np.abs(voice).max() or 1) * 0.95, VOICE_AT, 1.0)
+            dip(0, VOICE_AT + len(voice) / SR + 0.15, 0.3)
+    else:
+        add(sound.whoosh(rng, 0.35), 0, 0.35)      # the title slams in
+        add(sound.impact(rng), 0.05, 0.6)
+    if tl["format"] in SHARE:
+        pass
+    elif tl["format"] == "guess":
         for k, c in enumerate(t["clues"]):
             add(sound.whoosh(rng, 0.25), c - 0.1, 0.18)
             add(sound.pop(1.0 + 0.12 * k), c, 0.5)
@@ -325,14 +521,16 @@ def soundtrack(tl: dict, track: str, path: Path) -> None:
 
 
 # --- render ------------------------------------------------------------------------------------------------------
-def render(it: dict, out: Path, track: str | None = None) -> dict:
+def render(it: dict, out: Path, track: str | None = None, voice_wav: Path | None = None) -> dict:
+    """voice_wav: the pain card's opening line, spoken (build.py voices and checks it); without it the card is unvoiced."""
     track = track or track_for(it)
-    tl = timeline(it, track)
+    voice = make.load(voice_wav) if voice_wav else None
+    tl = timeline(it, track, None if voice is None else VOICE_AT + len(voice) / sound.SR)
     tl["seed"] = int(it["id"].split("-")[-1]) + 100 * list(FORMATS).index(it["format"])
     work = Path(tempfile.mkdtemp(prefix=f"{it['format']}-"))
     (work / "frames").mkdir()
     make.frames(tl, work / "frames", cover_at=tl["cover"], template=PAGES / f"{it['format']}.html")
-    soundtrack(tl, track, work / "sound.wav")
+    soundtrack(tl, track, work / "sound.wav", voice)
     make.encode(work, out)
     return {"video": str(out), "seconds": round(tl["total"] + COVER_TAIL, 2), "music": track}
 
@@ -351,7 +549,7 @@ def overflow(items: list[dict]) -> dict[str, list[str]]:
             tl = timeline(it, track_for(it))
             page.evaluate("tl => setup(tl)", tl)
             bad = []
-            for at in (tl["cover"], tl["total"] - 0.05):  # the question, and the answer
+            for at in tl["checks"]:  # the question, the answer, and every layout in between
                 page.evaluate(f"render({at})")
                 bad += page.evaluate("overflowing()")
                 bad += [f"outside the safe area: {e}" for e in page.evaluate("L => unsafe(L)", make.SAFE)]

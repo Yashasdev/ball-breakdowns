@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  /* KNOW BALL OR CAP: four players with a one-line career, one invented; a 5-second timer; FAKE is stamped. */
+  #stage { background: #0a0c12; }
+  #rays { position: absolute; inset: -400px; opacity: .35;
+          background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,214,10,.05) 0 6deg, transparent 6deg 18deg); }
+  #vig { position: absolute; inset: 0; background: radial-gradient(75% 60% at 50% 45%, transparent 35%, rgba(3,4,8,.9) 100%); }
+  #group { position: absolute; left: 60px; right: 60px; top: 330px; height: 120px; color: #fff; line-height: 1; letter-spacing: 2px; }
+  #sub { position: absolute; left: 0; right: 0; top: 462px; text-align: center; font-size: 36px; color: #ff4d5e; letter-spacing: 5px; }
+  #rows { position: absolute; left: 70px; width: 820px; top: 530px; height: 800px; }
+  .row { position: absolute; left: 0; right: 0; height: 185px; border-radius: 26px; background: #121826;
+         box-shadow: inset 0 0 0 4px #253048; }
+  .row .l { position: absolute; left: 22px; top: 37px; width: 110px; height: 110px; border-radius: 20px; background: #ffd60a;
+            color: #07090d; display: flex; align-items: center; justify-content: center; font-size: 76px; }
+  .row .nm { position: absolute; left: 160px; right: 160px; top: 22px; height: 92px; justify-content: flex-start; text-align: left;
+             color: #fff; line-height: 1; letter-spacing: 1px; }
+  .row .ln { position: absolute; left: 160px; right: 30px; top: 118px; height: 46px; justify-content: flex-start; text-align: left;
+             color: #9aa6bb; letter-spacing: 2px; }
+  .row .tag { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); padding: 4px 18px; border-radius: 12px;
+              font-size: 46px; letter-spacing: 3px; opacity: 0; background: #3ddc84; color: #07090d; }
+  .row.fake { background: #2a0b12; box-shadow: inset 0 0 0 6px #ff4d5e, 0 0 60px rgba(255,77,94,.35); }
+  .row .stamp { position: absolute; left: 400px; top: 30px; padding: 0 30px; border: 10px solid #ff4d5e; border-radius: 22px;
+                color: #ff4d5e; font-size: 104px; line-height: 1.05; letter-spacing: 8px; background: #07090dd9; opacity: 0; }
+  #timer { position: absolute; left: 70px; width: 820px; top: 1352px; height: 26px; border-radius: 13px; background: #ffffff14; overflow: hidden; }
+  #timer i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 13px; background: #ffd60a; }
+  #prompt { position: absolute; left: 60px; width: 840px; top: 1400px; height: 110px; border-radius: 60px; background: #ffd60a;
+            color: #07090d; letter-spacing: 2px; padding: 0 30px; }
+  #proof { position: absolute; left: 60px; width: 840px; top: 1400px; height: 170px; padding: 0 34px; border-radius: 22px;
+           background: #07090dee; box-shadow: inset 8px 0 0 #3ddc84, 0 0 0 3px #253048; color: #fff; line-height: 1.15; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="rays"></div><div id="vig"></div>
+  <svg id="grain" width="1160" height="2000"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="world">
+    <div class="chip" id="chip" data-safe="head">KNOW BALL OR CAP</div>
+    <div id="group" class="fit anton" data-safe="text"></div>
+    <div id="sub" class="mono" data-safe="text">ONE OF THESE NEVER EXISTED</div>
+    <div id="rows" data-safe="box"></div>
+    <div id="timer" data-safe="box"><i id="bar"></i></div>
+    <div id="prompt" class="fit anton" data-safe="box"></div>
+    <div id="proof" class="fit inter" data-safe="box"></div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="common.js"></script>
+<script>
+let TL;
+async function setup(tl) {
+  await FONTS;
+  TL = tl;
+  fit($("group"), tl.group.toUpperCase(), 110, 50);
+  $("rows").innerHTML = tl.names.map((x, k) => `<div class="row" id="r${k}" style="top:${k * 205}px">
+      <div class="l anton">${"ABCD"[k]}</div><div class="nm fit anton" id="n${k}" data-safe="text"></div>
+      <div class="ln fit mono" id="ln${k}" data-safe="text"></div><div class="tag anton" id="tg${k}">REAL</div>
+      <div class="stamp anton" id="st${k}">FAKE</div></div>`).join("");
+  // every name at one size and every line at one size, so no row looks like the odd one out
+  const ns = Math.min(...tl.names.map((x, k) => fit($("n" + k), x.name.toUpperCase(), 84, 44)));
+  const ls = Math.min(...tl.names.map((x, k) => fit($("ln" + k), x.line.toUpperCase(), 38, 24)));
+  tl.names.forEach((x, k) => { fit($("n" + k), x.name.toUpperCase(), ns, ns); fit($("ln" + k), x.line.toUpperCase(), ls, ls); });
+  fit($("prompt"), "WHICH ONE IS FAKE? COMMENT A, B, C OR D", 54, 30);
+  fit($("proof"), tl.proof, 54, 30);
+  shareSetup(tl, "ONE OF THESE PLAYERS NEVER EXISTED.", "IF HE PICKED WRONG, HE DOESN'T KNOW BALL.");
+}
+
+function render(t) {
+  const T = TL.t, x = t - T.reveal, b = t - T.board;
+  grain(t);
+  $("rays").style.transform = `rotate(${t * 6}deg)`;
+  const kick = x > 0 ? 0.04 * Math.exp(-6 * x) : 0;
+  const shake = x < 0 && x > -0.8 ? (x + 0.8) * 4 : 0;
+  $("world").style.transform = `scale(${1 + 0.02 * clamp(t / T.reveal) + kick}) translate(${Math.sin(t * 61) * shake}px, ${Math.cos(t * 47) * shake}px)`;
+  const p0 = spring(b, 8, 12);
+  $("group").style.transform = `scale(${1.4 - 0.4 * p0})`; $("group").style.opacity = clamp(b / 0.1);
+  $("chip").style.opacity = $("sub").style.opacity = clamp((b - 0.1) / 0.2);
+  TL.names.forEach((n, k) => {
+    const y = t - T.tiles[k], p = spring(y, 8, 11), r = $("r" + k), fake = k === TL.fake;
+    r.style.opacity = clamp(y / 0.12);
+    r.style.transform = `translateX(${(1 - p) * (k % 2 ? 300 : -300)}px)`;
+    r.classList.toggle("fake", x >= 0 && fake);
+    r.style.opacity = x >= 0 && !fake ? clamp(y / 0.12) * 0.92 : clamp(y / 0.12);
+    const st = $("st" + k), ps = spring(x, 9, 15);
+    st.style.opacity = fake && x >= 0 ? 1 : 0;
+    st.style.transform = `rotate(-8deg) scale(${2.6 - 1.6 * ps})`;
+    const tg = $("tg" + k), yr = t - T.real - 0.12 * k;
+    tg.style.opacity = !fake && yr > 0 ? clamp(yr / 0.12) : 0;
+    tg.style.transform = `translateY(-50%) scale(${yr > 0 ? 1 + 0.3 * Math.exp(-8 * yr) : 1})`;
+    if (fake && x >= 0) $("n" + k).style.textDecoration = "line-through";
+    else $("n" + k).style.textDecoration = "none";
+  });
+  // the 5-second timer, then the proof replaces the prompt
+  const c = clamp((t - T.timer) / 5);
+  $("timer").style.opacity = clamp((t - T.timer + 0.3) / 0.2) * (x > 0 ? clamp(1 - x / 0.15) : 1);
+  $("bar").style.width = (100 * (1 - c)) + "%";
+  $("bar").style.background = c > 0.6 ? "#ff4d5e" : "#ffd60a";
+  const pr = $("prompt");
+  pr.style.opacity = clamp((t - T.timer + 0.3) / 0.2) * (x > 0 ? clamp(1 - x / 0.12) : 1);
+  pr.style.transform = `scale(${1 + 0.03 * Math.sin(t * 7)})`;
+  const pf = $("proof"), y2 = t - T.proof;
+  pf.style.opacity = clamp(y2 / 0.2);
+  pf.style.transform = `translateY(${(1 - ease(y2 / 0.35)) * 50}px)`;
+  $("flash").style.opacity = x >= 0 ? Math.max(0, 0.7 - x * 3.5) : 0;
+  shareRender(t, T.board - 0.1, T.endcard);
+}
+</script>
+</body>
+</html>
