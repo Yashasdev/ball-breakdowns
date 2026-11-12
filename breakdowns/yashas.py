@@ -121,11 +121,14 @@ def main() -> None:
     from faster_whisper import WhisperModel
     from omnivoice import OmniVoice
 
+    threads = int(os.environ.get("OMP_NUM_THREADS") or 0)  # set it to keep a laptop cool
+    if threads:
+        torch.set_num_threads(threads)
     ref_wav, ref_text = ref_from_env()
     lines = json.loads(Path(a.lines).read_text())
     out = Path(a.out)
     (out / "takes").mkdir(parents=True, exist_ok=True)
-    whisper = WhisperModel("small", device="cpu", compute_type="int8")
+    whisper = WhisperModel("small", device="cpu", compute_type="int8", cpu_threads=threads)
     similar = Similarity(os.environ["BK_VOICE_SIMILAR"]) if os.environ.get("BK_VOICE_SIMILAR") else None
     dev = "mps" if torch.backends.mps.is_available() else "cpu"
     model = OmniVoice.from_pretrained("k2-fsa/OmniVoice", device_map=dev,
