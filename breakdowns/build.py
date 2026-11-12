@@ -293,6 +293,13 @@ def upload_local(ids: list[str]) -> None:
     """Publish videos made with --voice yashas (after review): upload out-yashas/<id>.mp4/.jpg/.json to the release
     and list them in index.json, in place of whatever was published under that id."""
     from breakdowns import cards
+    subprocess.run(["git", "fetch", "-q", "origin", "main"], cwd=ROOT, check=True)
+    on_main = {i["id"]: i for f in ("items.json", "cards.json") for i in json.loads(subprocess.run(
+        ["git", "show", f"origin/main:{f}"], cwd=ROOT, capture_output=True, text=True, check=True).stdout)}
+    if [k for k in ids if not narrator.local_only(on_main.get(k, {}))]:
+        raise SystemExit("main doesn't mark these \"voice\": \"yashas\" yet, so GitHub's daily build would rebuild them "
+                         f"with Chatterbox right after the upload; merge that first: "
+                         f"{[k for k in ids if not narrator.local_only(on_main.get(k, {}))]}")
     want = wanted(json.loads(ITEMS.read_text()), cards.load())
     hashes = {i["id"]: h for i, h in want}
     index = published_index()
