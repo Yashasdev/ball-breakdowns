@@ -20,9 +20,12 @@ caption's first line.
 
   cap      Know Ball or Cap: "Send this to the friend who says he knows ball." Four players with a one-line career,
            one of them invented (never a real, named person); a 5-second timer; FAKE is stamped; a real one is proved.
-  pain     The Pain Scoreboard: "Send this to a Falcons fan." full screen (the cover; one deadpan voiced line when
-           built), then one scoreboard: the lead, the collapse one score at a time with a hit and a draining lead
-           bar, the final and one record line, and an end card with the send line and a comment question.
+  pain     The Pain Scoreboard: "Send this to a Falcons fan." full screen (the cover; spoken when built), then one
+           scoreboard: the lead, the collapse one score at a time with a hit, a draining lead bar and a jab that rubs
+           it in ("Still up 19. Relax." ... "Tied. Oh no."; 2-3 of them spoken), the final and one record line, a
+           spoken stinger ("28-3. Say it to a Falcons fan and watch their face."), and an end card with the send line
+           and a comment question. Jabs roast teams and results only: never a player's character, injuries, family or
+           life off the field; nothing hateful, no profanity; anything that sounds like a fact is true and sourced.
   boxscore This Box Score Is Real: a black card with one absurd stat line in huge type, context lines one at a time,
            a twist line, then the send line and a comment question. No voice.
 
@@ -52,7 +55,7 @@ PAGES = Path(__file__).resolve().parent / "cards"
 FORMATS = {"guess": "Guess the player", "hilo": "Higher or lower", "rank": "Rank these", "cap": "Know Ball or Cap",
            "pain": "The Pain Scoreboard", "boxscore": "This Box Score Is Real"}
 SHARE = ("cap", "pain", "boxscore")  # the share-first formats: each item has "who", "send", "reason" and "hook"
-LENGTHS = {"cap": (12, 16), "pain": (15, 18), "boxscore": (8, 12)}  # seconds; the other formats run 12-18
+LENGTHS = {"cap": (12, 16), "pain": (15, 20.5), "boxscore": (8, 12)}  # seconds; the other formats run 12-18
 REASONS = ("tease", "disbelief")  # why someone sends it (SHARE_PLAN: tease a rival or a friend; "you won't believe this")
 SPORTS = {"nba": "NBA", "nfl": "NFL", "cfb": "COLLEGE FOOTBALL", "cbb": "COLLEGE HOOPS", "wnba": "WNBA", "mlb": "MLB",
           "nhl": "NHL", "soccer": "SOCCER", "f1": "FORMULA 1", "golf": "GOLF", "tennis": "TENNIS", "boxing": "BOXING",
@@ -63,13 +66,50 @@ STYLES = {**make.STYLES_BY_SPORT, "cbb": ["phonk", "drill", "trap"], "wnba": ["p
           "f1": ["house", "phonk"]}
 OTHER_STYLES = ["stadium", "phonk"]
 COVER_TAIL = make.COVER_TAIL
-VOICE_AT = 0.12  # the pain card's spoken line starts here
-DEADPAN = 0.35  # Chatterbox exaggeration for that line: flat and dry (the stories use 1.0, full hype)
+VOICE_AT = 0.12  # the pain card's spoken opening line starts here
+DEADPAN = 0.35  # Chatterbox exaggeration for the pain card's lines: flat and dry (the stories use 1.0, full hype)
+JAB_MAX, STING_MAX = 28, 70  # characters: a jab sits under the scoreboard, the stinger in its own box
+WORDS_PER_SECOND = 2.9  # for timing an unvoiced card (layout checks) as if it were spoken
 
 
 def voiced(it: dict) -> bool:
-    """Cards with a spoken line: only the pain card's opening ("Send this to a Falcons fan.")."""
+    """Cards with spoken lines: only the pain card (its opening, 2-3 jabs and the stinger: pain_lines())."""
     return it.get("format") == "pain"
+
+
+def spoken(text: str) -> str:
+    """A line as the narrator should read it: "0-7" -> "oh and 7", "28-3" -> "28 to 3"."""
+    text = re.sub(r"\b0-(\d+)\b", r"oh and \1", text)
+    return re.sub(r"\b(\d+)-(\d+)\b", r"\1 to \2", text)
+
+
+def pain_lines(it: dict) -> list[dict]:
+    """The pain card's spoken lines, in order: the opening (every word must be heard right), the spoken jabs, the
+    stinger. Each {"key", "say"[, "strict"]}; build.py voices them and render() places them."""
+    return ([{"key": "open", "say": opening(it), "strict": True}]
+            + [{"key": f"jab{k}", "say": spoken(it["jabs"][k])} for k in sorted(it["spoken"])]
+            + [{"key": "sting", "say": it.get("stinger_say") or spoken(it["stinger"])}])
+
+
+def jab_problems(it: dict) -> list[str]:
+    """Jabs that state the score must match it: "Up 19" is the lead at that step, "Down 3" the deficit, "Tied" a tie,
+    and "0-3" / "3-1" the score shown."""
+    out = []
+    for jab, step in zip(it["jabs"], it["steps"]):
+        a, b = step["score"]
+        low = jab.lower()
+        for m in re.finditer(r"\bup (\d+)\b", low):
+            if int(m.group(1)) != a - b:
+                out.append(f"{jab!r}: the lead is {a - b}")
+        for m in re.finditer(r"\bdown (\d+)\b", low):
+            if int(m.group(1)) != b - a:
+                out.append(f"{jab!r}: the deficit is {b - a}")
+        if re.search(r"\btied\b", low) and a != b:
+            out.append(f"{jab!r}: it isn't tied ({a}-{b})")
+        for m in re.finditer(r"\b(\d+)-(\d+)\b", jab):
+            if [int(m.group(1)), int(m.group(2))] != [a, b]:
+                out.append(f"{jab!r}: the score is {a}-{b}")
+    return out
 CARD_BUILD = 5  # raise to rebuild every published card (5: layout inside the phone's safe area)
 # Yashas (Nov 8, 2026): the cards' background music should be a quick, stimulating rap beat, like the old card beat
 # then (same day) asked for more variety: Atlanta trap, melodic and drill alongside the quick beat
@@ -234,6 +274,16 @@ def problems(it: dict) -> list[str]:
         need(final["score"][0] < final["score"][1], "the final: the team in pain loses")
         need(len(it["who"]) <= 24, "who: short (24 characters max), so the spoken opening fits the first 2 seconds")
         need(lead["score"][0] >= lead["score"][1], "the lead: the team in pain is ahead (or level)")
+        jabs, said = it.get("jabs"), it.get("spoken")
+        need(isinstance(jabs, list) and len(jabs) == len(steps) and all(
+            isinstance(j, str) and 4 <= len(j) <= JAB_MAX for j in jabs),
+             f"jabs: one mocking line per step ({JAB_MAX} characters max)")
+        need(isinstance(said, list) and 2 <= len(said) <= 3 and len(set(said)) == len(said) and all(
+            isinstance(k, int) and 0 <= k < len(steps) for k in said), "spoken: 2-3 jab indexes to speak")
+        need(text("stinger", 10, STING_MAX), f"stinger: the spoken last word ({STING_MAX} characters max)")
+        need(it.get("stinger_say") is None or text("stinger_say", 10, 90), "stinger_say: how to read the stinger")
+        if isinstance(jabs, list) and len(jabs) == len(steps):
+            out += jab_problems(it)
     elif f == "boxscore":
         stats, ctx = it.get("stats"), it.get("context")
         need(isinstance(stats, list) and 1 <= len(stats) <= 4 and all(
@@ -321,9 +371,10 @@ def meter(it: dict) -> list[float]:
     return [round(b, 3) for b in bars] + [0.0]
 
 
-def timeline(it: dict, track: str, voice_seconds: float | None = None) -> dict:
+def timeline(it: dict, track: str, voices: list[float] | None = None) -> dict:
     """When everything happens (seconds), snapped to the track's half-beats so hits land on the music.
-    voice_seconds: the pain card's voiced opening line, which holds the opening screen until it's said."""
+    voices: how long each of the pain card's spoken lines is (pain_lines() order); the opening holds the first screen
+    until it's said and a spoken jab holds its step. Without them (layout checks) they're estimated from the words."""
     half = 60 / music.bpm(track) / 2
     snap = lambda t: round(round(t / half) * half, 3)  # noqa: E731
     f = it["format"]
@@ -342,18 +393,27 @@ def timeline(it: dict, track: str, voice_seconds: float | None = None) -> dict:
         cover = reveal - 0.05
         checks = [1.2, cover, t["proof"] + 1.0]
     elif f == "pain":
-        board = snap(max(1.5, (voice_seconds or 1.3) + 0.4))
+        lines = pain_lines(it)
+        secs = dict(zip([x["key"] for x in lines], voices or [len(x["say"].split()) / WORDS_PER_SECOND + 0.2
+                                                               for x in lines]))
+        board = snap(max(1.5, secs["open"] + VOICE_AT + 0.3))
         n = len(it["steps"])
-        gap = 6.0 / n
-        steps = [snap(board + 2.4 + k * gap) for k in range(n)]
-        final = round(board + 2.4 + 6.0 + 0.2, 3)
+        base = 4.8 / n
+        steps, at = [], board + 1.8
+        for k in range(n):  # a spoken jab holds its step until it's said
+            steps.append(snap(at))
+            at = steps[-1] + max(base, secs.get(f"jab{k}", 0) + 0.35)
+        final = round(at + 0.2, 3)
+        sting = round(final + 1.0, 3)
+        endcard = round(max(final + 3.0, sting + secs["sting"] + 0.5), 3)
         t = {"board": board, "line": round(board + 0.5, 3), "steps": steps, "final": final,
-             "record": round(final + 0.6, 3), "endcard": round(final + 3.0, 3), "end": round(final + 6.0, 3),
+             "record": round(final + 0.6, 3), "sting": sting, "endcard": endcard, "end": round(endcard + 2.4, 3),
              "reveal": final}
         data.update(kicker=it["kicker"], teams=it["teams"], lead=it["lead"], steps=it["steps"], final=it["final"],
-                    record=it["record"], meter=it["meter"], bars=meter(it), t=t)
+                    record=it["record"], meter=it["meter"], bars=meter(it), jabs=it["jabs"], stinger=it["stinger"],
+                    t=t)
         cover = 1.0  # the target line
-        checks = [1.0, board + 1.5, steps[-1] + 0.6, t["record"] + 1.0]
+        checks = [1.0, board + 1.5, *[x + 0.5 for x in steps], t["record"] + 0.5, sting + 1.0]
     elif f == "boxscore":
         n = len(it["context"])
         ctx = [snap(1.2 + 1.0 * k) for k in range(n)]
@@ -450,7 +510,8 @@ def share_sounds(tl: dict, add, dip, rng) -> None:
         add(sound.pop(1.2), t["endcard"] + 0.1, 0.4)
 
 
-def soundtrack(tl: dict, track: str, path: Path, voice: np.ndarray | None = None) -> None:
+def soundtrack(tl: dict, track: str, path: Path, voices: list[tuple[np.ndarray, float]] | None = None) -> None:
+    """voices: (audio, start in seconds) for each spoken line."""
     total = tl["total"] + COVER_TAIL
     n = int(total * sound.SR) + sound.SR
     buf = np.zeros(n, np.float32)
@@ -471,9 +532,9 @@ def soundtrack(tl: dict, track: str, path: Path, voice: np.ndarray | None = None
     t = tl["t"]
     if tl["format"] in SHARE:
         share_sounds(tl, add, dip, rng)
-        if voice is not None:                       # the pain card's deadpan opening line
-            add(voice / (np.abs(voice).max() or 1) * 0.95, VOICE_AT, 1.0)
-            dip(0, VOICE_AT + len(voice) / SR + 0.15, 0.3)
+        for v, at in voices or []:                 # the pain card's spoken lines, the music ducked under each
+            add(v / (np.abs(v).max() or 1) * 0.95, at, 1.0)
+            dip(max(0, at - 0.05), len(v) / SR + 0.2, 0.3)
     else:
         add(sound.whoosh(rng, 0.35), 0, 0.35)      # the title slams in
         add(sound.impact(rng), 0.05, 0.6)
@@ -531,11 +592,17 @@ def soundtrack(tl: dict, track: str, path: Path, voice: np.ndarray | None = None
 
 
 # --- render ------------------------------------------------------------------------------------------------------
-def render(it: dict, out: Path, track: str | None = None, voice_wav: Path | None = None) -> dict:
-    """voice_wav: the pain card's opening line, spoken (build.py voices and checks it); without it the card is unvoiced."""
+def render(it: dict, out: Path, track: str | None = None, voice_wavs: list[Path] | None = None) -> dict:
+    """voice_wavs: the pain card's lines, spoken (build.py voices and checks them, pain_lines() order); without them
+    the card is unvoiced."""
     track = track or track_for(it)
-    voice = make.load(voice_wav) if voice_wav else None
-    tl = timeline(it, track, None if voice is None else VOICE_AT + len(voice) / sound.SR)
+    clips = [make.load(w) for w in voice_wavs] if voice_wavs else None
+    tl = timeline(it, track, None if clips is None else [len(v) / sound.SR for v in clips])
+    voice = None
+    if clips:
+        t = tl["t"]
+        starts = {"open": VOICE_AT, "sting": t["sting"], **{f"jab{k}": t["steps"][k] + 0.08 for k in range(len(t["steps"]))}}
+        voice = [(v, starts[x["key"]]) for v, x in zip(clips, pain_lines(it))]
     tl["seed"] = int(it["id"].split("-")[-1]) + 100 * list(FORMATS).index(it["format"])
     work = Path(tempfile.mkdtemp(prefix=f"{it['format']}-"))
     (work / "frames").mkdir()

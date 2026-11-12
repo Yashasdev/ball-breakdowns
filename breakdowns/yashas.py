@@ -15,10 +15,11 @@ from environment variables that point outside the repo:
 
 lines.json: [{"say": "...", "check": "..."}] ("check" is what the transcript should read when "say" has OmniVoice
 pronunciation spans like [K AY1 M]; it defaults to "say"; "strict": true makes every word count for that line, to
-confirm a hard word was said right). Every line gets TAKES takes; the kept one is the most
-similar take that passes the transcript check (heard_ok, and every word for --strict card lines). If none passes,
-more takes up to MAX_TAKES. Writes lineNN.wav and meta.json like build.voice(), plus takes.json (every take: seed,
-transcript, similarity, seconds, words a minute). Only the finished lines leave this folder, inside a video.
+confirm a hard word was said right). Every line gets TAKES takes; the kept one passes the transcript check
+(heard_ok, and every word for --strict card lines), preferring takes where every word was heard right, then the one
+most similar to him. If none passes, more takes up to MAX_TAKES. Writes lineNN.wav and meta.json like build.voice(),
+plus takes.json (every take: seed, transcript, similarity, seconds, words a minute). Only the finished lines leave this
+folder, inside a video.
 """
 
 from __future__ import annotations
@@ -138,12 +139,15 @@ def main() -> None:
                 ok, why = False, "a word differs"
             sim = similar(str(path)) if similar else None
             dur = len(x) / sr
-            takes.append({"take": t, "seed": seed, "ok": ok, "heard": heard, "why": why, "similarity": sim,
+            takes.append({"take": t, "seed": seed, "ok": ok, "exact": words(check) == words(heard), "heard": heard,
+                          "why": why, "similarity": sim,
                           "seconds": round(dur, 3), "wpm": round(len(check.split()) / dur * 60), "gen_s": round(gen_s, 1)})
             print(f"  line {k} take {t + 1}: {'ok' if ok else 'redo'} sim {sim if sim is None else round(sim, 4)} "
                   f"{dur:.2f}s | {heard}" + (f" | {why}" if why else ""), flush=True)
         passed = [x for x in takes if x["ok"]]
-        best = max(passed, key=lambda x: (x["similarity"] or 0)) if passed else None
+        # a take whose every word was heard right beats one that only passes the letter match ("before few feel the
+        # burn" for "before you feel the burn"); then the one that sounds most like him
+        best = max(passed, key=lambda x: (x["exact"], x["similarity"] or 0)) if passed else None
         log.append({"say": say, "check": check, "kept": None if best is None else best["take"], "takes": takes})
         (out / "takes.json").write_text(json.dumps(log, indent=1))
         if best is None:

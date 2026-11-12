@@ -103,8 +103,8 @@ def published_index() -> dict[str, dict]:
 
 
 def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = None, strict: bool = False) -> bool:
-    """strict: every word must match (short card lines, where the letter match lets "Warrior Spam" pass for
-    "Warriors fan")."""
+    """strict (or a beat's "strict"): every word must match (short card lines, where the letter match lets
+    "Warrior Spam" pass for "Warriors fan")."""
     import torch
     import torchaudio
     from breakdowns.voice import CFG, EXAGGERATION, REF
@@ -123,7 +123,7 @@ def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = No
             segs, _ = whisper.transcribe(str(path), language="en")
             heard = " ".join(s.text for s in segs).strip()
             ok, why = heard_ok(beat["say"], heard)
-            if strict and ok and words(beat["say"]) != words(heard):
+            if (strict or beat.get("strict")) and ok and words(beat["say"]) != words(heard):
                 ok, why = False, "a word differs"
             print(f"  line {k} try {attempt + 1}: {'ok' if ok else 'redo'} | {heard}" + (f" | {why}" if why else ""), flush=True)
             if ok:
@@ -213,14 +213,15 @@ def main() -> None:
         card = "beats" not in it
         print(f"== {it['id']} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
         if card:
-            line = None
-            if cards.voiced(it):  # the pain card's deadpan opening line, checked like every story line
+            lines = None
+            if cards.voiced(it):  # the pain card's deadpan lines, checked like every story line
                 vdir = Path(tempfile.mkdtemp()) / it["id"]
-                if voice(model, whisper, {"id": it["id"], "beats": [{"say": cards.opening(it)}]}, vdir, cards.DEADPAN, strict=True):
-                    line = vdir / "line00.wav"
+                said = cards.pain_lines(it)
+                if voice(model, whisper, {"id": it["id"], "beats": said}, vdir, cards.DEADPAN):
+                    lines = [vdir / f"line{k:02d}.wav" for k in range(len(said))]
                 else:
-                    print(f"::warning::{it['id']}: the opening line never matched; building it without the voice")
-            result = cards.render(it, OUT / f"{it['id']}.mp4", voice_wav=line)
+                    print(f"::warning::{it['id']}: a spoken line never matched; building it without the voice")
+            result = cards.render(it, OUT / f"{it['id']}.mp4", voice_wavs=lines)
             info = cards.post_info(it, result, h)
         else:
             vdir = Path(tempfile.mkdtemp()) / it["id"]
@@ -266,17 +267,17 @@ def build_local(ids: list[str]) -> None:
             raise SystemExit(f"{k}: only stories and pain cards have a voice")
         print(f"== {k} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
         work = Path(tempfile.mkdtemp(prefix=f"{k}-"))
-        lines = [{"say": cards.opening(it)}] if card else [{"say": b["say"]} for b in it["beats"]]
+        lines = cards.pain_lines(it) if card else [{"say": b["say"]} for b in it["beats"]]
         (work / "lines.json").write_text(json.dumps(lines))
         vdir = work / "voice"
         r = subprocess.run([python, "-m", "breakdowns.yashas", "--lines", str(work / "lines.json"), "--out", str(vdir),
-                            "--seed", k.split("-")[-1], *(["--strict"] if card else [])], cwd=ROOT)
+                            "--seed", k.split("-")[-1]], cwd=ROOT)
         if r.returncode:
             shutil.rmtree(work, ignore_errors=True)
             raise SystemExit(f"{k}: a line never matched its script; nothing was rendered")
         out = OUT_LOCAL / f"{k}.mp4"
         if card:
-            result = cards.render(it, out, voice_wav=vdir / "line00.wav")
+            result = cards.render(it, out, voice_wavs=[vdir / f"line{j:02d}.wav" for j in range(len(lines))])
             info = cards.post_info(it, result, cards.card_hash(it))
         else:
             result = make.render(k, vdir, out)
