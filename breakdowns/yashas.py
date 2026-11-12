@@ -84,6 +84,22 @@ class Similarity:
         return float(self.emb(self.load16(path)) @ self.centroid)
 
 
+def expressiveness(path: str) -> dict:
+    """How lively a take sounds: pitch range (standard deviation of the voiced pitch, in semitones) and loudness
+    variation (standard deviation of the voiced frames' level, in dB); "score" = semitones + dB / 3."""
+    import librosa
+    import numpy as np
+    y, sr = librosa.load(path, sr=16000)
+    f0, voiced, _ = librosa.pyin(y, fmin=65, fmax=400, sr=sr, frame_length=1024, hop_length=160)
+    db = 20 * np.log10(librosa.feature.rms(y=y, frame_length=1024, hop_length=160)[0] + 1e-6)
+    n = min(len(f0), len(db))
+    f0, voiced, db = f0[:n], voiced[:n], db[:n]
+    p = f0[voiced & ~np.isnan(f0)]
+    st = float(np.std(12 * np.log2(p / np.median(p)))) if len(p) > 5 else 0.0
+    loud = float(np.std(db[voiced])) if voiced.sum() > 5 else 0.0
+    return {"pitch_st": round(st, 2), "loud_db": round(loud, 2), "score": round(st + loud / 3, 3)}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--lines", required=True)
@@ -92,6 +108,10 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--takes", type=int, default=TAKES)
     ap.add_argument("--speed", type=float, default=None, help="OmniVoice speaking speed (default: its own estimate)")
+    ap.add_argument("--pick", choices=["similar", "expressive"], default="similar",
+                    help="expressive: among takes heard right and within --window of the most similar one, keep the "
+                         "liveliest (expressiveness())")
+    ap.add_argument("--window", type=float, default=0.01)
     a = ap.parse_args()
 
     os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
@@ -138,16 +158,22 @@ def main() -> None:
             if (a.strict or line.get("strict")) and ok and words(check) != words(heard):
                 ok, why = False, "a word differs"
             sim = similar(str(path)) if similar else None
+            expr = expressiveness(str(path)) if a.pick == "expressive" else None
             dur = len(x) / sr
             takes.append({"take": t, "seed": seed, "ok": ok, "exact": words(check) == words(heard), "heard": heard,
-                          "why": why, "similarity": sim,
+                          "why": why, "similarity": sim, "expressive": expr,
                           "seconds": round(dur, 3), "wpm": round(len(check.split()) / dur * 60), "gen_s": round(gen_s, 1)})
             print(f"  line {k} take {t + 1}: {'ok' if ok else 'redo'} sim {sim if sim is None else round(sim, 4)} "
-                  f"{dur:.2f}s | {heard}" + (f" | {why}" if why else ""), flush=True)
+                  + (f"expr {expr['score']} ({expr['pitch_st']} st, {expr['loud_db']} dB) " if expr else "")
+                  + f"{dur:.2f}s | {heard}" + (f" | {why}" if why else ""), flush=True)
         passed = [x for x in takes if x["ok"]]
         # a take whose every word was heard right beats one that only passes the letter match ("before few feel the
         # burn" for "before you feel the burn"); then the one that sounds most like him
         best = max(passed, key=lambda x: (x["exact"], x["similarity"] or 0)) if passed else None
+        if best and a.pick == "expressive":  # the liveliest of the takes that sound about as much like him
+            close = [x for x in passed if x["exact"] == best["exact"]
+                     and (x["similarity"] or 0) >= (best["similarity"] or 0) - a.window]
+            best = max(close, key=lambda x: x["expressive"]["score"])
         log.append({"say": say, "check": check, "kept": None if best is None else best["take"], "takes": takes})
         (out / "takes.json").write_text(json.dumps(log, indent=1))
         if best is None:
