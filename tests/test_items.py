@@ -54,6 +54,8 @@ def test_the_voice_check_catches_slurs_and_stray_sounds():
                         "Tax Axe of, Miami wins in overtime, then wins game 7, champions!")[0]
     assert not heard_ok("Third and ten. The plan: a catch.", "3rd and 10. The plan. A catch. 3rd and 10. The plan. A catch.")[0]
     assert not heard_ok("It's short. Chris Davis is waiting, nine yards deep in the end zone.", "Chris Davis is")[0]
+    # a line shorter than 8 letters (a pain card's jab) is checked too, not a crash
+    assert heard_ok("Up 2. Uh oh.", "Up 2. Uh-oh.")[0] and not heard_ok("Up 2. Uh oh.", "Oh no, up 2.")[0]
 
 
 def chromium():

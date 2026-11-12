@@ -65,7 +65,8 @@ def heard_ok(say: str, heard: str) -> tuple[bool, str]:
     ratio = lambda x, y: SequenceMatcher(None, x, y).ratio()  # noqa: E731
     whole, end = ratio(want, got), ratio(want[-8:], got[-8:])
     # where the line's opening letters turn up in the transcript: later than 1 letter in means a stray sound before it
-    m = SequenceMatcher(None, want[:8], got[:24]).find_longest_match(0, 8, 0, 24)
+    head, start = want[:8], got[:24]  # a line shorter than 8 letters ("Up 2. Uh oh.") is compared as it is
+    m = SequenceMatcher(None, head, start).find_longest_match(0, len(head), 0, len(start))
     lead = m.b - m.a if m.size >= 3 else 99
     ok = whole >= 0.8 and lead <= 1 and end >= 0.6
     return ok, "" if ok else f"match {whole:.2f}, stray start {lead}, end {end:.2f}"
