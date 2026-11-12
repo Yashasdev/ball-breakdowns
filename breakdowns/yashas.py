@@ -15,7 +15,8 @@ from environment variables that point outside the repo:
 
 lines.json: [{"say": "...", "check": "..."}] ("check" is what the transcript should read when "say" has OmniVoice
 pronunciation spans like [K AY1 M]; it defaults to "say"; "strict": true makes every word count for that line, and
-"must": ["chyme"] lists hard words that must be heard as written). Every line gets TAKES takes; the kept one passes the transcript check
+"must": ["chyme"] lists hard words that must be heard as written, with every other word matching except at most
+one short function word, noted in notes.txt for a listen). Every line gets TAKES takes; the kept one passes the transcript check
 (heard_ok, and every word for --strict card lines), preferring takes where every word was heard right, then the one
 most similar to him. If none passes, more takes up to MAX_TAKES. Writes lineNN.wav and meta.json like build.voice(),
 plus takes.json (every take: seed, transcript, similarity, seconds, words a minute). Only the finished lines leave this
@@ -46,6 +47,30 @@ def ref_from_env() -> tuple[str, str]:
     if Path(wav).resolve().is_relative_to(Path(__file__).resolve().parent.parent):
         raise SystemExit("BK_VOICE_REF must be outside this repo: the repo is public")
     return wav, text
+
+
+FUNCTION_WORDS = {"to", "in", "a", "the", "of"}
+
+
+def word_diffs(check: str, heard: str) -> list[tuple[str, str]]:
+    """Where the transcript's words differ from the script's: [(script words, heard words)]."""
+    from difflib import SequenceMatcher
+    a, b = words(check), words(heard)
+    return [(" ".join(a[i:j]), " ".join(b[k:m])) for op, i, j, k, m in SequenceMatcher(None, a, b, autojunk=False).get_opcodes()
+            if op != "equal"]
+
+
+def hard_line_ok(line: dict, heard: str) -> tuple[bool, str]:
+    """A line with "must" words: those words are heard, and every other word matches except at most one short function
+    word (to/in/a/the/of: "released to squirt" for "released a squirt"), which goes in the notes for a listen."""
+    missing = [w for w in line["must"] if w.lower() not in words(heard)]
+    if missing:
+        return False, f"didn't hear {missing}"
+    diffs = word_diffs(line.get("check") or plain(line["say"]), heard)
+    if not diffs:
+        return True, ""
+    small = len(diffs) == 1 and all(len(x.split()) <= 1 and (not x or x in FUNCTION_WORDS) for x in diffs[0])
+    return (True, f"{diffs[0][0]!r} heard as {diffs[0][1]!r}") if small else (False, f"words differ: {diffs}")
 
 
 def plain(say: str) -> str:
@@ -167,14 +192,15 @@ def main() -> None:
             ok, why = heard_ok(check, heard)
             if (a.strict or line.get("strict")) and ok and words(check) != words(heard):
                 ok, why = False, "a word differs"
-            missing = [w for w in line.get("must", []) if w.lower() not in words(heard)]
-            if ok and missing:  # the hard word itself must be heard ("chyme", not "thyme")
-                ok, why = False, f"didn't hear {missing}"
+            note = ""
+            if ok and line.get("must"):  # the hard word heard ("chyme", not "thyme"), the rest word for word
+                ok, note = hard_line_ok(line, heard)
+                why = "" if ok else note
             sim = similar(str(path)) if similar else None
             expr = expressiveness(str(path)) if a.pick == "expressive" else None
             dur = len(x) / sr
             takes.append({"take": t, "seed": seed, "ok": ok, "exact": words(check) == words(heard), "heard": heard,
-                          "why": why, "similarity": sim, "expressive": expr,
+                          "why": why, "note": note if ok else "", "similarity": sim, "expressive": expr,
                           "seconds": round(dur, 3), "wpm": round(len(check.split()) / dur * 60), "gen_s": round(gen_s, 1)})
             print(f"  line {k} take {t + 1}: {'ok' if ok else 'redo'} sim {sim if sim is None else round(sim, 4)} "
                   + (f"expr {expr['score']} ({expr['pitch_st']} st, {expr['loud_db']} dB) " if expr else "")
@@ -192,6 +218,10 @@ def main() -> None:
         if best is None:
             print(f"::error::line {k} never matched the script in {len(takes)} takes: {say}")
             sys.exit(2)
+        if best.get("note"):  # one function word differs: worth a listen
+            with open(out / "notes.txt", "a") as f:
+                f.write(f"line {k}: {check} | kept take {best['take'] + 1}: {best['note']}\n")
+            print(f"  NOTE line {k}: {best['note']}", flush=True)
         keep = out / f"line{k:02d}.wav"
         keep.write_bytes((out / "takes" / f"line{k:02d}_t{best['take']}.wav").read_bytes())
         meta.append({"file": keep.name, "seconds": best["seconds"]})
