@@ -17,6 +17,16 @@ ROOT = Path(__file__).resolve().parent.parent
 ITEMS = ROOT / "items.json"
 REF = ROOT / "assets" / "voice" / "ref_onyx.wav"
 EXAGGERATION, CFG = 1.0, 0.3   # chosen by Yashas on Oct 31, 2026 ("E ... am_onyx")
+# Items marked "voice": "yashas" in items.json / cards.json are narrated in a clone of Yashas's own voice, on his Mac
+# only (breakdowns/yashas.py; his recordings never enter this public repo). GitHub's build can't voice them, so it
+# never builds them and leaves the published videos alone. CLONED: what their published json and index entry say
+# ("voice"), so the poster adds the caption credit.
+CLONED = {"yashas": "yashas-omnivoice"}
+
+
+def local_only(item: dict) -> bool:
+    """Voiced on Yashas's Mac, never by the GitHub build."""
+    return item.get("voice") in CLONED
 
 
 def main() -> None:

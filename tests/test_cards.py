@@ -175,3 +175,32 @@ def test_the_share_checks_catch_mistakes():
         bad = copy.deepcopy(pain)
         bad["final"]["score"] = bad["final"]["score"][::-1]
         assert cards.problems(bad)
+
+
+PAIN = [c for c in REAL if c["format"] == "pain"]
+NO_GO = re.compile(r"\b(damn|hell|crap|suck|sucks|stupid|idiot|choke artist|injur\w*|hurt|wife|girlfriend|mom|dad|"
+                   r"bet|bets|betting|parlay|odds)\b", re.I)
+
+
+@pytest.mark.parametrize("c", PAIN, ids=[c["id"] for c in PAIN])
+def test_pain_cards_rub_it_in_within_the_rules(c):
+    """Yashas (Nov 11, 2026): a jab on every step (2-3 spoken), a spoken stinger, a caption line that keeps the joke
+    going; jabs that state the score match it; teams and results only, no profanity, injuries or family."""
+    assert len(c["jabs"]) == len(c["steps"]) and 2 <= len(c["spoken"]) <= 3
+    assert cards.jab_problems(c) == []
+    lines = cards.pain_lines(c)
+    assert [x["key"] for x in lines] == ["open", *[f"jab{k}" for k in sorted(c["spoken"])], "sting"]
+    assert lines[0]["say"] == cards.opening(c) and lines[0].get("strict")
+    assert not any(re.search(r"\d+-\d+", x["say"]) for x in lines), "scores are read out, not '28-3'"
+    for text in [*c["jabs"], c["stinger"], c["send"], c.get("stinger_say") or ""]:
+        assert not NO_GO.search(text), text
+    assert len(c["send"]) > len(cards.opening(c)), "the caption's first line keeps the joke going"
+
+
+def test_a_jab_with_the_wrong_score_is_caught():
+    c = copy.deepcopy(PAIN[0])
+    c["jabs"][0] = "Still up 40. Relax."
+    assert any("the lead is" in p for p in cards.problems(c))
+    c["jabs"][0] = "Tied already."
+    assert any("isn't tied" in p for p in cards.problems(c))
+    assert cards.spoken("0-7 since 1996") == "oh and 7 since 1996" and cards.spoken("Up 28-3.") == "Up 28 to 3."

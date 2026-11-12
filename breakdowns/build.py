@@ -13,6 +13,14 @@ video it hasn't posted; each entry's "format" says which kind it is ("crazy", "g
 
 The narrator sometimes slurs or drops a word, so every line is transcribed (faster-whisper) and compared with the
 script; a line that doesn't match is spoken again with another seed, up to four times, or the story is skipped.
+
+Stories and pain cards marked "voice": "yashas" are narrated in a clone of Yashas's own voice, and only on his Mac,
+because his recordings never enter this public repo (breakdowns/yashas.py has the setup):
+
+    python -m breakdowns.build --voice yashas --only crazy-04,pain-02      # voice, check and render into out-yashas/
+    python -m breakdowns.build --upload-local crazy-04,pain-02            # after review: publish those files
+
+GitHub's build never builds those items (todo()), so it can't overwrite them with the Chatterbox narrator.
 """
 
 from __future__ import annotations
@@ -22,12 +30,17 @@ import hashlib
 import json
 import re
 import subprocess
+import os
+import shutil
 import tempfile
 from pathlib import Path
+
+from breakdowns import voice as narrator
 
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS = ROOT / "items.json"
 OUT = ROOT / "out"
+OUT_LOCAL = ROOT / "out-yashas"  # videos voiced on Yashas's Mac (--voice yashas), kept out of git
 RELEASE = "videos"
 REPO = "Yashasdev/ball-breakdowns"
 NUMBER_WORDS = set("""zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen
@@ -52,7 +65,8 @@ def heard_ok(say: str, heard: str) -> tuple[bool, str]:
     ratio = lambda x, y: SequenceMatcher(None, x, y).ratio()  # noqa: E731
     whole, end = ratio(want, got), ratio(want[-8:], got[-8:])
     # where the line's opening letters turn up in the transcript: later than 1 letter in means a stray sound before it
-    m = SequenceMatcher(None, want[:8], got[:24]).find_longest_match(0, 8, 0, 24)
+    head, start = want[:8], got[:24]  # a line shorter than 8 letters ("Up 2. Uh oh.") is compared as it is
+    m = SequenceMatcher(None, head, start).find_longest_match(0, len(head), 0, len(start))
     lead = m.b - m.a if m.size >= 3 else 99
     ok = whole >= 0.8 and lead <= 1 and end >= 0.6
     return ok, "" if ok else f"match {whole:.2f}, stray start {lead}, end {end:.2f}"
@@ -90,8 +104,8 @@ def published_index() -> dict[str, dict]:
 
 
 def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = None, strict: bool = False) -> bool:
-    """strict: every word must match (short card lines, where the letter match lets "Warrior Spam" pass for
-    "Warriors fan")."""
+    """strict (or a beat's "strict"): every word must match (short card lines, where the letter match lets
+    "Warrior Spam" pass for "Warriors fan")."""
     import torch
     import torchaudio
     from breakdowns.voice import CFG, EXAGGERATION, REF
@@ -110,7 +124,7 @@ def voice(model, whisper, item: dict, out: Path, exaggeration: float | None = No
             segs, _ = whisper.transcribe(str(path), language="en")
             heard = " ".join(s.text for s in segs).strip()
             ok, why = heard_ok(beat["say"], heard)
-            if strict and ok and words(beat["say"]) != words(heard):
+            if (strict or beat.get("strict")) and ok and words(beat["say"]) != words(heard):
                 ok, why = False, "a word differs"
             print(f"  line {k} try {attempt + 1}: {'ok' if ok else 'redo'} | {heard}" + (f" | {why}" if why else ""), flush=True)
             if ok:
@@ -128,7 +142,8 @@ def post_info(item: dict, result: dict) -> dict:
     return {"id": item["id"], "format": "crazy", "title": item["title"], "kicker": item["kicker"], "sport": item["sport"],
             "hook": item["beats"][0]["cap"].replace("*", ""), "ask": item["ask"],
             "seconds": result["seconds"], "music": result["music"], "sources": item["sources"], "hash": story_hash(item),
-            **{k: item[k] for k in CAPTION_ONLY if item.get(k)}}
+            **{k: item[k] for k in CAPTION_ONLY if item.get(k)},
+            **({"voice": narrator.CLONED[item["voice"]]} if narrator.local_only(item) else {})}
 
 
 def wanted(stories: list[dict], card_items: list[dict]) -> list[tuple[dict, str]]:
@@ -144,11 +159,35 @@ def wanted(stories: list[dict], card_items: list[dict]) -> list[tuple[dict, str]
     return out
 
 
+def todo(want: list[tuple[dict, str]], done: set[str], index: dict[str, dict], limit: int) -> list[tuple[dict, str]]:
+    """What GitHub's build makes: new videos, and published ones whose script or card was fixed since (their hash
+    changed). Never an item voiced on Yashas's Mac ("voice": "yashas"): the build can't voice it, and rebuilding it
+    with the Chatterbox narrator would overwrite his version."""
+    out = []
+    for i, h in want:
+        if f"{i['id']}.mp4" in done and index.get(i["id"], {}).get("hash") == h:
+            continue
+        if narrator.local_only(i):
+            print(f"::notice::{i['id']} is voiced on Yashas's Mac and isn't built here; to publish a change, run "
+                  f"python -m breakdowns.build --voice yashas --only {i['id']} there, then --upload-local {i['id']}")
+            continue
+        out.append((i, h))
+    return out[:limit]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=12)
     ap.add_argument("--dry", action="store_true", help="render only; publish nothing")
+    ap.add_argument("--voice", choices=["yashas"], help="voice --only these items locally in Yashas's cloned voice "
+                    "into out-yashas/ (never uploads)")
+    ap.add_argument("--only", help="comma-separated ids, for --voice")
+    ap.add_argument("--upload-local", metavar="IDS", help="publish these out-yashas/ videos to the release and index")
     a = ap.parse_args()
+    if a.voice:
+        return build_local([x for x in (a.only or "").split(",") if x])
+    if a.upload_local:
+        return upload_local([x for x in a.upload_local.split(",") if x])
     from breakdowns import cards
     want = wanted(json.loads(ITEMS.read_text()), cards.load())
     items = [i for i, _ in want]
@@ -156,34 +195,34 @@ def main() -> None:
     done = set() if a.dry else released()
     index = {} if a.dry else published_index()
     fixed = [] if a.dry else backfill_format(index) + refresh_info(json.loads(ITEMS.read_text()), index)
-    # new videos, and published ones whose script or card was fixed since (their hash changed)
-    todo = [(i, h) for i, h in want if f"{i['id']}.mp4" not in done or index.get(i["id"], {}).get("hash") != h][: a.max]
+    build = todo(want, done, index, a.max)
     print(f"{len(items) - len(card_items)} stories, {len(card_items)} cards, {len(index)} published, "
-          f"building {len(todo)}: {[i['id'] for i, _ in todo]}")
-    if not todo:
+          f"building {len(build)}: {[i['id'] for i, _ in build]}")
+    if not build:
         if fixed:
             publish_index(items, index)
         return
     from breakdowns import make
-    if any("beats" in i or cards.voiced(i) for i, _ in todo):  # the narrator loads only when something is voiced
+    if any("beats" in i or cards.voiced(i) for i, _ in build):  # the narrator loads only when something is voiced
         from chatterbox.tts import ChatterboxTTS
         from faster_whisper import WhisperModel
         model = ChatterboxTTS.from_pretrained(device="cpu")
         whisper = WhisperModel("small", device="cpu", compute_type="int8")
     OUT.mkdir(exist_ok=True)
     built = []
-    for it, h in todo:
+    for it, h in build:
         card = "beats" not in it
         print(f"== {it['id']} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
         if card:
-            line = None
-            if cards.voiced(it):  # the pain card's deadpan opening line, checked like every story line
+            lines = None
+            if cards.voiced(it):  # the pain card's deadpan lines, checked like every story line
                 vdir = Path(tempfile.mkdtemp()) / it["id"]
-                if voice(model, whisper, {"id": it["id"], "beats": [{"say": cards.opening(it)}]}, vdir, cards.DEADPAN, strict=True):
-                    line = vdir / "line00.wav"
+                said = cards.pain_lines(it)
+                if voice(model, whisper, {"id": it["id"], "beats": said}, vdir, cards.DEADPAN):
+                    lines = [vdir / f"line{k:02d}.wav" for k in range(len(said))]
                 else:
-                    print(f"::warning::{it['id']}: the opening line never matched; building it without the voice")
-            result = cards.render(it, OUT / f"{it['id']}.mp4", voice_wav=line)
+                    print(f"::warning::{it['id']}: a spoken line never matched; building it without the voice")
+            result = cards.render(it, OUT / f"{it['id']}.mp4", voice_wavs=lines)
             info = cards.post_info(it, result, h)
         else:
             vdir = Path(tempfile.mkdtemp()) / it["id"]
@@ -205,6 +244,79 @@ def main() -> None:
     print(f"built {built}" + ("" if a.dry else f"; the index lists {len(index)} videos"))
     if not built:  # every video failed: something is broken, so fail the run (one bad video only warns)
         raise SystemExit("no video could be built")
+
+
+def build_local(ids: list[str]) -> None:
+    """Voice (breakdowns/yashas.py, in its own Python: BK_OMNIVOICE_PYTHON), check and render items marked "voice":
+    "yashas" into out-yashas/: <id>.mp4, <id>.jpg, <id>.json (with "voice") and <id>.takes.json (every take's
+    transcript and similarity). One at a time; nothing is uploaded."""
+    from breakdowns import cards, make
+    every = {i["id"]: i for i in json.loads(ITEMS.read_text()) + cards.load()}
+    if not ids or any(i not in every for i in ids):
+        raise SystemExit(f"--only needs ids from items.json or cards.json; unknown: {[i for i in ids if i not in every]}")
+    if [i for i in ids if not narrator.local_only(every[i])]:
+        raise SystemExit(f"mark these \"voice\": \"yashas\" first, so GitHub never rebuilds them: "
+                         f"{[i for i in ids if not narrator.local_only(every[i])]}")
+    python = os.environ.get("BK_OMNIVOICE_PYTHON")
+    if not python:
+        raise SystemExit("set BK_OMNIVOICE_PYTHON (and BK_VOICE_REF, BK_VOICE_REF_TEXT: see breakdowns/yashas.py)")
+    OUT_LOCAL.mkdir(exist_ok=True)
+    for k in ids:
+        it = every[k]
+        card = "beats" not in it
+        if card and not cards.voiced(it):
+            raise SystemExit(f"{k}: only stories and pain cards have a voice")
+        print(f"== {k} {cards.FORMATS[it['format']] if card else it['title']}", flush=True)
+        work = Path(tempfile.mkdtemp(prefix=f"{k}-"))
+        lines = cards.pain_lines(it) if card else [{"say": b["say"]} for b in it["beats"]]
+        (work / "lines.json").write_text(json.dumps(lines))
+        vdir = work / "voice"
+        r = subprocess.run([python, "-m", "breakdowns.yashas", "--lines", str(work / "lines.json"), "--out", str(vdir),
+                            "--seed", k.split("-")[-1]], cwd=ROOT)
+        if r.returncode:
+            shutil.rmtree(work, ignore_errors=True)
+            raise SystemExit(f"{k}: a line never matched its script; nothing was rendered")
+        out = OUT_LOCAL / f"{k}.mp4"
+        if card:
+            result = cards.render(it, out, voice_wavs=[vdir / f"line{j:02d}.wav" for j in range(len(lines))])
+            info = cards.post_info(it, result, cards.card_hash(it))
+        else:
+            result = make.render(k, vdir, out)
+            info = post_info(it, result)
+        (OUT_LOCAL / f"{k}.json").write_text(json.dumps(info, indent=1, ensure_ascii=False))
+        shutil.copy(vdir / "takes.json", OUT_LOCAL / f"{k}.takes.json")
+        shutil.rmtree(work, ignore_errors=True)
+        if result["seconds"] > 59:
+            print(f"::error::{k} is {result['seconds']} s; Shorts must be under 60. Shorten its script.")
+        print(f"   rendered {result['seconds']} s with {result['music']} -> {out}", flush=True)
+
+
+def upload_local(ids: list[str]) -> None:
+    """Publish videos made with --voice yashas (after review): upload out-yashas/<id>.mp4/.jpg/.json to the release
+    and list them in index.json, in place of whatever was published under that id."""
+    from breakdowns import cards
+    subprocess.run(["git", "fetch", "-q", "origin", "main"], cwd=ROOT, check=True)
+    on_main = {i["id"]: i for f in ("items.json", "cards.json") for i in json.loads(subprocess.run(
+        ["git", "show", f"origin/main:{f}"], cwd=ROOT, capture_output=True, text=True, check=True).stdout)}
+    if [k for k in ids if not narrator.local_only(on_main.get(k, {}))]:
+        raise SystemExit("main doesn't mark these \"voice\": \"yashas\" yet, so GitHub's daily build would rebuild them "
+                         f"with Chatterbox right after the upload; merge that first: "
+                         f"{[k for k in ids if not narrator.local_only(on_main.get(k, {}))]}")
+    want = wanted(json.loads(ITEMS.read_text()), cards.load())
+    hashes = {i["id"]: h for i, h in want}
+    index = published_index()
+    for k in ids:
+        files = [OUT_LOCAL / f"{k}{ext}" for ext in (".mp4", ".jpg", ".json")]
+        if not all(f.exists() for f in files):
+            raise SystemExit(f"{k}: render it first (--voice yashas --only {k})")
+        info = json.loads(files[2].read_text())
+        if info.get("hash") != hashes.get(k) or not info.get("voice"):
+            raise SystemExit(f"{k}: its item changed since this video was made; render it again")
+        subprocess.run(["gh", "release", "upload", RELEASE, "-R", REPO, "--clobber", *map(str, files)], check=True)
+        index[k] = info
+        print(f"uploaded {k} ({info['seconds']} s, voice {info['voice']})")
+    OUT.mkdir(exist_ok=True)
+    publish_index([i for i, _ in want], index)
 
 
 def backfill_format(index: dict[str, dict]) -> list[str]:

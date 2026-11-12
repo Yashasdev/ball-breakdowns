@@ -1356,7 +1356,7 @@
   "format": "pain",
   "sport": "nfl",
   "who": "a Falcons fan",
-  "send": "Send this to a Falcons fan. Say nothing.",
+  "send": "Send this to a Falcons fan. Don't add a message. They know.",
   "reason": "tease",
   "hook": "Up 28-3 in the Super Bowl. Guess how it ended.",
   "kicker": "SUPER BOWL LI · FEB 5, 2017",
@@ -1416,6 +1416,18 @@
    "clock": "FINAL / OT"
   },
   "record": "The biggest comeback in Super Bowl history.",
+  "jabs": [
+   "Still up 19. Relax.",
+   "Up 16. It's fine.",
+   "Up 8. Breathe.",
+   "Tied. Oh no."
+  ],
+  "spoken": [
+   0,
+   2,
+   3
+  ],
+  "stinger": "28-3. Say it to a Falcons fan and watch their face.",
   "meter": "Falcons lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
@@ -1426,10 +1438,11 @@
  },
  {
   "id": "pain-02",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Chargers fan",
-  "send": "Send this to a Chargers fan. They already know.",
+  "send": "Send this to a Chargers fan. They already know. They always know.",
   "reason": "tease",
   "hook": "Up 27-0 in a playoff game. Guess how it ended.",
   "kicker": "AFC WILD CARD · JAN 14, 2023",
@@ -1496,6 +1509,18 @@
    "clock": "FINAL"
   },
   "record": "The third-biggest comeback in NFL playoff history.",
+  "jabs": [
+   "Up 20. Still easy.",
+   "Up 13. Getting nervous?",
+   "Up 16. Phew.",
+   "Up 10. Hmm.",
+   "Up 2 now. Uh oh."
+  ],
+  "spoken": [
+   1,
+   4
+  ],
+  "stinger": "Up 27. Lost by 1. Classic Chargers.",
   "meter": "Chargers lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
@@ -1505,10 +1530,11 @@
  },
  {
   "id": "pain-03",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nba",
   "who": "a Warriors fan",
-  "send": "Send this to the Warriors fan who brings up 73 wins.",
+  "send": "Send this to the Warriors fan who brings up 73 wins. Then say 3-1.",
   "reason": "tease",
   "hook": "The best regular season ever ended like this.",
   "kicker": "2016 NBA FINALS",
@@ -1554,6 +1580,16 @@
    "clock": "GAME 7 · 89-93"
   },
   "record": "The first team ever to blow a 3-1 lead in the Finals.",
+  "jabs": [
+   "3-2. Still fine.",
+   "3-3. Getting nervous?"
+  ],
+  "spoken": [
+   0,
+   1
+  ],
+  "stinger": "3-1 lead. Warriors fans still can't hear that number.",
+  "stinger_say": "Three-one lead. Warriors fans still can't hear that number.",
   "meter": "Warriors series lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
@@ -1564,10 +1600,11 @@
  },
  {
   "id": "pain-04",
+  "voice": "yashas",
   "format": "pain",
   "sport": "mlb",
   "who": "a Yankees fan",
-  "send": "Send this to a Yankees fan. Say nothing.",
+  "send": "Send this to a Yankees fan. Don't explain. Just say 2004.",
   "reason": "tease",
   "hook": "Up 3-0 on Boston. Then this happened.",
   "kicker": "2004 ALCS · YANKEES VS RED SOX",
@@ -1620,19 +1657,31 @@
    "clock": "GAME 7 · 3-10"
   },
   "record": "Still the only MLB team to lose a 3-0 series lead.",
+  "jabs": [
+   "3-1. Relax.",
+   "3-2. It's fine.",
+   "3-3. Uh oh."
+  ],
+  "spoken": [
+   1,
+   2
+  ],
+  "stinger": "Up 3-0. Lost the series. Yankees fans still skip 2004.",
+  "stinger_say": "Up three games to none. Lost the series. Yankees fans still skip 2004.",
   "meter": "Yankees series lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.baseball-reference.com/postseason/2004_ALCS.shtml",
-   "https://www.mlb.com/news/rays-win-alcs-2026"
+   "https://www.baseball-reference.com/postseason/2026_ALCS.shtml"
   ]
  },
  {
   "id": "pain-05",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Chiefs fan",
-  "send": "Send this to a Chiefs fan. Ask about January 2014.",
+  "send": "Send this to a Chiefs fan. Ask about January 2014. Then run.",
   "reason": "tease",
   "hook": "Up 38-10 in a playoff game. Then the Colts scored 35.",
   "kicker": "AFC WILD CARD · JAN 4, 2014",
@@ -1651,7 +1700,7 @@
     38,
     10
    ],
-   "clock": "3RD 13:44",
+   "clock": "3RD 13:39",
    "line": "Up 28. In the playoffs."
   },
   "steps": [
@@ -1660,42 +1709,42 @@
      38,
      17
     ],
-    "clock": "3RD 11:52"
+    "clock": "3RD 11:47"
    },
    {
     "score": [
      38,
      24
     ],
-    "clock": "3RD 7:36"
+    "clock": "3RD 7:32"
    },
    {
     "score": [
      41,
      24
     ],
-    "clock": "3RD 4:17"
+    "clock": "3RD 4:12"
    },
    {
     "score": [
      41,
      31
     ],
-    "clock": "3RD 2:34"
+    "clock": "3RD 2:31"
    },
    {
     "score": [
      41,
      38
     ],
-    "clock": "4TH 10:45"
+    "clock": "4TH 10:38"
    },
    {
     "score": [
      44,
      38
     ],
-    "clock": "4TH 5:40"
+    "clock": "4TH 5:36"
    }
   ],
   "final": {
@@ -1706,19 +1755,34 @@
    "clock": "FINAL"
   },
   "record": "The second-biggest comeback in NFL playoff history.",
+  "jabs": [
+   "Up 21. Easy.",
+   "Up 14. Fine.",
+   "Up 17. Phew.",
+   "Up 10. Hmm.",
+   "Up 3. Sweating?",
+   "Up 6. Hold on..."
+  ],
+  "spoken": [
+   0,
+   4
+  ],
+  "stinger": "Up 28 in a playoff game. Lost by 1. That takes talent.",
   "meter": "Chiefs lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
    "https://www.espn.com/nfl/playbyplay/_/gameId/340104011",
-   "https://www.pro-football-reference.com/teams/kan/2013.htm"
+   "https://www.pro-football-reference.com/teams/kan/2013.htm",
+   "https://en.wikipedia.org/wiki/2013%E2%80%9314_NFL_playoffs"
   ]
  },
  {
   "id": "pain-06",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Cowboys fan",
-  "send": "Send this to the Cowboys fan who says this is our year.",
+  "send": "Send this to the Cowboys fan who says this is our year. It isn't.",
   "reason": "tease",
   "hook": "Cowboys fans: how old were you in January 1996?",
   "kicker": "COWBOYS · DIVISIONAL ROUND",
@@ -1792,6 +1856,19 @@
    "clock": "2022 · SF"
   },
   "record": "0-7. No NFC title game since January 1996.",
+  "jabs": [
+   "0-1. Next year.",
+   "0-2. Next year.",
+   "0-3. Surely next year.",
+   "0-4. Next year?",
+   "0-5. Okay, next year.",
+   "0-6. Again?"
+  ],
+  "spoken": [
+   3,
+   5
+  ],
+  "stinger": "0-7 since the 1996 season. Our year, right?",
   "meter": "Cowboys fans' hope",
   "ask": "How old were you in January 1996? Be honest.",
   "sources": [
@@ -1802,10 +1879,11 @@
  },
  {
   "id": "pain-07",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Bills fan",
-  "send": "Send this to a Bills fan. Don't add a message.",
+  "send": "Send this to a Bills fan. No message. Just hold up four fingers.",
   "reason": "tease",
   "hook": "Four straight Super Bowls. Zero wins.",
   "kicker": "BILLS IN THE SUPER BOWL",
@@ -1858,6 +1936,16 @@
    "clock": "XXVIII · DAL 30-13"
   },
   "record": "Still the only team to lose four straight Super Bowls.",
+  "jabs": [
+   "0-1. Wide right.",
+   "0-2. Back again.",
+   "0-3. Lost by 35."
+  ],
+  "spoken": [
+   0,
+   2
+  ],
+  "stinger": "Four trips to the Super Bowl. Four trips home with nothing.",
   "meter": "Bills fans' hope",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
@@ -1867,10 +1955,11 @@
  },
  {
   "id": "pain-08",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Packers fan",
-  "send": "Send this to a Packers fan. They'll remember.",
+  "send": "Send this to a Packers fan. They'll remember. They always remember.",
   "reason": "tease",
   "hook": "Up 19-7 with three minutes left in the NFC title game.",
   "kicker": "NFC TITLE GAME · JAN 18, 2015",
@@ -1923,6 +2012,16 @@
    "clock": "FINAL / OT"
   },
   "record": "Seattle scored 15 points in the last 2:09.",
+  "jabs": [
+   "Up 5. Get the onside kick.",
+   "Down 3. How?",
+   "Tied. Oh no."
+  ],
+  "spoken": [
+   1,
+   2
+  ],
+  "stinger": "Up 12 with 3 minutes left. Packers fans still hate onside kicks.",
   "meter": "Packers lead",
   "ask": "What's the worst loss your team ever took?",
   "sources": [
