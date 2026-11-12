@@ -27,6 +27,10 @@ publishes nothing).
 - Narration: [Chatterbox](https://github.com/resemble-ai/chatterbox) by Resemble AI (MIT). Its reference voice,
   `assets/voice/ref_onyx.wav`, was spoken by the `am_onyx` voice of [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
   (Apache 2.0). No real person's voice is imitated.
+- Items marked `"voice": "yashas"` are narrated instead in a clone of the channel owner's own voice, with his
+  consent, using [OmniVoice](https://github.com/k2-fsa/OmniVoice) (code Apache 2.0; model CC-BY-NC, non-commercial).
+  They're voiced on his computer only (`python -m breakdowns.build --voice yashas --only <ids>`, see
+  `breakdowns/yashas.py`); his recordings are never in this repo, and GitHub's build never rebuilds those items.
 - Music and sound effects: composed by code in `bk/` (nothing sampled or downloaded).
 - Fonts: Inter (SIL Open Font License, `assets/fonts/LICENSE-Inter.txt`) and the fonts in `assets/fonts/breakdown/`
   (see the license files there).

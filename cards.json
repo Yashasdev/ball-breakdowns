@@ -1426,6 +1426,7 @@
  },
  {
   "id": "pain-02",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Chargers fan",
@@ -1505,6 +1506,7 @@
  },
  {
   "id": "pain-03",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nba",
   "who": "a Warriors fan",
@@ -1564,6 +1566,7 @@
  },
  {
   "id": "pain-04",
+  "voice": "yashas",
   "format": "pain",
   "sport": "mlb",
   "who": "a Yankees fan",
@@ -1629,6 +1632,7 @@
  },
  {
   "id": "pain-05",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Chiefs fan",
@@ -1715,6 +1719,7 @@
  },
  {
   "id": "pain-06",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Cowboys fan",
@@ -1802,6 +1807,7 @@
  },
  {
   "id": "pain-07",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Bills fan",
@@ -1867,6 +1873,7 @@
  },
  {
   "id": "pain-08",
+  "voice": "yashas",
   "format": "pain",
   "sport": "nfl",
   "who": "a Packers fan",

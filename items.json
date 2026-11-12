@@ -351,6 +351,7 @@
  },
  {
   "id": "crazy-04",
+  "voice": "yashas",
   "title": "The Minneapolis Miracle",
   "kicker": "NFC DIVISIONAL · JAN 14, 2018",
   "sport": "nfl",
@@ -465,6 +466,7 @@
  },
  {
   "id": "crazy-05",
+  "voice": "yashas",
   "title": "Ray Allen's corner three",
   "kicker": "NBA FINALS GAME 6 · JUNE 18, 2013",
   "sport": "nba",
@@ -586,6 +588,7 @@
  },
  {
   "id": "crazy-06",
+  "voice": "yashas",
   "title": "Boise State's Fiesta Bowl",
   "kicker": "FIESTA BOWL · JAN 1, 2007",
   "sport": "cfb",
@@ -703,6 +706,7 @@
  },
  {
   "id": "crazy-07",
+  "voice": "yashas",
   "title": "The Comeback",
   "kicker": "AFC WILD CARD · JAN 3, 1993",
   "sport": "nfl",
@@ -829,6 +833,7 @@
  },
  {
   "id": "crazy-08",
+  "voice": "yashas",
   "title": "Reggie's 8 in 8.9",
   "kicker": "PACERS AT KNICKS · MAY 7, 1995",
   "sport": "nba",
@@ -965,6 +970,7 @@
  },
  {
   "id": "crazy-09",
+  "voice": "yashas",
   "title": "App State over Michigan",
   "kicker": "APP STATE AT MICHIGAN · SEP 1, 2007",
   "sport": "cfb",
@@ -1069,6 +1075,7 @@
  },
  {
   "id": "crazy-10",
+  "voice": "yashas",
   "title": "Cavs come back from 3–1",
   "kicker": "NBA FINALS · JUNE 2016",
   "sport": "nba",

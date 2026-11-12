@@ -44,6 +44,7 @@ import soundfile as sf
 
 from bk import music, sound
 from breakdowns import make
+from breakdowns import voice as narrator
 
 ROOT = Path(__file__).resolve().parent.parent
 CARDS = ROOT / "cards.json"
@@ -158,6 +159,8 @@ def post_info(it: dict, result: dict, item_hash: str) -> dict:
         info["letters"] = letters(it)
     if it["format"] in SHARE:  # the poster's caption opens with the send line
         info.update(send=it["send"], who=it["who"])
+    if narrator.local_only(it):  # narrated in Yashas's cloned voice: the poster adds the credit line
+        info["voice"] = narrator.CLONED[it["voice"]]
     return info
 
 
