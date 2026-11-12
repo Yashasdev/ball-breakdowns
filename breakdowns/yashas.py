@@ -14,8 +14,8 @@ from environment variables that point outside the repo:
     BK_OMNIVOICE_PYTHON  the Python that has omnivoice, faster-whisper and transformers (build.py uses it)
 
 lines.json: [{"say": "...", "check": "..."}] ("check" is what the transcript should read when "say" has OmniVoice
-pronunciation spans like [K AY1 M]; it defaults to "say"; "strict": true makes every word count for that line, to
-confirm a hard word was said right). Every line gets TAKES takes; the kept one passes the transcript check
+pronunciation spans like [K AY1 M]; it defaults to "say"; "strict": true makes every word count for that line, and
+"must": ["chyme"] lists hard words that must be heard as written). Every line gets TAKES takes; the kept one passes the transcript check
 (heard_ok, and every word for --strict card lines), preferring takes where every word was heard right, then the one
 most similar to him. If none passes, more takes up to MAX_TAKES. Writes lineNN.wav and meta.json like build.voice(),
 plus takes.json (every take: seed, transcript, similarity, seconds, words a minute). Only the finished lines leave this
@@ -112,6 +112,7 @@ def main() -> None:
                     help="expressive: among takes heard right and within --window of the most similar one, keep the "
                          "liveliest (expressiveness())")
     ap.add_argument("--window", type=float, default=0.01)
+    ap.add_argument("--resume", action="store_true", help="keep lines already finished in --out (after a stop)")
     a = ap.parse_args()
 
     os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
@@ -137,7 +138,13 @@ def main() -> None:
     sr = model.sampling_rate
 
     meta, log = [], []
+    done = json.loads((out / "takes.json").read_text()) if a.resume and (out / "takes.json").exists() else []
     for k, line in enumerate(lines):
+        if k < len(done) and done[k]["kept"] is not None and done[k]["say"] == line["say"]:
+            log.append(done[k])
+            meta.append({"file": f"line{k:02d}.wav", "seconds": done[k]["takes"][done[k]["kept"]]["seconds"]})
+            print(f"  line {k}: kept from before (take {done[k]['kept'] + 1})", flush=True)
+            continue
         say, check = line["say"], line.get("check") or plain(line["say"])
         takes = []
         for t in range(MAX_TAKES):
@@ -160,6 +167,9 @@ def main() -> None:
             ok, why = heard_ok(check, heard)
             if (a.strict or line.get("strict")) and ok and words(check) != words(heard):
                 ok, why = False, "a word differs"
+            missing = [w for w in line.get("must", []) if w.lower() not in words(heard)]
+            if ok and missing:  # the hard word itself must be heard ("chyme", not "thyme")
+                ok, why = False, f"didn't hear {missing}"
             sim = similar(str(path)) if similar else None
             expr = expressiveness(str(path)) if a.pick == "expressive" else None
             dur = len(x) / sr
